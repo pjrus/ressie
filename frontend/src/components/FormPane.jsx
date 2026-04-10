@@ -19,10 +19,12 @@ import { CSS } from '@dnd-kit/utilities';
 import { uid } from '../data/defaultData.js';
 
 // ── New-entry factories ───────────────────────────────────────────────────────
+const emptyDateRange = () => ({ startMonth: '', startYear: '', endMonth: '', endYear: '', present: false });
+
 const newEntry = {
-  education:     () => ({ id: uid(), institution: '', location: '', degree: '', dates: '' }),
-  experience:    () => ({ id: uid(), role: '', company: '', location: '', dates: '', bullets: [''] }),
-  projects:      () => ({ id: uid(), name: '', tech: '', link: '', dates: '', bullets: [''] }),
+  education:     () => ({ id: uid(), institution: '', location: '', degree: '', dateRange: emptyDateRange() }),
+  experience:    () => ({ id: uid(), role: '', company: '', location: '', dateRange: emptyDateRange(), bullets: [''] }),
+  projects:      () => ({ id: uid(), name: '', tech: '', link: '', dateRange: emptyDateRange(), bullets: [''] }),
   skills:        () => ({ id: uid(), label: '', value: '' }),
   certifications:() => ({ id: uid(), text: '', url: '' }),
 };
@@ -33,6 +35,21 @@ const SECTION_TYPES = [
   { type: 'projects',       label: 'Projects' },
   { type: 'skills',         label: 'Technical Skills' },
   { type: 'certifications', label: 'Awards / Certifications' },
+];
+
+const MONTHS = [
+  { val: 'Jan', label: 'Jan.' },
+  { val: 'Feb', label: 'Feb.' },
+  { val: 'Mar', label: 'Mar.' },
+  { val: 'Apr', label: 'Apr.' },
+  { val: 'May', label: 'May'  },
+  { val: 'Jun', label: 'Jun.' },
+  { val: 'Jul', label: 'Jul.' },
+  { val: 'Aug', label: 'Aug.' },
+  { val: 'Sep', label: 'Sep.' },
+  { val: 'Oct', label: 'Oct.' },
+  { val: 'Nov', label: 'Nov.' },
+  { val: 'Dec', label: 'Dec.' },
 ];
 
 // ── Primitives ────────────────────────────────────────────────────────────────
@@ -58,6 +75,77 @@ function Field({ label, value, onChange, placeholder, multiline, half }) {
           placeholder={placeholder}
         />
       )}
+    </div>
+  );
+}
+
+function DateRangePicker({ value, onChange }) {
+  const dr = value || emptyDateRange();
+  const u = (k, v) => onChange({ ...dr, [k]: v });
+
+  return (
+    <div className="field">
+      <label className="field-label">Dates</label>
+      <div className="date-range-picker">
+        {/* Start date */}
+        <div className="date-part">
+          <select
+            className="date-select"
+            value={dr.startMonth}
+            onChange={(e) => u('startMonth', e.target.value)}
+          >
+            <option value="">Month</option>
+            {MONTHS.map((m) => (
+              <option key={m.val} value={m.val}>{m.label}</option>
+            ))}
+          </select>
+          <input
+            className="field-input date-year-input"
+            type="text"
+            value={dr.startYear}
+            onChange={(e) => u('startYear', e.target.value)}
+            placeholder="Year"
+            maxLength="4"
+          />
+        </div>
+
+        <span className="date-separator">—</span>
+
+        {/* End date or Present */}
+        {dr.present ? (
+          <span className="present-badge">Present</span>
+        ) : (
+          <div className="date-part">
+            <select
+              className="date-select"
+              value={dr.endMonth}
+              onChange={(e) => u('endMonth', e.target.value)}
+            >
+              <option value="">Month</option>
+              {MONTHS.map((m) => (
+                <option key={m.val} value={m.val}>{m.label}</option>
+              ))}
+            </select>
+            <input
+              className="field-input date-year-input"
+              type="text"
+              value={dr.endYear}
+              onChange={(e) => u('endYear', e.target.value)}
+              placeholder="Year"
+              maxLength="4"
+            />
+          </div>
+        )}
+
+        <label className="present-check-label">
+          <input
+            type="checkbox"
+            checked={dr.present || false}
+            onChange={(e) => u('present', e.target.checked)}
+          />
+          Present
+        </label>
+      </div>
     </div>
   );
 }
@@ -102,7 +190,7 @@ function EducationEntry({ entry, onChange, onRemove }) {
         <Field label="Institution" value={entry.institution} onChange={(v) => u('institution', v)} placeholder="University Name" half />
         <Field label="Location"    value={entry.location}    onChange={(v) => u('location', v)}    placeholder="City, State"     half />
         <Field label="Degree / Description" value={entry.degree} onChange={(v) => u('degree', v)} placeholder="Bachelor of Science…" />
-        <Field label="Dates"       value={entry.dates}       onChange={(v) => u('dates', v)}       placeholder="Jan. 2020 -- Dec. 2023" half />
+        <DateRangePicker value={entry.dateRange} onChange={(v) => u('dateRange', v)} />
       </div>
     </div>
   );
@@ -120,7 +208,7 @@ function ExperienceEntry({ entry, onChange, onRemove }) {
         <Field label="Role / Title" value={entry.role}     onChange={(v) => u('role', v)}     placeholder="Software Engineer"   half />
         <Field label="Company"      value={entry.company}  onChange={(v) => u('company', v)}  placeholder="Company Name"        half />
         <Field label="Location"     value={entry.location} onChange={(v) => u('location', v)} placeholder="City, State / Remote" half />
-        <Field label="Dates"        value={entry.dates}    onChange={(v) => u('dates', v)}    placeholder="Jan. 2022 -- Present" half />
+        <DateRangePicker value={entry.dateRange} onChange={(v) => u('dateRange', v)} />
       </div>
       <BulletList bullets={entry.bullets || []} onChange={(v) => u('bullets', v)} />
     </div>
@@ -136,10 +224,10 @@ function ProjectEntry({ entry, onChange, onRemove }) {
         <button className="icon-btn danger sm" onClick={onRemove}>✕</button>
       </div>
       <div className="field-grid">
-        <Field label="Project Name"      value={entry.name}  onChange={(v) => u('name', v)}  placeholder="My Awesome Project"          half />
-        <Field label="Dates"             value={entry.dates} onChange={(v) => u('dates', v)} placeholder="Jan. 2023 -- Present"         half />
-        <Field label="Technologies"      value={entry.tech}  onChange={(v) => u('tech', v)}  placeholder="React, Node.js, MongoDB" />
-        <Field label="Link (optional)"   value={entry.link}  onChange={(v) => u('link', v)}  placeholder="github.com/you/project" />
+        <Field label="Project Name"    value={entry.name}  onChange={(v) => u('name', v)}  placeholder="My Awesome Project" />
+        <DateRangePicker value={entry.dateRange} onChange={(v) => u('dateRange', v)} />
+        <Field label="Technologies"    value={entry.tech}  onChange={(v) => u('tech', v)}  placeholder="React, Node.js, MongoDB" />
+        <Field label="Link (optional)" value={entry.link}  onChange={(v) => u('link', v)}  placeholder="github.com/you/project" />
       </div>
       <BulletList bullets={entry.bullets || []} onChange={(v) => u('bullets', v)} />
     </div>
@@ -172,12 +260,22 @@ function CertEntry({ entry, onChange, onRemove }) {
           onChange={(v) => u('text', v)}
           placeholder="Google Cloud Professional Certificate (2024)"
         />
-        <Field
-          label="Link (optional)"
-          value={entry.url}
-          onChange={(v) => u('url', v)}
-          placeholder="coursera.org/verify/abc123"
-        />
+        <div className="field cert-url-field">
+          <label className="field-label">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginRight: 4, verticalAlign: 'middle' }}>
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+            </svg>
+            Hyperlink (optional)
+          </label>
+          <input
+            className="field-input"
+            type="text"
+            value={entry.url}
+            onChange={(e) => u('url', e.target.value)}
+            placeholder="coursera.org/verify/abc123"
+          />
+        </div>
       </div>
     </div>
   );
@@ -344,9 +442,74 @@ function AddSectionMenu({ onAdd }) {
   );
 }
 
+// ── Advanced Settings ─────────────────────────────────────────────────────────
+
+function AdvancedSettings({ settings, onChange }) {
+  const [open, setOpen] = useState(false);
+  const u = (k, v) => onChange({ ...settings, [k]: v });
+
+  return (
+    <div className="advanced-settings-card">
+      <button className="advanced-settings-toggle" onClick={() => setOpen((o) => !o)}>
+        <svg
+          width="13" height="13" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" strokeWidth="2.5"
+          style={{ transform: open ? 'rotate(0deg)' : 'rotate(-90deg)', transition: 'transform 0.2s', flexShrink: 0 }}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+        Advanced Settings
+      </button>
+      {open && (
+        <div className="advanced-settings-body">
+          <p className="advanced-hint">Leave blank to use recommended defaults shown as placeholders.</p>
+          <div className="field-grid">
+            <Field
+              label="Font Size (pt)"
+              value={settings.fontSize || ''}
+              onChange={(v) => u('fontSize', v)}
+              placeholder="11 (default)"
+              half
+            />
+            <div className="field field--half" />
+            <Field
+              label="Top Margin (in)"
+              value={settings.marginTop || ''}
+              onChange={(v) => u('marginTop', v)}
+              placeholder="0.5 (default)"
+              half
+            />
+            <Field
+              label="Bottom Margin (in)"
+              value={settings.marginBottom || ''}
+              onChange={(v) => u('marginBottom', v)}
+              placeholder="0.5 (default)"
+              half
+            />
+            <Field
+              label="Left Margin (in)"
+              value={settings.marginLeft || ''}
+              onChange={(v) => u('marginLeft', v)}
+              placeholder="0.5 (default)"
+              half
+            />
+            <Field
+              label="Right Margin (in)"
+              value={settings.marginRight || ''}
+              onChange={(v) => u('marginRight', v)}
+              placeholder="0.5 (default)"
+              half
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── FormPane root ─────────────────────────────────────────────────────────────
 
-export default function FormPane({ data, onChange }) {
+export default function FormPane({ data, onChange, settings, onSettingsChange }) {
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
@@ -401,6 +564,7 @@ export default function FormPane({ data, onChange }) {
       </DndContext>
 
       <AddSectionMenu onAdd={addSection} />
+      <AdvancedSettings settings={settings || {}} onChange={onSettingsChange} />
     </div>
   );
 }

@@ -1,5 +1,13 @@
 export const uid = () => Math.random().toString(36).slice(2, 9);
 
+export const defaultSettings = {
+  fontSize:     '',
+  marginTop:    '',
+  marginBottom: '',
+  marginLeft:   '',
+  marginRight:  '',
+};
+
 export const defaultResumeData = {
   header: {
     name: 'Paarangat Jain',
@@ -19,14 +27,14 @@ export const defaultResumeData = {
           institution: 'Monash University',
           location: 'Clayton, VIC',
           degree: 'Bachelor of Computer Science (Mathematics Minor), WAM: 73.84, GPA: 3.063',
-          dates: 'Jan. 2024 -- June 2027',
+          dateRange: { startMonth: 'Jan', startYear: '2024', endMonth: 'Jun', endYear: '2027', present: false },
         },
         {
           id: 'edu-2',
           institution: 'Viewbank College',
           location: 'Rosanna, VIC',
           degree: 'Victorian Certificate of Education (VCE), ATAR: 90.15',
-          dates: 'Jan. 2019 -- Dec. 2023',
+          dateRange: { startMonth: 'Jan', startYear: '2019', endMonth: 'Dec', endYear: '2023', present: false },
         },
       ],
     },
@@ -40,7 +48,7 @@ export const defaultResumeData = {
           role: 'Outreach Officer',
           company: 'Monash Assistive Technology Team (MATT)',
           location: 'Clayton, VIC',
-          dates: 'Mar. 2026 -- Present',
+          dateRange: { startMonth: 'Mar', startYear: '2026', endMonth: '', endYear: '', present: true },
           bullets: [
             'Engage with schools supporting students with disabilities to build partnerships to support technology-driven empowerment',
             "Communicate the organisation's mission and coordinate collaborative initiatives such as workshops and programs",
@@ -52,7 +60,7 @@ export const defaultResumeData = {
           role: 'Volunteer -- Website Support & Management',
           company: 'Ocean Connect',
           location: 'Remote',
-          dates: 'Mar. 2026 -- Present',
+          dateRange: { startMonth: 'Mar', startYear: '2026', endMonth: '', endYear: '', present: true },
           bullets: [
             "Support management and maintenance of Ocean Connect's website to ensure program, event, and initiative information remains accurate and accessible",
             'Update and organise website content to improve navigation, clarity, and usability for volunteers and community members',
@@ -64,7 +72,7 @@ export const defaultResumeData = {
           role: 'Operations Officer',
           company: 'Monash Assistive Technology Team (MATT)',
           location: 'Clayton, VIC',
-          dates: 'Feb. 2026 -- Present',
+          dateRange: { startMonth: 'Feb', startYear: '2026', endMonth: '', endYear: '', present: true },
           bullets: [
             'Assist in the technical operations of the Monash Assistive Technology Team, supporting delivery of accessibility-focused projects',
             'Collaborate with peers to ensure smooth execution of technical initiatives and internal processes',
@@ -76,7 +84,7 @@ export const defaultResumeData = {
           role: 'Project Coordinator',
           company: 'Monash Assistive Technology Team (MATT)',
           location: 'Clayton, VIC',
-          dates: 'Aug. 2025 -- Present',
+          dateRange: { startMonth: 'Aug', startYear: '2025', endMonth: '', endYear: '', present: true },
           bullets: [
             'Lead collaboration with academic supervisor to define project goals and strategies for developing low-cost tactile and refreshable braille displays',
             'Guide and coordinate team of project officers in brainstorming and innovation for accessibility technology',
@@ -90,7 +98,7 @@ export const defaultResumeData = {
           role: 'Projects Officer',
           company: 'Monash Assistive Technology Team (MATT)',
           location: 'Clayton, VIC',
-          dates: 'Mar. 2025 -- Aug. 2025',
+          dateRange: { startMonth: 'Mar', startYear: '2025', endMonth: 'Aug', endYear: '2025', present: false },
           bullets: [
             'Collaborated with academic supervisor and fellow officers to brainstorm accessibility solutions',
             'Assisted in design, development, and testing of tactile display components for blind and low-vision users',
@@ -108,7 +116,7 @@ export const defaultResumeData = {
           name: 'Personal Portfolio Website',
           tech: 'Web Development, VPS',
           link: 'p-jain.dev',
-          dates: 'Jan. 2025 -- Present',
+          dateRange: { startMonth: 'Jan', startYear: '2025', endMonth: '', endYear: '', present: true },
           bullets: [
             'Developed and maintain portfolio website showcasing projects and technical skills',
             'Deployed on Virtual Private Server (VPS) with custom domain configuration',
@@ -119,7 +127,7 @@ export const defaultResumeData = {
           name: 'Skill-Issue (Skilliton)',
           tech: 'Next.js, TypeScript, Firebase, Genkit, Gemini, Tailwind CSS',
           link: '',
-          dates: 'Feb. 2026',
+          dateRange: { startMonth: 'Feb', startYear: '2026', endMonth: '', endYear: '', present: false },
           bullets: [
             'Built AI-powered peer-to-peer skill exchange platform at UniHack 2026 enabling university students to find partners for skill swaps',
             'Developed full-stack web application using Next.js, TypeScript, and Firebase Authentication with Google OAuth support',
@@ -132,7 +140,7 @@ export const defaultResumeData = {
           name: 'Tactile Display Project',
           tech: 'React Native, Hardware',
           link: '',
-          dates: 'Mar. 2025 -- Present',
+          dateRange: { startMonth: 'Mar', startYear: '2025', endMonth: '', endYear: '', present: true },
           bullets: [
             'Contributed to open-source project developing low-cost refreshable braille displays (MagnePins) for blind and low-vision users',
             'Developed React Native mobile application to interact with the tactile display hardware',
@@ -144,7 +152,7 @@ export const defaultResumeData = {
           name: 'Braille Character Quiz Game',
           tech: 'React, TypeScript, RxJS',
           link: '',
-          dates: 'May 2025 -- Present',
+          dateRange: { startMonth: 'May', startYear: '2025', endMonth: '', endYear: '', present: true },
           bullets: [
             'Developed an interactive web-based game for learning and practising Braille characters',
             'Implemented real-time feedback, scoring system, and streak tracking utilising RxJS for reactive state management',
@@ -156,7 +164,7 @@ export const defaultResumeData = {
           name: 'Pomodoro Timer App',
           tech: 'React Native, Expo, TypeScript',
           link: '',
-          dates: 'Dec. 2025 -- Present',
+          dateRange: { startMonth: 'Dec', startYear: '2025', endMonth: '', endYear: '', present: true },
           bullets: [
             'Developed full-featured iOS productivity application with unique liquid animation timer using an Expo routing system',
             'Integrated glassmorphism UI design with ambient sound playback, haptic feedback, and multi-theme support',
@@ -168,7 +176,7 @@ export const defaultResumeData = {
           name: 'Appointment Booking System',
           tech: 'Next.js, React, TypeScript, MongoDB, Tailwind CSS',
           link: '',
-          dates: '2023 -- 2026',
+          dateRange: { startMonth: '', startYear: '2023', endMonth: '', endYear: '2026', present: false },
           bullets: [
             'Modern rewrite of VCE Software Development Project, migrated from PHP/MySQL to a Next.js and MongoDB stack',
             'Implements full CRUD operations with server-side validation and double-booking conflict prevention',

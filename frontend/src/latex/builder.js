@@ -14,17 +14,55 @@ const esc = (s = '') =>
     '~': '\\~{}',
   }[c] ?? c));
 
-const PREAMBLE = `%-------------------------
+// Normalise a URL: prepend https:// only if no protocol present
+const hrefUrl = (url) => {
+  if (!url?.trim()) return '';
+  const u = url.trim();
+  return /^https?:\/\//i.test(u) ? u : `https://${u}`;
+};
+
+// Format a dateRange object { startMonth, startYear, endMonth, endYear, present }
+const MONTH_LABELS = {
+  Jan: 'Jan.', Feb: 'Feb.', Mar: 'Mar.', Apr: 'Apr.',
+  May: 'May',  Jun: 'Jun.', Jul: 'Jul.', Aug: 'Aug.',
+  Sep: 'Sep.', Oct: 'Oct.', Nov: 'Nov.', Dec: 'Dec.',
+};
+
+function formatDateRange(dr) {
+  if (!dr) return '';
+  const { startMonth, startYear, endMonth, endYear, present } = dr;
+  const start = [startMonth ? MONTH_LABELS[startMonth] : '', startYear].filter(Boolean).join(' ');
+  let end = '';
+  if (present) {
+    end = 'Present';
+  } else {
+    end = [endMonth ? MONTH_LABELS[endMonth] : '', endYear].filter(Boolean).join(' ');
+  }
+  if (!start && !end) return '';
+  if (!end) return start;
+  if (!start) return end;
+  return `${start} -- ${end}`;
+}
+
+// ── Preamble (parameterised) ──────────────────────────────────────────────────
+function makePreamble(settings = {}) {
+  const fontSize     = settings.fontSize     || '11';
+  const marginTop    = settings.marginTop    || '0.5';
+  const marginBottom = settings.marginBottom || '0.5';
+  const marginLeft   = settings.marginLeft   || '0.5';
+  const marginRight  = settings.marginRight  || '0.5';
+
+  return `%-------------------------
 % Resume in Latex
 % Author : Jake Gutierrez
 % Based off of: https://github.com/sb2nov/resume
 % License : MIT
 %------------------------
 
-\\documentclass[letterpaper,11pt]{article}
+\\documentclass[letterpaper,${fontSize}pt]{article}
 
 \\usepackage{latexsym}
-\\usepackage[empty]{fullpage}
+\\usepackage[top=${marginTop}in, bottom=${marginBottom}in, left=${marginLeft}in, right=${marginRight}in]{geometry}
 \\usepackage{titlesec}
 \\usepackage{marvosym}
 \\usepackage[usenames,dvipsnames]{color}
@@ -40,12 +78,6 @@ const PREAMBLE = `%-------------------------
 \\fancyfoot{}
 \\renewcommand{\\headrulewidth}{0pt}
 \\renewcommand{\\footrulewidth}{0pt}
-
-\\addtolength{\\oddsidemargin}{-0.5in}
-\\addtolength{\\evensidemargin}{-0.5in}
-\\addtolength{\\textwidth}{1in}
-\\addtolength{\\topmargin}{-.5in}
-\\addtolength{\\textheight}{1.0in}
 
 \\urlstyle{same}
 \\raggedbottom
@@ -97,6 +129,7 @@ const PREAMBLE = `%-------------------------
 
 %-------------------------------------------
 `;
+}
 
 // ── Section builders ──────────────────────────────────────────────────────────
 
@@ -104,8 +137,8 @@ function buildHeader(h) {
   const parts = [];
   if (h.phone)    parts.push(esc(h.phone));
   if (h.email)    parts.push(`\\href{mailto:${h.email}}{\\underline{${esc(h.email)}}}`);
-  if (h.linkedin) parts.push(`\\href{https://${h.linkedin}}{\\underline{${esc(h.linkedin)}}}`);
-  if (h.website)  parts.push(`\\href{https://${h.website}}{\\underline{${esc(h.website)}}}`);
+  if (h.linkedin) parts.push(`\\href{${hrefUrl(h.linkedin)}}{\\underline{${esc(h.linkedin)}}}`);
+  if (h.website)  parts.push(`\\href{${hrefUrl(h.website)}}{\\underline{${esc(h.website)}}}`);
 
   return `\\begin{center}
     \\textbf{\\Huge \\scshape ${esc(h.name)}} \\\\ \\vspace{1pt}
@@ -116,7 +149,7 @@ function buildHeader(h) {
 function buildEducation(sec) {
   if (!sec.entries?.length) return '';
   const rows = sec.entries.map((e) =>
-    `    \\resumeSubheading\n      {${esc(e.institution)}}{${esc(e.location)}}\n      {${esc(e.degree)}}{${esc(e.dates)}}`
+    `    \\resumeSubheading\n      {${esc(e.institution)}}{${esc(e.location)}}\n      {${esc(e.degree)}}{${esc(formatDateRange(e.dateRange))}}`
   ).join('\n');
   return `%-----------${sec.title.toUpperCase()}-----------
 \\section{${esc(sec.title)}}
@@ -132,7 +165,7 @@ function buildExperience(sec) {
       .filter((b) => b.trim())
       .map((b) => `        \\resumeItem{${esc(b)}}`)
       .join('\n');
-    return `    \\resumeSubheading\n      {${esc(e.role)}}{${esc(e.dates)}}\n      {${esc(e.company)}}{${esc(e.location)}}${bullets ? `\n      \\resumeItemListStart\n${bullets}\n      \\resumeItemListEnd` : ''}`;
+    return `    \\resumeSubheading\n      {${esc(e.role)}}{${esc(formatDateRange(e.dateRange))}}\n      {${esc(e.company)}}{${esc(e.location)}}${bullets ? `\n      \\resumeItemListStart\n${bullets}\n      \\resumeItemListEnd` : ''}`;
   }).join('\n\n');
   return `%-----------${sec.title.toUpperCase()}-----------
 \\section{${esc(sec.title)}}
@@ -148,13 +181,14 @@ function buildProjects(sec) {
   const rows = sec.entries.map((e) => {
     const nameStr = `\\textbf{${esc(e.name)}}`;
     const techStr = e.tech ? ` $|$ \\emph{${esc(e.tech)}}` : '';
-    const linkStr = e.link ? ` $|$ \\href{https://${e.link}}{\\underline{${esc(e.link)}}}` : '';
+    const linkHref = hrefUrl(e.link);
+    const linkStr = linkHref ? ` $|$ \\href{${linkHref}}{\\underline{${esc(e.link)}}}` : '';
     const heading = `${nameStr}${techStr}${linkStr}`;
     const bullets = (e.bullets || [])
       .filter((b) => b.trim())
       .map((b) => `            \\resumeItem{${esc(b)}}`)
       .join('\n');
-    return `      \\resumeProjectHeading\n          {${heading}}{${esc(e.dates)}}${bullets ? `\n          \\resumeItemListStart\n${bullets}\n          \\resumeItemListEnd` : ''}`;
+    return `      \\resumeProjectHeading\n          {${heading}}{${esc(formatDateRange(e.dateRange))}}${bullets ? `\n          \\resumeItemListStart\n${bullets}\n          \\resumeItemListEnd` : ''}`;
   }).join('\n\n');
   return `%-----------${sec.title.toUpperCase()}-----------
 \\section{${esc(sec.title)}}
@@ -184,11 +218,12 @@ function buildCertifications(sec) {
   if (!sec.entries?.length) return '';
   const items = sec.entries
     .filter((i) => i.text)
-    .map((i) =>
-      i.url?.trim()
-        ? `     \\href{https://${i.url.trim()}}{\\underline{${esc(i.text)}}}`
-        : `     ${esc(i.text)}`
-    )
+    .map((i) => {
+      const href = hrefUrl(i.url);
+      return href
+        ? `     \\href{${href}}{\\underline{${esc(i.text)}}}`
+        : `     ${esc(i.text)}`;
+    })
     .join(' \\\\\n');
   return `%-----------${sec.title.toUpperCase()}-----------
 \\section{${esc(sec.title)}}
@@ -212,13 +247,13 @@ function buildSection(sec) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 
-export function buildLaTeX(data) {
+export function buildLaTeX(data, settings = {}) {
   const body = data.sections
     .map(buildSection)
     .filter(Boolean)
     .join('\n\n');
 
-  return `${PREAMBLE}
+  return `${makePreamble(settings)}
 \\begin{document}
 
 %-----------HEADING-----------

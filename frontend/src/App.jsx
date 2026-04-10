@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import FormPane from './components/FormPane.jsx';
-import { defaultResumeData } from './data/defaultData.js';
+import { defaultResumeData, defaultSettings } from './data/defaultData.js';
 import { buildLaTeX } from './latex/builder.js';
 
 const API = '/api';
@@ -8,6 +8,7 @@ const DEBOUNCE_MS = 1500;
 
 export default function App() {
   const [resumeData, setResumeData]   = useState(defaultResumeData);
+  const [settings,   setSettings]     = useState(defaultSettings);
   const [pdfUrl,     setPdfUrl]       = useState(null);
   const [status,     setStatus]       = useState('idle');
   const [errorLog,   setErrorLog]     = useState('');
@@ -31,14 +32,14 @@ export default function App() {
   const isDragging    = useRef(false);
 
   // ── Compile ────────────────────────────────────────────────────────────────
-  const compile = useCallback(async (data) => {
+  const compile = useCallback(async (data, cfg = {}) => {
     setStatus('compiling');
     setErrorLog('');
     try {
       const res = await fetch(`${API}/compile`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ source: buildLaTeX(data) }),
+        body:    JSON.stringify({ source: buildLaTeX(data, cfg) }),
       });
       if (!res.ok) {
         const { error, detail } = await res.json();
@@ -62,13 +63,13 @@ export default function App() {
   useEffect(() => {
     if (!autoCompile) return;
     clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => compile(resumeData), DEBOUNCE_MS);
+    debounceTimer.current = setTimeout(() => compile(resumeData, settings), DEBOUNCE_MS);
     return () => clearTimeout(debounceTimer.current);
-  }, [resumeData, autoCompile, compile]);
+  }, [resumeData, settings, autoCompile, compile]);
 
   // ── Download .tex ──────────────────────────────────────────────────────────
   const downloadTex = () => {
-    const blob = new Blob([buildLaTeX(resumeData)], { type: 'text/plain' });
+    const blob = new Blob([buildLaTeX(resumeData, settings)], { type: 'text/plain' });
     const url  = URL.createObjectURL(blob);
     const a    = Object.assign(document.createElement('a'), { href: url, download: 'resume.tex' });
     a.click();
@@ -78,7 +79,7 @@ export default function App() {
   // ── Download PDF ───────────────────────────────────────────────────────────
   const downloadPdf = async () => {
     let url = prevPdfUrl.current;
-    if (!url) { await compile(resumeData); url = prevPdfUrl.current; }
+    if (!url) { await compile(resumeData, settings); url = prevPdfUrl.current; }
     if (!url) return;
     Object.assign(document.createElement('a'), { href: url, download: 'resume.pdf' }).click();
   };
@@ -115,7 +116,7 @@ export default function App() {
 
         <button
           className="btn btn-primary"
-          onClick={() => compile(resumeData)}
+          onClick={() => compile(resumeData, settings)}
           disabled={status === 'compiling'}
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -189,7 +190,12 @@ export default function App() {
         {/* Form pane */}
         <div className="pane" style={{ width: `${leftWidth}%` }}>
           <div className="pane-label">Resume Editor</div>
-          <FormPane data={resumeData} onChange={setResumeData} />
+          <FormPane
+            data={resumeData}
+            onChange={setResumeData}
+            settings={settings}
+            onSettingsChange={setSettings}
+          />
           {status === 'error' && errorLog && (
             <div className="error-panel">{errorLog}</div>
           )}

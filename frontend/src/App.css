@@ -387,7 +387,7 @@ html, body, #root {
 
 .field-input {
   background: var(--bg-base);
-  border: 1px solid var(--border-sub);
+  border: 1px solid var(--border-muted);
   border-radius: 5px;
   padding: 5px 8px;
   font-size: 12px;
@@ -401,7 +401,7 @@ html, body, #root {
 }
 .field-input:hover  { border-color: var(--border-muted); }
 .field-input:focus  { border-color: var(--accent); background: var(--bg-surface); }
-.field-input::placeholder { color: var(--tx-ghost); }
+.field-input::placeholder { color: var(--tx-faint); }
 .field-input[rows]  { touch-action: auto; }
 
 /* ── Bullet list ──────────────────────────────────────────────────────────── */
@@ -433,33 +433,40 @@ html, body, #root {
 
 /* ── Add buttons ──────────────────────────────────────────────────────────── */
 .add-inline-btn {
-  align-self: flex-start;
   background: transparent;
-  border: 1px dashed var(--border-sub);
-  border-radius: 4px;
-  color: var(--tx-dim);
-  font-size: 11px;
-  padding: 3px 8px;
+  border: 1.5px dashed var(--accent);
+  border-radius: 5px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
   cursor: pointer;
-  transition: border-color 0.12s, color 0.12s;
-  margin-top: 1px;
-  white-space: nowrap;
+  transition: background 0.12s, opacity 0.12s;
+  margin-top: 2px;
+  width: 100%;
+  text-align: left;
+  opacity: 0.65;
+  font-family: inherit;
 }
-.add-inline-btn:hover { border-color: var(--accent); color: var(--accent); }
+.add-inline-btn:hover { background: var(--border); opacity: 1; }
 
 .add-entry-btn {
   background: transparent;
-  border: 1px dashed var(--border-sub);
+  border: 1.5px dashed var(--accent);
   border-radius: 6px;
-  color: var(--tx-dim);
+  color: var(--accent);
   font-size: 12px;
-  padding: 6px 10px;
+  font-weight: 600;
+  padding: 6px 12px;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.12s, color 0.12s;
+  transition: background 0.12s, opacity 0.12s;
   margin-top: 2px;
+  opacity: 0.65;
+  font-family: inherit;
+  width: 100%;
 }
-.add-entry-btn:hover { border-color: var(--accent); color: var(--accent); }
+.add-entry-btn:hover { background: var(--border); opacity: 1; }
 
 /* ── Add Section ──────────────────────────────────────────────────────────── */
 .add-section-wrap {
@@ -513,3 +520,111 @@ html, body, #root {
   transition: background 0.1s;
 }
 .dropdown-item:hover { background: var(--border); color: var(--accent); }
+
+/* ── Date range picker ────────────────────────────────────────────────────── */
+.date-range-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.date-part {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.date-select {
+  background: var(--bg-base);
+  border: 1px solid var(--border-muted);
+  border-radius: 5px;
+  padding: 5px 4px;
+  font-size: 12px;
+  color: var(--tx-primary);
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.date-select:hover { border-color: var(--border-muted); }
+.date-select:focus { border-color: var(--accent); background: var(--bg-surface); }
+.date-select option { background: var(--bg-surface); color: var(--tx-primary); }
+
+.date-year-input {
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.date-separator {
+  color: var(--tx-muted);
+  font-size: 13px;
+  flex-shrink: 0;
+  line-height: 1;
+  user-select: none;
+}
+
+.present-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.present-check-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--tx-secondary);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  margin-left: 2px;
+}
+.present-check-label input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+
+/* ── Advanced Settings ────────────────────────────────────────────────────── */
+.advanced-settings-card {
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.advanced-settings-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  border: none;
+  color: var(--tx-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.12s;
+  font-family: inherit;
+}
+.advanced-settings-toggle:hover { color: var(--tx-primary); }
+
+.advanced-settings-body {
+  padding: 8px 10px 12px;
+  border-top: 1px solid var(--border-sub);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advanced-hint {
+  font-size: 11px;
+  color: var(--tx-faint);
+  font-style: italic;
+}
