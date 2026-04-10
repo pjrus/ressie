@@ -24,7 +24,7 @@ const newEntry = {
   experience:    () => ({ id: uid(), role: '', company: '', location: '', dates: '', bullets: [''] }),
   projects:      () => ({ id: uid(), name: '', tech: '', link: '', dates: '', bullets: [''] }),
   skills:        () => ({ id: uid(), label: '', value: '' }),
-  certifications:() => ({ id: uid(), text: '' }),
+  certifications:() => ({ id: uid(), text: '', url: '' }),
 };
 
 const SECTION_TYPES = [
@@ -158,11 +158,27 @@ function SkillsEntry({ entry, onChange, onRemove }) {
 }
 
 function CertEntry({ entry, onChange, onRemove }) {
-  const u = (v) => onChange({ ...entry, text: v });
+  const u = (k, v) => onChange({ ...entry, [k]: v });
   return (
-    <div className="entry-card entry-card--inline">
-      <Field value={entry.text} onChange={u} placeholder="Award or certification title (2024)" />
-      <button className="icon-btn danger sm entry-remove" onClick={onRemove}>✕</button>
+    <div className="entry-card">
+      <div className="entry-header">
+        <span className="entry-label">{entry.text || 'New Award / Certification'}</span>
+        <button className="icon-btn danger sm" onClick={onRemove}>✕</button>
+      </div>
+      <div className="field-grid">
+        <Field
+          label="Title"
+          value={entry.text}
+          onChange={(v) => u('text', v)}
+          placeholder="Google Cloud Professional Certificate (2024)"
+        />
+        <Field
+          label="Link (optional)"
+          value={entry.url}
+          onChange={(v) => u('url', v)}
+          placeholder="coursera.org/verify/abc123"
+        />
+      </div>
     </div>
   );
 }

@@ -192,9 +192,9 @@ export const defaultResumeData = {
       type: 'certifications',
       title: 'Awards / Certifications',
       entries: [
-        { id: 'cert-1', text: 'Deloitte Australia Technology Job Simulation (2025)' },
-        { id: 'cert-2', text: 'Google Technical Support Fundamentals Certificate (Grade: 98.35%)' },
-        { id: 'cert-3', text: 'AWS Generative AI Applications' },
+        { id: 'cert-1', text: 'Deloitte Australia Technology Job Simulation (2025)', url: '' },
+        { id: 'cert-2', text: 'Google Technical Support Fundamentals Certificate (Grade: 98.35%)', url: '' },
+        { id: 'cert-3', text: 'AWS Generative AI Applications', url: '' },
       ],
     },
   ],

@@ -184,7 +184,11 @@ function buildCertifications(sec) {
   if (!sec.entries?.length) return '';
   const items = sec.entries
     .filter((i) => i.text)
-    .map((i) => `     ${esc(i.text)}`)
+    .map((i) =>
+      i.url?.trim()
+        ? `     \\href{https://${i.url.trim()}}{\\underline{${esc(i.text)}}}`
+        : `     ${esc(i.text)}`
+    )
     .join(' \\\\\n');
   return `%-----------${sec.title.toUpperCase()}-----------
 \\section{${esc(sec.title)}}
