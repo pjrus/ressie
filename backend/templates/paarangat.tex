@@ -1,0 +1,235 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%-----------HEADING-----------
+\begin{center}
+    \textbf{\Huge \scshape Paarangat Jain} \\ \vspace{1pt}
+    \small 0410 215 889 $|$
+    \href{mailto:paarangatj@gmail.com}{\underline{paarangatj@gmail.com}} $|$
+    \href{https://linkedin.com/in/paarangat-jain}{\underline{linkedin.com/in/paarangat-jain}} $|$
+    \href{https://p-jain.dev}{\underline{p-jain.dev}}
+\end{center}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Monash University}{Clayton, VIC}
+      {Bachelor of Computer Science (Mathematics Minor), WAM: 73.84, GPA: 3.063}{Jan. 2024 -- June 2027}
+    \resumeSubheading
+      {Viewbank College}{Rosanna, VIC}
+      {Victorian Certificate of Education (VCE), ATAR: 90.15}{Jan. 2019 -- Dec. 2023}
+  \resumeSubHeadingListEnd
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Outreach Officer}{Mar. 2026 -- Present}
+      {Monash Assistive Technology Team (MATT)}{Clayton, VIC}
+      \resumeItemListStart
+        \resumeItem{Engage with schools supporting students with disabilities to build partnerships to support technology-driven empowerment}
+        \resumeItem{Communicate the organisation's mission and coordinate collaborative initiatives such as workshops and programs}
+        \resumeItem{Develop and maintain relationships with stakeholders to support ongoing outreach and improve impact}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Volunteer -- Website Support \& Management}{Mar. 2026 -- Present}
+      {Ocean Connect}{Remote}
+      \resumeItemListStart
+        \resumeItem{Support management and maintenance of Ocean Connect's website to ensure program, event, and initiative information remains accurate and accessible}
+        \resumeItem{Update and organise website content to improve navigation, clarity, and usability for volunteers and community members}
+        \resumeItem{Assist in strengthening the organisation's digital presence to better communicate marine conservation initiatives and community programs}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Operations Officer}{Feb. 2026 -- Present}
+      {Monash Assistive Technology Team (MATT)}{Clayton, VIC}
+      \resumeItemListStart
+        \resumeItem{Assist in the technical operations of the Monash Assistive Technology Team, supporting delivery of accessibility-focused projects}
+        \resumeItem{Collaborate with peers to ensure smooth execution of technical initiatives and internal processes}
+        \resumeItem{Contribute to the effective functioning of the organisation by supporting coordination, communication, and operational workflows}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Project Coordinator}{Aug. 2025 -- Present}
+      {Monash Assistive Technology Team (MATT)}{Clayton, VIC}
+      \resumeItemListStart
+        \resumeItem{Lead collaboration with academic supervisor to define project goals and strategies for developing low-cost tactile and refreshable braille displays}
+        \resumeItem{Guide and coordinate team of project officers in brainstorming and innovation for accessibility technology}
+        \resumeItem{Conduct user interviews and design surveys to gather insights for user-centred development}
+        \resumeItem{Lead development of React Native mobile application to support the Tactile Display project}
+        \resumeItem{Received 90\%+ positive reviews from team members for effective leadership and communication}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Projects Officer}{Mar. 2025 -- Aug. 2025}
+      {Monash Assistive Technology Team (MATT)}{Clayton, VIC}
+      \resumeItemListStart
+        \resumeItem{Collaborated with academic supervisor and fellow officers to brainstorm accessibility solutions}
+        \resumeItem{Assisted in design, development, and testing of tactile display components for blind and low-vision users}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+
+      \resumeProjectHeading
+          {\textbf{Personal Portfolio Website} $|$ \emph{Web Development, VPS} $|$
+          \href{https://p-jain.dev}{\underline{p-jain.dev}}}{Jan. 2025 -- Present}
+          \resumeItemListStart
+            \resumeItem{Developed and maintain portfolio website showcasing projects and technical skills}
+            \resumeItem{Deployed on Virtual Private Server (VPS) with custom domain configuration}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Skill-Issue (Skilliton)} $|$ \emph{Next.js, TypeScript, Firebase, Genkit, Gemini, Tailwind CSS}}{Feb. 2026}
+          \resumeItemListStart
+            \resumeItem{Built AI-powered peer-to-peer skill exchange platform at UniHack 2026 enabling university students to find partners for skill swaps}
+            \resumeItem{Developed full-stack web application using Next.js, TypeScript, and Firebase Authentication with Google OAuth support}
+            \resumeItem{Integrated AI assistant ``Skilliton'' using Google Genkit and Gemini to provide personalised skill recommendations and real-time chat}
+            \resumeItem{Implemented booking system generating Google Meet links via API and downloadable \texttt{.ics} calendar events for scheduled sessions}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Tactile Display Project} $|$ \emph{React Native, Hardware}}{Mar. 2025 -- Present}
+          \resumeItemListStart
+            \resumeItem{Contributed to open-source project developing low-cost refreshable braille displays (MagnePins) for blind and low-vision users}
+            \resumeItem{Developed React Native mobile application to interact with the tactile display hardware}
+            \resumeItem{Utilised Figma to develop mock prototypes and create an accessible companion website}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Braille Character Quiz Game} $|$ \emph{React, TypeScript, RxJS}}{May 2025 -- Present}
+          \resumeItemListStart
+            \resumeItem{Developed an interactive web-based game for learning and practising Braille characters}
+            \resumeItem{Implemented real-time feedback, scoring system, and streak tracking utilising RxJS for reactive state management}
+            \resumeItem{Designed a modern, responsive, and accessible interface with timed challenges and custom animations}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Pomodoro Timer App} $|$ \emph{React Native, Expo, TypeScript}}{Dec. 2025 -- Present}
+          \resumeItemListStart
+            \resumeItem{Developed full-featured iOS productivity application with unique liquid animation timer using an Expo routing system}
+            \resumeItem{Integrated glassmorphism UI design with ambient sound playback, haptic feedback, and multi-theme support}
+            \resumeItem{Designed modular component architecture with file-based routing (Expo Router) and persistent storage}
+          \resumeItemListEnd
+
+      \resumeProjectHeading
+          {\textbf{Appointment Booking System} $|$ \emph{Next.js, React, TypeScript, MongoDB, Tailwind CSS}}{2023 -- 2026}
+          \resumeItemListStart
+            \resumeItem{Modern rewrite of VCE Software Development Project, migrated from PHP/MySQL to a Next.js and MongoDB stack}
+            \resumeItem{Implements full CRUD operations with server-side validation and double-booking conflict prevention}
+            \resumeItem{Features an admin dashboard for managing appointments, doctor profiles, and clinic settings; includes automated \texttt{.ics} calendar file generation}
+          \resumeItemListEnd
+
+    \resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Haskell, Python, JavaScript, PHP, MySQL, R, TypeScript, HTML/CSS} \\
+     \textbf{Operating Systems}{: Linux (Manjaro), macOS, Windows} \\
+     \textbf{Technologies}{: React Native, React, Next.js, Expo, Docker, Git, Arduino, MongoDB, Figma, VPS Deployment, Functional Programming, Statistical Analysis}
+    }}
+ \end{itemize}
+
+%-----------CERTIFICATIONS-----------
+\section{Certifications}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     Deloitte Australia Technology Job Simulation (2025) \\
+     Google Technical Support Fundamentals Certificate (Grade: 98.35\%) \\
+     AWS Generative AI Applications
+    }}
+ \end{itemize}
+
+%-------------------------------------------
+\end{document}

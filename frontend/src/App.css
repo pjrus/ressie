@@ -1,0 +1,515 @@
+/* ── Theme variables ──────────────────────────────────────────────────────── */
+/* Dark theme: Catppuccin Mocha */
+:root {
+  --bg-base:      #1e1e2e;
+  --bg-surface:   #181825;
+  --bg-overlay:   #11111b;
+  --border:       #313244;
+  --border-sub:   #2a2a3c;
+  --border-muted: #45475a;
+  --tx-primary:   #cdd6f4;
+  --tx-secondary: #a6adc8;
+  --tx-muted:     #7f849c;
+  --tx-faint:     #585b70;
+  --tx-dim:       #45475a;
+  --tx-ghost:     #313244;
+  --accent:       #cba6f7;
+  --accent-fg:    #1e1e2e;
+  --success:      #a6e3a1;
+  --success-fg:   #1e1e2e;
+  --warning:      #f9e2af;
+  --error:        #f38ba8;
+  --error-bg:     #351525;
+  --scrollbar:    #45475a;
+}
+
+/* Light theme: Catppuccin Latte */
+[data-theme="light"] {
+  --bg-base:      #eff1f5;
+  --bg-surface:   #e6e9ef;
+  --bg-overlay:   #dce0e8;
+  --border:       #ccd0da;
+  --border-sub:   #bcc0cc;
+  --border-muted: #acb0be;
+  --tx-primary:   #4c4f69;
+  --tx-secondary: #6c6f85;
+  --tx-muted:     #8c8fa1;
+  --tx-faint:     #9ca0b0;
+  --tx-dim:       #acb0be;
+  --tx-ghost:     #ccd0da;
+  --accent:       #8839ef;
+  --accent-fg:    #eff1f5;
+  --success:      #40a02b;
+  --success-fg:   #eff1f5;
+  --warning:      #df8e1d;
+  --error:        #d20f39;
+  --error-bg:     #fce2eb;
+  --scrollbar:    #acb0be;
+}
+
+/* ── Reset / base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  background: var(--bg-base);
+  color: var(--tx-primary);
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ── Toolbar ──────────────────────────────────────────────────────────────── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 44px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.toolbar-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.2px;
+  margin-right: 2px;
+}
+
+.toolbar-sep    { width: 1px; height: 20px; background: var(--border); margin: 0 2px; }
+.toolbar-spacer { flex: 1; }
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s;
+  white-space: nowrap;
+  line-height: 1;
+}
+.btn:hover    { filter: brightness(1.1); }
+.btn:active   { filter: brightness(0.9); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
+
+.btn-primary   { background: var(--accent);  color: var(--accent-fg); }
+.btn-secondary { background: var(--border);  color: var(--tx-primary); }
+.btn-success   { background: var(--success); color: var(--success-fg); }
+
+/* ── Theme toggle button ──────────────────────────────────────────────────── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--tx-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  background: var(--border);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── Toggle label (auto-compile) ──────────────────────────────────────────── */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--tx-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-label input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+
+.status-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.status-text { font-size: 11px; color: var(--tx-faint); }
+
+/* ── Main layout ──────────────────────────────────────────────────────────── */
+.layout {
+  display: flex;
+  height: calc(100vh - 44px);
+  overflow: hidden;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.pane-label {
+  padding: 4px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--tx-dim);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.divider {
+  width: 4px;
+  background: var(--border);
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.divider:hover { background: var(--accent); }
+
+/* ── Preview pane ─────────────────────────────────────────────────────────── */
+.preview-wrap {
+  background: var(--bg-overlay);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.preview-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--tx-ghost);
+}
+.preview-placeholder p { font-size: 12px; }
+
+/* ── Error panel ──────────────────────────────────────────────────────────── */
+.error-panel {
+  border-top: 1px solid var(--error);
+  padding: 8px 14px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: var(--error);
+  max-height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  flex-shrink: 0;
+  background: var(--bg-base);
+}
+
+/* ── Form pane ────────────────────────────────────────────────────────────── */
+.form-pane {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px 12px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+/* ── Section card ─────────────────────────────────────────────────────────── */
+.section-card {
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.section-card--header .section-card-header { cursor: default; }
+
+.section-card-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border);
+  min-height: 36px;
+  border-radius: 8px 8px 0 0;
+}
+
+.section-card-header:last-child {
+  border-bottom: none;
+  border-radius: 8px;
+}
+
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--tx-dim);
+  cursor: grab;
+  flex-shrink: 0;
+  padding: 0;
+  touch-action: none;
+}
+.drag-handle:hover  { color: var(--tx-secondary); background: var(--border); }
+.drag-handle:active { cursor: grabbing; }
+
+.drag-handle-placeholder { width: 20px; flex-shrink: 0; }
+
+.section-title-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tx-primary);
+  padding: 2px 4px;
+  border-radius: 4px;
+  min-width: 0;
+}
+.section-title-input:hover { background: var(--border); }
+.section-title-input:focus { background: var(--border); }
+
+.section-title-static {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  padding: 2px 4px;
+}
+
+/* ── Icon buttons ─────────────────────────────────────────────────────────── */
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  border: none;
+  background: transparent;
+  color: var(--tx-faint);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.12s, color 0.12s;
+}
+.icon-btn:hover        { background: var(--border); color: var(--tx-primary); }
+.icon-btn.danger:hover { background: var(--error-bg); color: var(--error); }
+.icon-btn.sm           { width: 20px; height: 20px; border-radius: 4px; }
+
+/* ── Section body ─────────────────────────────────────────────────────────── */
+.section-body {
+  padding: 8px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Entry cards ──────────────────────────────────────────────────────────── */
+.entry-card {
+  background: var(--bg-overlay);
+  border: 1px solid var(--border-sub);
+  border-radius: 6px;
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.entry-card--inline {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 7px 10px;
+}
+
+.entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.entry-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tx-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.entry-remove {
+  flex-shrink: 0;
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+
+/* ── Fields ───────────────────────────────────────────────────────────────── */
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  grid-column: span 2;
+}
+.field--half { grid-column: span 1; }
+
+.field-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--tx-secondary);
+  user-select: none;
+}
+
+.field-input {
+  background: var(--bg-base);
+  border: 1px solid var(--border-sub);
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: var(--tx-primary);
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.45;
+  width: 100%;
+  transition: border-color 0.12s, background 0.12s;
+}
+.field-input:hover  { border-color: var(--border-muted); }
+.field-input:focus  { border-color: var(--accent); background: var(--bg-surface); }
+.field-input::placeholder { color: var(--tx-ghost); }
+.field-input[rows]  { touch-action: auto; }
+
+/* ── Bullet list ──────────────────────────────────────────────────────────── */
+.bullet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-sub);
+}
+
+.bullet-list > .field-label { margin-bottom: 2px; }
+
+.bullet-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.bullet-dot {
+  color: var(--tx-dim);
+  padding-top: 6px;
+  font-size: 13px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.bullet-input { flex: 1; }
+
+/* ── Add buttons ──────────────────────────────────────────────────────────── */
+.add-inline-btn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px dashed var(--border-sub);
+  border-radius: 4px;
+  color: var(--tx-dim);
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+  margin-top: 1px;
+  white-space: nowrap;
+}
+.add-inline-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.add-entry-btn {
+  background: transparent;
+  border: 1px dashed var(--border-sub);
+  border-radius: 6px;
+  color: var(--tx-dim);
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.12s, color 0.12s;
+  margin-top: 2px;
+}
+.add-entry-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Add Section ──────────────────────────────────────────────────────────── */
+.add-section-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.add-section-btn {
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 7px;
+  color: var(--tx-dim);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+  width: 100%;
+}
+.add-section-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.dropdown-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 190px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-muted);
+  border-radius: 7px;
+  overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: var(--tx-primary);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.dropdown-item:hover { background: var(--border); color: var(--accent); }
