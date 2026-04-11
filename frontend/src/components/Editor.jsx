@@ -139,9 +139,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     return { ...prev, ...(selected.defaults || {}), template: templateKey };
   };
 
-  const statusLabel = { idle: 'Ready', compiling: 'Compiling…', ok: 'Compiled', error: 'Error' }[status];
-  const statusColor = { idle: '#6c7086', compiling: '#f9e2af', ok: '#a6e3a1', error: '#f38ba8' }[status];
-
   const handleBack = async () => {
     // Trigger a final save before navigating back
     if (onSave) {
@@ -215,16 +212,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             Back
           </button>
 
-          <select
-            className="template-select"
-            value={settings.template || 'jakes'}
-            onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
-          >
-            {Object.entries(TEMPLATES).map(([key, { label }]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
-
           <label className="toggle-label compact auto-toggle">
             <input
               type="checkbox"
@@ -242,15 +229,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
             Compile
           </button>
-            <div className="toolbar-status toolbar-status--inline">
-              <div className="status-dot" style={{ background: statusColor }} />
-              <span className="status-text">{statusLabel}</span>
-            </div>
-        </div>
 
-        <div className="toolbar-divider" />
-
-        <div className="toolbar-group toolbar-group--right">
           <button
             className={`btn save-button ${
               saveState === 'saving' ? 'btn-saving' :
@@ -274,7 +253,11 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               {saveState === 'idle' && 'Save'}
             </span>
           </button>
+        </div>
 
+        <div className="toolbar-divider" />
+
+        <div className="toolbar-group toolbar-group--right">
           <button className="btn btn-secondary" onClick={downloadTex}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -323,7 +306,18 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
       <div className="layout">
         {/* Form pane */}
         <div className="pane" style={{ width: `${leftWidth}%` }}>
-          <div className="pane-label">Resume Editor</div>
+          <div className="editor-pane-header">
+            <div className="pane-label">Resume Editor</div>
+            <select
+              className="template-select template-select--editor"
+              value={settings.template || 'jakes'}
+              onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
+            >
+              {Object.entries(TEMPLATES).map(([key, { label }]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+          </div>
           <FormPane
             data={resumeData}
             onChange={setResumeData}
@@ -349,7 +343,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
-              <p>{status === 'compiling' ? 'Compiling…' : 'Hit Compile to see preview'}</p>
+              <p>Hit Compile to see preview</p>
             </div>
           )}
         </div>
