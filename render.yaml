@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: tex-resume-app
+    env: docker
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /api/health

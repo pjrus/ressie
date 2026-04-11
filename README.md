@@ -114,6 +114,26 @@ Or from the root using `concurrently`:
 npm run dev
 ```
 
+## Docker Deployment
+
+This app can run as a single Docker service: the backend serves the compiled frontend and handles `/api/compile` on the same origin.
+
+### Build locally
+
+```bash
+docker build -t tex-resume-app .
+docker run -p 3001:3001 tex-resume-app
+```
+
+### Render
+
+Use the included `render.yaml` and create a new Web Service from the repo. Render will build the Dockerfile and expose the app on the service URL.
+
+### Notes
+
+- The container installs Tectonic at build time. If you change the version, update the URL in the `Dockerfile`.
+- The app listens on `PORT` when provided by the host platform, otherwise it defaults to `3001`.
+
 ### 3. Open in browser
 
 ```

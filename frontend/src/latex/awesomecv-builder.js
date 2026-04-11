@@ -23,22 +23,46 @@ function makePreamble(settings = {}) {
 
 // ── Header ────────────────────────────────────────────────────────────────────
 function buildHeader(h) {
-  const { first, last } = splitName(h.name);
+  const safeName = (h?.name || '').trim() || 'Your Name';
+  const { first, last } = splitName(safeName);
   const lines = [`\\name{${esc(first)}}{${esc(last)}}`];
 
-  if (h.phone)    lines.push(`\\mobile{${esc(h.phone)}}`);
-  if (h.email)    lines.push(`\\email{${esc(h.email)}}`);
-  if (h.linkedin) {
+  if (h?.phone)    lines.push(`\\mobile{${esc(h.phone)}}`);
+  if (h?.email)    lines.push(`\\email{${esc(h.email)}}`);
+  if (h?.linkedin) {
     // \linkedin expects just the handle after linkedin.com/in/
     const handle = h.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//i, '').replace(/\/$/, '');
     lines.push(`\\linkedin{${esc(handle)}}`);
   }
-  if (h.website) {
+  if (h?.website) {
     const url = h.website.replace(/^https?:\/\//i, '');
     lines.push(`\\homepage{${esc(url)}}`);
   }
 
+  // Awesome-CV header can fail if no social line exists; keep one placeholder contact.
+  if (!h?.phone && !h?.email && !h?.linkedin && !h?.website) {
+    lines.push('\\email{your.email@example.com}');
+  }
+
   return lines.join('\n');
+}
+
+function makePlaceholderSection() {
+  return `\\cvsection{Experience}
+\\begin{cventries}
+
+  \\cventry
+    {Resume Preview}
+    {Add your first entry}
+    {Your City}
+    {Present}
+    {%
+      \\begin{cvitems}
+        \\item {Start filling in your details from the editor panel.}
+      \\end{cvitems}
+    }
+
+\\end{cventries}`;
 }
 
 // ── Section builders ──────────────────────────────────────────────────────────
@@ -113,11 +137,12 @@ function buildSectionContent(sec) {
 // ── Main export ───────────────────────────────────────────────────────────────
 export function buildAwesomeCV(data, settings = {}) {
   const preamble = makePreamble(settings);
-  const header = buildHeader(data.header);
-  const body = data.sections
+  const header = buildHeader(data?.header || {});
+  const body = (data?.sections || [])
     .map(buildSectionContent)
     .filter(Boolean)
     .join('\n\n');
+  const safeBody = body || makePlaceholderSection();
 
   return `${preamble}
 ${header}
@@ -126,7 +151,7 @@ ${header}
 
 \\makecvheader[C]
 
-${body}
+${safeBody}
 
 \\end{document}
 `;
