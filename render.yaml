@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: tex-resume-app
+    name: ressie
     env: docker
     plan: starter
     healthCheckPath: /api/health

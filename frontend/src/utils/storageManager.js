@@ -4,11 +4,29 @@
  */
 
 const STORAGE_KEYS = {
+  RESUMES_LIST: 'ressie:resumes',
+  RESUME_DATA: (id) => `ressie:resume:${id}`,
+  RESUME_VERSIONS: (id) => `ressie:resume:${id}:versions`,
+  LAST_ACTIVE_RESUME: 'ressie:lastActiveResumeId',
+};
+
+const LEGACY_STORAGE_KEYS = {
   RESUMES_LIST: 'texResumeApp:resumes',
   RESUME_DATA: (id) => `texResumeApp:resume:${id}`,
   RESUME_VERSIONS: (id) => `texResumeApp:resume:${id}:versions`,
   LAST_ACTIVE_RESUME: 'texResumeApp:lastActiveResumeId',
 };
+
+function getItemWithLegacy(key, legacyKey) {
+  const value = localStorage.getItem(key);
+  if (value !== null) return value;
+
+  const legacyValue = localStorage.getItem(legacyKey);
+  if (legacyValue !== null) {
+    localStorage.setItem(key, legacyValue);
+  }
+  return legacyValue;
+}
 
 // Generate a unique ID (7-char random string)
 const uid = () => Math.random().toString(36).slice(2, 9);
@@ -19,7 +37,7 @@ const uid = () => Math.random().toString(36).slice(2, 9);
  */
 export function loadResumesList() {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.RESUMES_LIST);
+    const data = getItemWithLegacy(STORAGE_KEYS.RESUMES_LIST, LEGACY_STORAGE_KEYS.RESUMES_LIST);
     return data ? JSON.parse(data) : [];
   } catch (err) {
     console.error('Error loading resumes list:', err);
@@ -86,7 +104,7 @@ export function createResume(name, template, defaultData, defaultSettings) {
  */
 export function loadResume(id) {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.RESUME_DATA(id));
+    const data = getItemWithLegacy(STORAGE_KEYS.RESUME_DATA(id), LEGACY_STORAGE_KEYS.RESUME_DATA(id));
     return data ? JSON.parse(data) : null;
   } catch (err) {
     console.error(`Error loading resume ${id}:`, err);
@@ -158,6 +176,8 @@ export function deleteResume(id) {
     // Also delete the resume data and versions
     localStorage.removeItem(STORAGE_KEYS.RESUME_DATA(id));
     localStorage.removeItem(STORAGE_KEYS.RESUME_VERSIONS(id));
+    localStorage.removeItem(LEGACY_STORAGE_KEYS.RESUME_DATA(id));
+    localStorage.removeItem(LEGACY_STORAGE_KEYS.RESUME_VERSIONS(id));
   } catch (err) {
     console.error(`Error deleting resume ${id}:`, err);
   }
@@ -213,7 +233,7 @@ export function duplicateResume(sourceId, newName) {
  * @returns {string|null} Resume ID or null
  */
 export function getLastActiveResumeId() {
-  return localStorage.getItem(STORAGE_KEYS.LAST_ACTIVE_RESUME);
+  return getItemWithLegacy(STORAGE_KEYS.LAST_ACTIVE_RESUME, LEGACY_STORAGE_KEYS.LAST_ACTIVE_RESUME);
 }
 
 /**

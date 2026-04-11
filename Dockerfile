@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim AS frontend-build
+FROM node:trixie AS frontend-build
 WORKDIR /app
 
 COPY frontend/package*.json ./frontend/
@@ -7,7 +7,7 @@ RUN cd frontend && npm ci
 COPY frontend ./frontend
 RUN cd frontend && npm run build
 
-FROM node:20-bookworm-slim AS runtime
+FROM node:trixie AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -23,15 +23,18 @@ RUN bash -c '\
   else \
     ARCH="x86_64"; \
   fi && \
-  curl -fsSL "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.16.2/tectonic-0.16.2-${ARCH}-unknown-linux-gnu.tar.gz" \
-    | tar -xz -C /usr/local/bin tectonic \
+  mkdir -p /tmp/tectonic && \
+  curl -fsSL "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.16.2/tectonic-0.16.2-${ARCH}-unknown-linux-musl.tar.gz" \
+    | tar -xz -C /tmp/tectonic && \
+  mv /tmp/tectonic/tectonic /usr/local/bin/tectonic && \
+  chmod +x /usr/local/bin/tectonic && \
+  rm -rf /tmp/tectonic \
 '
 
 COPY backend/package*.json ./backend/
 RUN cd backend && npm ci --omit=dev
 
 COPY backend ./backend
-COPY backend/templates ./backend/templates
 COPY --from=frontend-build /app/frontend/dist ./backend/public
 
 EXPOSE 3001

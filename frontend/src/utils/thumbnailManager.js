@@ -1,5 +1,5 @@
 import html2canvas from 'html2canvas';
-import { loadResumesList, updateResumeMeta } from './storageManager';
+import { loadResumesList, saveResumesList } from './storageManager';
 
 /**
  * Captures the PDF viewer as a low-quality thumbnail image
@@ -48,7 +48,7 @@ export function saveThumbnail(resumeId, base64Data) {
 
     if (resumeIndex !== -1) {
       resumes[resumeIndex].thumbnail = base64Data;
-      localStorage.setItem('texResumeApp:resumes', JSON.stringify(resumes));
+      saveResumesList(resumes);
       console.log(`Thumbnail saved for resume ${resumeId}`);
     }
   } catch (error) {
@@ -83,7 +83,7 @@ export function clearThumbnail(resumeId) {
 
     if (resumeIndex !== -1) {
       delete resumes[resumeIndex].thumbnail;
-      localStorage.setItem('texResumeApp:resumes', JSON.stringify(resumes));
+      saveResumesList(resumes);
     }
   } catch (error) {
     console.error('Failed to clear thumbnail:', error);

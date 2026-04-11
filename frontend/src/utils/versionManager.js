@@ -6,6 +6,10 @@
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 const STORAGE_KEYS = {
+  RESUME_VERSIONS: (id) => `ressie:resume:${id}:versions`,
+};
+
+const LEGACY_STORAGE_KEYS = {
   RESUME_VERSIONS: (id) => `texResumeApp:resume:${id}:versions`,
 };
 
@@ -50,7 +54,13 @@ export function saveVersion(resumeId, data, settings, label = '', isManual = fal
  */
 export function loadVersions(resumeId) {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.RESUME_VERSIONS(resumeId));
+    let data = localStorage.getItem(STORAGE_KEYS.RESUME_VERSIONS(resumeId));
+    if (!data) {
+      data = localStorage.getItem(LEGACY_STORAGE_KEYS.RESUME_VERSIONS(resumeId));
+      if (data) {
+        localStorage.setItem(STORAGE_KEYS.RESUME_VERSIONS(resumeId), data);
+      }
+    }
     return data ? JSON.parse(data) : [];
   } catch (err) {
     console.error(`Error loading versions for resume ${resumeId}:`, err);

@@ -101,7 +101,13 @@ app.post('/api/compile', async (req, res) => {
   try {
     const { pdf, log } = await compileLaTeX(source);
     res.set('Content-Type', 'application/pdf');
-    res.set('X-Compile-Log', Buffer.from(log).toString('base64'));
+    // Avoid large response headers through reverse proxies (can trigger 502).
+    if (process.env.NODE_ENV !== 'production') {
+      const encoded = Buffer.from(log).toString('base64');
+      if (encoded.length <= 6000) {
+        res.set('X-Compile-Log', encoded);
+      }
+    }
     res.send(pdf);
   } catch (err) {
     const msg = err.message || 'Compilation failed';
