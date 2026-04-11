@@ -265,33 +265,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
           </div>
         ) : (
           <>
-            {/* Recent activity */}
-            {recent.length > 0 && (
-              <section className="recent-activity">
-                <h3>Recent Resumes</h3>
-                <div className="activity-list">
-                  {recent.map(r => (
-                    <div
-                      key={r.id}
-                      className="activity-item"
-                      onClick={() => onSelectResume(r.id)}
-                    >
-                      <div className="activity-info">
-                        <span className="activity-name">{r.name}</span>
-                        <span className="activity-time">
-                          {new Date(r.lastEditedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Controls */}
+            {/* Controls - moved above recent activity for mobile UX */}
             <section className="dashboard-controls">
               <button className="btn btn-primary" onClick={() => setShowCreateModal(true)}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -356,6 +330,32 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
                   <button className="tag-filter-clear" onClick={() => setTagFilter([])}>Clear</button>
                 )}
               </div>
+            )}
+
+            {/* Recent activity */}
+            {recent.length > 0 && (
+              <section className="recent-activity">
+                <h3>Recent Resumes</h3>
+                <div className="activity-list">
+                  {recent.map(r => (
+                    <div
+                      key={r.id}
+                      className="activity-item"
+                      onClick={() => onSelectResume(r.id)}
+                    >
+                      <div className="activity-info">
+                        <span className="activity-name">{r.name}</span>
+                        <span className="activity-time">
+                          {new Date(r.lastEditedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
+                    </div>
+                  ))}
+                </div>
+              </section>
             )}
 
             {/* Resume grid */}

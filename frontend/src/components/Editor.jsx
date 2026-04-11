@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import FormPane from './FormPane.jsx';
 import PdfViewer from './PdfViewer.jsx';
+import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
@@ -44,6 +45,9 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   const [saveState, setSaveState] = useState('idle'); // 'idle', 'saving', 'saved', 'error'
   const [saveError, setSaveError] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showPdfOnMobile, setShowPdfOnMobile] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 639px)');
 
   const debounceTimer = useRef(null);
   const prevPdfUrl = useRef(null);
@@ -220,84 +224,117 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             Back
           </button>
 
-          <label className="toggle-label compact auto-toggle">
-            <input
-              type="checkbox"
-              checked={autoCompile}
-              onChange={(e) => setAutoCompile(e.target.checked)}
-            />
-            Auto
-          </label>
+          {!isMobile && (
+            <>
+              <label className="toggle-label compact auto-toggle">
+                <input
+                  type="checkbox"
+                  checked={autoCompile}
+                  onChange={(e) => setAutoCompile(e.target.checked)}
+                />
+                Auto
+              </label>
 
-          <button
-            className="btn btn-primary compile-button"
-            onClick={() => compile(resumeData, settings)}
-            disabled={status === 'compiling'}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-            Compile
-          </button>
+              <button
+                className="btn btn-primary compile-button"
+                onClick={() => compile(resumeData, settings)}
+                disabled={status === 'compiling'}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                Compile
+              </button>
 
-          <button
-            className={`btn save-button ${
-              saveState === 'saving' ? 'btn-saving' :
-              saveState === 'saved' ? 'btn-saved' :
-              saveState === 'error' ? 'btn-error' :
-              'btn-success'
-            }`}
-            onClick={handleSave}
-            disabled={saveState === 'saving'}
-            title={saveError || 'Save resume to browser storage'}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-              <polyline points="17 21 17 13 7 13 7 21" />
-              <polyline points="7 3 7 8 15 8" />
-            </svg>
-            <span className="save-button-text">
-              {saveState === 'saving' && 'Saving…'}
-              {saveState === 'saved' && '✓ Saved'}
-              {saveState === 'error' && '✗ Failed'}
-              {saveState === 'idle' && 'Save'}
-            </span>
-          </button>
+              <button
+                className={`btn save-button ${
+                  saveState === 'saving' ? 'btn-saving' :
+                  saveState === 'saved' ? 'btn-saved' :
+                  saveState === 'error' ? 'btn-error' :
+                  'btn-success'
+                }`}
+                onClick={handleSave}
+                disabled={saveState === 'saving'}
+                title={saveError || 'Save resume to browser storage'}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                  <polyline points="17 21 17 13 7 13 7 21" />
+                  <polyline points="7 3 7 8 15 8" />
+                </svg>
+                <span className="save-button-text">
+                  {saveState === 'saving' && 'Saving…'}
+                  {saveState === 'saved' && '✓ Saved'}
+                  {saveState === 'error' && '✗ Failed'}
+                  {saveState === 'idle' && 'Save'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
 
         <div className="toolbar-divider" />
 
         <div className="toolbar-group toolbar-group--right">
-          <button className="btn btn-secondary" onClick={downloadTex}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Save .tex
-          </button>
+          {!isMobile && (
+            <>
+              <button className="btn btn-secondary" onClick={downloadTex}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Save .tex
+              </button>
 
-          <button
-            className="btn btn-export"
-            onClick={downloadPdf}
-            disabled={status === 'compiling'}
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-            </svg>
-            Export PDF
-          </button>
+              <button
+                className="btn btn-export"
+                onClick={downloadPdf}
+                disabled={status === 'compiling'}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                Export PDF
+              </button>
 
-          <button
-            className="btn btn-secondary"
-            onClick={() => setIsFullscreen(true)}
-            disabled={!pdfUrl}
-            title="View PDF fullscreen"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-            </svg>
-            Full Screen
-          </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setIsFullscreen(true)}
+                disabled={!pdfUrl}
+                title="View PDF fullscreen"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                </svg>
+                Full Screen
+              </button>
+            </>
+          )}
+
+          {isMobile && (
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowPdfOnMobile(!showPdfOnMobile)}
+              title={showPdfOnMobile ? "Show form editor" : "Show PDF preview"}
+            >
+              {showPdfOnMobile ? (
+                <>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+                  </svg>
+                  Form
+                </>
+              ) : (
+                <>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                  </svg>
+                  PDF
+                </>
+              )}
+            </button>
+          )}
 
           <button className="theme-toggle theme-toggle--inline" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
             {theme === 'dark' ? (
@@ -319,8 +356,105 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             )}
           </button>
 
+          {isMobile && (
+            <button
+              className="btn btn-secondary mobile-menu-btn"
+              onClick={() => setDrawerOpen(true)}
+              title="More actions"
+              aria-label="Open menu"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+          )}
         </div>
       </div>
+
+      {/* ── Mobile side drawer ── */}
+      {isMobile && drawerOpen && (
+        <>
+          <div className="mobile-drawer-backdrop" onClick={() => setDrawerOpen(false)} />
+          <div className="mobile-drawer">
+            <div className="mobile-drawer-header">
+              <span>Actions</span>
+              <button className="mobile-drawer-close" onClick={() => setDrawerOpen(false)} aria-label="Close menu">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+
+            <div className="mobile-drawer-section-label">Compile</div>
+
+            <label className="mobile-drawer-item mobile-drawer-toggle">
+              <span className="mobile-drawer-item-label">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+                Auto-compile
+              </span>
+              <input
+                type="checkbox"
+                checked={autoCompile}
+                onChange={(e) => setAutoCompile(e.target.checked)}
+              />
+            </label>
+
+            <button
+              className="mobile-drawer-item"
+              onClick={() => { compile(resumeData, settings); setDrawerOpen(false); }}
+              disabled={status === 'compiling'}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <span className="mobile-drawer-item-label">Compile</span>
+            </button>
+
+            <div className="mobile-drawer-section-label">File</div>
+
+            <button
+              className={`mobile-drawer-item ${saveState === 'saved' ? 'mobile-drawer-item--success' : saveState === 'error' ? 'mobile-drawer-item--error' : ''}`}
+              onClick={() => { handleSave(); setDrawerOpen(false); }}
+              disabled={saveState === 'saving'}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span className="mobile-drawer-item-label">
+                {saveState === 'saving' ? 'Saving…' : saveState === 'saved' ? '✓ Saved' : saveState === 'error' ? '✗ Failed' : 'Save'}
+              </span>
+            </button>
+
+            <button
+              className="mobile-drawer-item"
+              onClick={() => { downloadTex(); setDrawerOpen(false); }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span className="mobile-drawer-item-label">Download .tex</span>
+            </button>
+
+            <button
+              className="mobile-drawer-item"
+              onClick={() => { downloadPdf(); setDrawerOpen(false); }}
+              disabled={status === 'compiling'}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span className="mobile-drawer-item-label">Export PDF</span>
+            </button>
+          </div>
+        </>
+      )}
 
       {/* ── Fullscreen PDF overlay ── */}
       {isFullscreen && (
@@ -346,49 +480,53 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
 
       {/* ── Split layout ── */}
       <div className="layout">
-        {/* Form pane */}
-        <div className="pane" style={{ width: `${leftWidth}%` }}>
-          <div className="editor-pane-header">
-            <div className="pane-label">Resume Editor</div>
-            <select
-              className="template-select template-select--editor"
-              value={settings.template || 'jakes'}
-              onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
-            >
-              {Object.entries(TEMPLATES).map(([key, { label }]) => (
-                <option key={key} value={key}>{label}</option>
-              ))}
-            </select>
-          </div>
-          <FormPane
-            data={resumeData}
-            onChange={setResumeData}
-            settings={settings}
-            onSettingsChange={setSettings}
-          />
-          {status === 'error' && errorLog && (
-            <div className="error-panel">{errorLog}</div>
-          )}
-        </div>
-
-        {/* Divider */}
-        <div className="divider" onMouseDown={onDividerMouseDown} />
-
-        {/* PDF preview pane */}
-        <div className="pane preview-wrap" style={{ width: `${100 - leftWidth}%` }}>
-          <div className="pane-label">PDF Preview</div>
-          {pdfUrl ? (
-            <PdfViewer ref={pdfViewerRef} file={pdfUrl} />
-          ) : (
-            <div className="preview-placeholder">
-              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              <p>Hit Compile to see preview</p>
+        {/* Form pane - show on desktop/tablet or when not showing PDF on mobile */}
+        {!isMobile || !showPdfOnMobile ? (
+          <div className="pane" style={{ width: isMobile ? '100%' : `${leftWidth}%` }}>
+            <div className="editor-pane-header">
+              <div className="pane-label">Resume Editor</div>
+              <select
+                className="template-select template-select--editor"
+                value={settings.template || 'jakes'}
+                onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
+              >
+                {Object.entries(TEMPLATES).map(([key, { label }]) => (
+                  <option key={key} value={key}>{label}</option>
+                ))}
+              </select>
             </div>
-          )}
-        </div>
+            <FormPane
+              data={resumeData}
+              onChange={setResumeData}
+              settings={settings}
+              onSettingsChange={setSettings}
+            />
+            {status === 'error' && errorLog && (
+              <div className="error-panel">{errorLog}</div>
+            )}
+          </div>
+        ) : null}
+
+        {/* Divider - only on desktop/tablet */}
+        {!isMobile && <div className="divider" onMouseDown={onDividerMouseDown} />}
+
+        {/* PDF preview pane - show on desktop/tablet or when showing PDF on mobile */}
+        {!isMobile || showPdfOnMobile ? (
+          <div className="pane preview-wrap" style={{ width: isMobile ? '100%' : `${100 - leftWidth}%` }}>
+            <div className="pane-label">PDF Preview</div>
+            {pdfUrl ? (
+              <PdfViewer ref={pdfViewerRef} file={pdfUrl} />
+            ) : (
+              <div className="preview-placeholder">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <p>Hit Compile to see preview</p>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </>
   );

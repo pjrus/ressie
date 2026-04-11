@@ -16,10 +16,12 @@ This is a privacy-oriented, local-first app.
 ## Features
 
 - **Dashboard-based workflow** — create, search, open, duplicate, pin, archive, and delete resumes from a central dashboard
+- **Custom tags** — add free-form tags to any resume (e.g. "internship", "ats-friendly", "google") directly from the dashboard card; filter the resume list by one or more tags; tags persist in localStorage
 - **Form-based editor** — edit every section through clean input fields instead of raw LaTeX
 - **Privacy-oriented workflow** — build and compile resumes fully on your machine (frontend + local backend)
 - **Template switcher** — choose between Jake's Resume, Awesome-CV, and Deedy Resume from the Resume Editor section header
 - **Live PDF preview** — auto-compiles 1.5 s after you stop typing; side-by-side with the editor
+- **Full screen PDF viewer** — expand the PDF preview to fill the entire screen for distraction-free review; exit with Esc or the close button
 - **Drag-and-drop sections** — reorder Education, Experience, Projects, Skills, and Certifications with a grab handle
 - **Add / remove sections & entries** — add any section type, remove individual entries, or delete entire sections
 - **Editable section titles** — rename any section inline
@@ -146,10 +148,12 @@ http://localhost:5173
 
 1. Open the app on the **Dashboard** to view all resumes.
 2. Create a resume (name + template) or open an existing one.
-3. Work in the **Editor** with side-by-side form and PDF preview.
-4. Change template from the **Resume Editor** section header when needed.
-5. Auto-compile updates preview after a short debounce, or use **Compile** manually.
-6. Use **Save** to persist changes, then go **Back** to return to the Dashboard.
+3. Tag resumes with labels (e.g. "internship", "google") using the tag icon on each card; filter by tags using the tag filter bar.
+4. Work in the **Editor** with side-by-side form and PDF preview.
+5. Change template from the **Resume Editor** section header when needed.
+6. Auto-compile updates preview after a short debounce, or use **Compile** manually.
+7. Use **Full Screen** in the editor toolbar to review the PDF without distractions; press Esc or click "Exit Full Screen" to return.
+8. Use **Save** to persist changes, then go **Back** to return to the Dashboard.
 
 ---
 
@@ -184,11 +188,12 @@ ressie/
         │   ├── deedy-builder.js  # Converts data model → Deedy-style source
         │   └── utils.js          # Shared escaping + date helpers
         └── components/
-            ├── Dashboard.jsx     # Resume list, filters, and quick actions
-            ├── Editor.jsx        # Form + PDF preview workspace
+            ├── Dashboard.jsx     # Resume list, tag filter bar, tag editor, and quick actions
+            ├── Editor.jsx        # Form + PDF preview workspace (incl. fullscreen overlay)
             ├── CreateResumeModal.jsx # Create new resume dialog
             ├── QuickActionsMenu.jsx  # Card actions (rename, duplicate, archive, etc.)
-            └── FormPane.jsx      # All section editors + drag-and-drop
+            ├── FormPane.jsx      # All section editors + drag-and-drop
+            └── PdfViewer.jsx     # PDF preview with zoom controls
 ```
 
 ---

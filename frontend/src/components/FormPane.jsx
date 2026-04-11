@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import {
   DndContext,
   closestCenter,
@@ -416,9 +417,10 @@ function AddSectionMenu({ onAdd }) {
   const [open, setOpen] = useState(false);
   const [menuStyle, setMenuStyle] = useState({});
   const buttonRef = useRef(null);
+  const isMobile = useMediaQuery('(max-width: 639px)');
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || isMobile) return;
 
     const updateMenuPosition = () => {
       if (!buttonRef.current) return;
@@ -456,7 +458,7 @@ function AddSectionMenu({ onAdd }) {
       window.removeEventListener('resize', updateMenuPosition);
       window.removeEventListener('scroll', updateMenuPosition, true);
     };
-  }, [open]);
+  }, [open, isMobile]);
 
   return (
     <div className="add-section-wrap">
@@ -466,7 +468,17 @@ function AddSectionMenu({ onAdd }) {
       {open && (
         <>
           <div className="dropdown-backdrop" onClick={() => setOpen(false)} />
-          <div className="dropdown dropdown--floating" style={menuStyle}>
+          <div
+            className={isMobile ? 'add-section-sheet' : 'dropdown dropdown--floating'}
+            style={isMobile ? undefined : menuStyle}
+          >
+            {isMobile && (
+              <button className="add-section-sheet-close" onClick={() => setOpen(false)} aria-label="Close">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            )}
             {SECTION_TYPES.map(({ type, label }) => (
               <button
                 key={type}

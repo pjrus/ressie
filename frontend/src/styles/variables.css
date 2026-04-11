@@ -1,0 +1,74 @@
+/* ── Theme variables ──────────────────────────────────────────────────────── */
+/* Dark theme: Catppuccin Mocha */
+:root {
+  --bg-base:      #1e1e2e;
+  --bg-surface:   #181825;
+  --bg-overlay:   #11111b;
+  --border:       #313244;
+  --border-sub:   #2a2a3c;
+  --border-muted: #45475a;
+  --tx-primary:   #cdd6f4;
+  --tx-secondary: #a6adc8;
+  --tx-muted:     #7f849c;
+  --tx-faint:     #585b70;
+  --tx-dim:       #45475a;
+  --tx-ghost:     #313244;
+  --accent:       #cba6f7;
+  --accent-fg:    #1e1e2e;
+  --success:      #a6e3a1;
+  --success-fg:   #1e1e2e;
+  --warning:      #f9e2af;
+  --error:        #f38ba8;
+  --error-bg:     #351525;
+  --scrollbar:    #45475a;
+  --add-btn-bg:   #08081a;
+  --add-btn-bg-hover: #0d0d24;
+  --add-btn-bg-active: #10102a;
+  --add-btn-border: var(--border-muted);
+  --add-btn-fg:   var(--tx-primary);
+  --add-btn-hover-fg: var(--accent);
+  --navbar-bg: rgba(26, 27, 38, 0.82);
+  --navbar-border: rgba(255, 255, 255, 0.05);
+  --navbar-divider: rgba(255, 255, 255, 0.10);
+  --navbar-surface: rgba(255, 255, 255, 0.04);
+  --navbar-surface-hover: rgba(255, 255, 255, 0.07);
+  --navbar-text: #cdd6f4;
+  --navbar-muted: #a6adc8;
+}
+
+/* Light theme: Catppuccin Latte */
+[data-theme="light"] {
+  --bg-base:      #eff1f5;
+  --bg-surface:   #e6e9ef;
+  --bg-overlay:   #dce0e8;
+  --border:       #ccd0da;
+  --border-sub:   #bcc0cc;
+  --border-muted: #acb0be;
+  --tx-primary:   #4c4f69;
+  --tx-secondary: #6c6f85;
+  --tx-muted:     #8c8fa1;
+  --tx-faint:     #9ca0b0;
+  --tx-dim:       #acb0be;
+  --tx-ghost:     #ccd0da;
+  --accent:       #8839ef;
+  --accent-fg:    #eff1f5;
+  --success:      #40a02b;
+  --success-fg:   #eff1f5;
+  --warning:      #df8e1d;
+  --error:        #d20f39;
+  --error-bg:     #fce2eb;
+  --scrollbar:    #acb0be;
+  --add-btn-bg:   #f3f5f9;
+  --add-btn-bg-hover: #e7ebf3;
+  --add-btn-bg-active: #dde3ee;
+  --add-btn-border: #c9cfdb;
+  --add-btn-fg:   #4c4f69;
+  --add-btn-hover-fg: #8839ef;
+  --navbar-bg: rgba(239, 241, 245, 0.90);
+  --navbar-border: rgba(76, 79, 105, 0.08);
+  --navbar-divider: rgba(76, 79, 105, 0.10);
+  --navbar-surface: rgba(255, 255, 255, 0.60);
+  --navbar-surface-hover: rgba(255, 255, 255, 0.84);
+  --navbar-text: #4c4f69;
+  --navbar-muted: #6c6f85;
+}
