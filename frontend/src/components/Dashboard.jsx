@@ -7,9 +7,21 @@ import {
   archiveResume,
   duplicateResume,
   exportResumeJSON,
+  loadResume,
   loadResumesList,
 } from '../utils/storageManager.js';
 import { getThumbnail } from '../utils/thumbnailManager.js';
+import { buildLaTeX } from '../latex/builder.js';
+import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
+import { buildDeedyResume } from '../latex/deedy-builder.js';
+
+const API = '/api';
+
+const TEMPLATE_BUILDERS = {
+  jakes: buildLaTeX,
+  awesomecv: buildAwesomeCV,
+  deedy: buildDeedyResume,
+};
 
 export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme, toggleTheme }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -56,7 +68,45 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
     onUpdate(newList);
   };
 
-  const handleQuickAction = (resumeId, action) => {
+  const sanitizeFilename = (name) => (name || 'resume').replace(/[\\/:*?"<>|]/g, '').trim() || 'resume';
+
+  const exportResumePdf = async (resumeId, resumeName) => {
+    const resume = loadResume(resumeId);
+    if (!resume) {
+      window.alert('Resume data not found.');
+      return;
+    }
+
+    const { data, settings } = resume;
+    const build = TEMPLATE_BUILDERS[settings?.template] || buildLaTeX;
+
+    try {
+      const source = build(data, settings || {});
+      const res = await fetch(`${API}/compile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source }),
+      });
+
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload?.detail || payload?.error || 'Failed to compile PDF');
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${sanitizeFilename(resumeName)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export PDF failed:', err);
+      window.alert(`Export PDF failed: ${err.message || 'Unknown error'}`);
+    }
+  };
+
+  const handleQuickAction = async (resumeId, action) => {
     const resume = resumesList.find(r => r.id === resumeId);
     if (!resume) return;
 
@@ -87,6 +137,10 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
           a.click();
           URL.revokeObjectURL(url);
         }
+        break;
+
+      case 'export-pdf':
+        await exportResumePdf(resumeId, resume.name);
         break;
 
       case 'pin':

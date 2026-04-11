@@ -15,9 +15,10 @@ This is a privacy-oriented, local-first app.
 
 ## Features
 
+- **Dashboard-based workflow** — create, search, open, duplicate, pin, archive, and delete resumes from a central dashboard
 - **Form-based editor** — edit every section through clean input fields instead of raw LaTeX
 - **Privacy-oriented workflow** — build and compile resumes fully on your machine (frontend + local backend)
-- **Template switcher** — choose between Jake's Resume, Awesome-CV, and Deedy Resume from the toolbar
+- **Template switcher** — choose between Jake's Resume, Awesome-CV, and Deedy Resume from the Resume Editor section header
 - **Live PDF preview** — auto-compiles 1.5 s after you stop typing; side-by-side with the editor
 - **Drag-and-drop sections** — reorder Education, Experience, Projects, Skills, and Certifications with a grab handle
 - **Add / remove sections & entries** — add any section type, remove individual entries, or delete entire sections
@@ -91,6 +92,17 @@ http://localhost:5173
 
 ---
 
+## App Flow
+
+1. Open the app on the **Dashboard** to view all resumes.
+2. Create a resume (name + template) or open an existing one.
+3. Work in the **Editor** with side-by-side form and PDF preview.
+4. Change template from the **Resume Editor** section header when needed.
+5. Auto-compile updates preview after a short debounce, or use **Compile** manually.
+6. Use **Save** to persist changes, then go **Back** to return to the Dashboard.
+
+---
+
 ## Project Structure
 
 ```
@@ -111,7 +123,7 @@ texResumeApp/
     ├── vite.config.js            # Proxies /api → backend
     ├── index.html
     └── src/
-        ├── App.jsx               # Root: toolbar, split pane, compile logic
+        ├── App.jsx               # Root app flow: dashboard, editor navigation, state orchestration
         ├── App.css               # All styles with CSS variable theming
         ├── main.jsx
         ├── data/
@@ -122,6 +134,10 @@ texResumeApp/
         │   ├── deedy-builder.js  # Converts data model → Deedy-style source
         │   └── utils.js          # Shared escaping + date helpers
         └── components/
+            ├── Dashboard.jsx     # Resume list, filters, and quick actions
+            ├── Editor.jsx        # Form + PDF preview workspace
+            ├── CreateResumeModal.jsx # Create new resume dialog
+            ├── QuickActionsMenu.jsx  # Card actions (rename, duplicate, archive, etc.)
             └── FormPane.jsx      # All section editors + drag-and-drop
 ```
 
@@ -163,7 +179,7 @@ Colors are defined as CSS custom properties in `App.css`:
 | `--accent` | `#cba6f7` | `#8839ef` |
 | `--tx-primary` | `#cdd6f4` | `#4c4f69` |
 
-Toggle with the ☀️ / 🌙 button in the toolbar. Preference is saved to `localStorage`.
+Toggle with the ☀️ / 🌙 button in the top toolbar. Preference is saved to `localStorage`.
 
 ---
 
