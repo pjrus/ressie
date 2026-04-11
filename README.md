@@ -1,4 +1,4 @@
-# TeX Resume Editor
+# Resio
 
 A local web app for building and editing LaTeX resumes through a structured form interface — no LaTeX knowledge required. Includes a live PDF preview that recompiles as you type and supports multiple templates: Jake's Resume, Awesome-CV, and Deedy Resume.
 
@@ -48,6 +48,36 @@ This is a privacy-oriented, local-first app.
 Install Tectonic on macOS:
 ```bash
 brew install tectonic
+```
+
+Install Tectonic on Linux:
+
+Ubuntu / Debian:
+```bash
+sudo apt update
+sudo apt install tectonic
+```
+
+Fedora:
+```bash
+sudo dnf install tectonic
+```
+
+Arch Linux:
+```bash
+sudo pacman -S tectonic
+```
+
+Install Tectonic on Windows:
+
+Using winget:
+```powershell
+winget install TectonicTypesetting.Tectonic
+```
+
+Using Chocolatey:
+```powershell
+choco install tectonic
 ```
 
 > On first compile, Tectonic downloads the required LaTeX packages automatically (~30 s). Subsequent compiles are fast.
