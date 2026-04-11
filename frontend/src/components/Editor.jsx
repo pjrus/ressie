@@ -4,6 +4,7 @@ import PdfViewer from './PdfViewer.jsx';
 import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
+import { captureAndSaveThumbnail } from '../utils/thumbnailManager.js';
 
 const TEMPLATES = {
   jakes: {
@@ -34,7 +35,7 @@ const TEMPLATES = {
 const API = '/api';
 const DEBOUNCE_MS = 1500;
 
-export default function Editor({ resumeData, setResumeData, settings, setSettings, onBack, theme, toggleTheme, onSave, isSaving }) {
+export default function Editor({ resumeData, setResumeData, settings, setSettings, onBack, theme, toggleTheme, onSave, isSaving, activeResumeId }) {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [status, setStatus] = useState('idle');
   const [errorLog, setErrorLog] = useState('');
@@ -47,6 +48,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   const prevPdfUrl = useRef(null);
   const isDragging = useRef(false);
   const saveStateTimer = useRef(null);
+  const pdfViewerRef = useRef(null);
 
   // ── Compile ────────────────────────────────────────────────────────────────
   const compile = useCallback(async (data, cfg = {}) => {
@@ -70,11 +72,21 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
       prevPdfUrl.current = url;
       setPdfUrl(url);
       setStatus('ok');
+
+      // Capture thumbnail after successful compilation
+      if (activeResumeId) {
+        // Use a small delay to ensure the PDF is rendered in the viewer
+        setTimeout(() => {
+          captureAndSaveThumbnail(pdfViewerRef, activeResumeId, 0.3).catch(err => {
+            console.error('Failed to capture thumbnail:', err);
+          });
+        }, 100);
+      }
     } catch (e) {
       setStatus('error');
       setErrorLog(e.message);
     }
-  }, []);
+  }, [activeResumeId]);
 
   // ── Auto-compile ───────────────────────────────────────────────────────────
   useEffect(() => {
@@ -135,6 +147,16 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     if (onSave) {
       await onSave();
     }
+
+    // Capture final thumbnail before leaving
+    if (activeResumeId && pdfUrl) {
+      try {
+        await captureAndSaveThumbnail(pdfViewerRef, activeResumeId, 0.3);
+      } catch (err) {
+        console.error('Failed to capture final thumbnail:', err);
+      }
+    }
+
     onBack();
   };
 
@@ -335,7 +357,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
         <div className="pane preview-wrap" style={{ width: `${100 - leftWidth}%` }}>
           <div className="pane-label">PDF Preview</div>
           {pdfUrl ? (
-            <PdfViewer file={pdfUrl} />
+            <PdfViewer ref={pdfViewerRef} file={pdfUrl} />
           ) : (
             <div className="preview-placeholder">
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">

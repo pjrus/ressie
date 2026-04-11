@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -10,7 +10,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const ZOOM_STEPS = [0.5, 0.6, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 1.75, 2.0];
 
-export default function PdfViewer({ file }) {
+const PdfViewer = forwardRef(function PdfViewer({ file }, ref) {
   const [numPages, setNumPages] = useState(null);
   const [zoomIdx, setZoomIdx] = useState(null); // null = fit-width mode
   const [fitWidth, setFitWidth] = useState(null);
@@ -62,7 +62,7 @@ export default function PdfViewer({ file }) {
     : `${Math.round(ZOOM_STEPS[zoomIdx] * 100)}%`;
 
   return (
-    <div className="pdf-viewer">
+    <div className="pdf-viewer" ref={ref}>
       {/* Controls */}
       <div className="pdf-controls">
         <span className="pdf-page-info">
@@ -131,4 +131,6 @@ export default function PdfViewer({ file }) {
       </div>
     </div>
   );
-}
+});
+
+export default PdfViewer;

@@ -111,6 +111,7 @@ export default function App() {
         toggleTheme={toggleTheme}
         onSave={handleSaveResume}
         isSaving={isSaving}
+        activeResumeId={activeResumeId}
       />
     );
   }

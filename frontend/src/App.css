@@ -21,6 +21,12 @@
   --error:        #f38ba8;
   --error-bg:     #351525;
   --scrollbar:    #45475a;
+  --add-btn-bg:   #08081a;
+  --add-btn-bg-hover: #0d0d24;
+  --add-btn-bg-active: #10102a;
+  --add-btn-border: var(--border-muted);
+  --add-btn-fg:   var(--tx-primary);
+  --add-btn-hover-fg: var(--accent);
 }
 
 /* Light theme: Catppuccin Latte */
@@ -45,6 +51,12 @@
   --error:        #d20f39;
   --error-bg:     #fce2eb;
   --scrollbar:    #acb0be;
+  --add-btn-bg:   #f3f5f9;
+  --add-btn-bg-hover: #e7ebf3;
+  --add-btn-bg-active: #dde3ee;
+  --add-btn-border: #c9cfdb;
+  --add-btn-fg:   #4c4f69;
+  --add-btn-hover-fg: #8839ef;
 }
 
 /* ── Reset / base ─────────────────────────────────────────────────────────── */
@@ -545,10 +557,10 @@ html, body, #root {
 
 /* ── Add buttons ──────────────────────────────────────────────────────────── */
 .add-inline-btn {
-  background: #08081a;
-  border: 1px solid var(--border-muted);
+  background: var(--add-btn-bg);
+  border: 1px solid var(--add-btn-border);
   border-radius: 5px;
-  color: var(--tx-primary);
+  color: var(--add-btn-fg);
   font-size: 12px;
   font-weight: 600;
   padding: 6px 12px;
@@ -559,14 +571,14 @@ html, body, #root {
   text-align: left;
   font-family: inherit;
 }
-.add-inline-btn:hover { background: #0d0d24; border-color: var(--accent); color: var(--accent); }
-.add-inline-btn:active { background: #10102a; }
+.add-inline-btn:hover { background: var(--add-btn-bg-hover); border-color: var(--accent); color: var(--add-btn-hover-fg); }
+.add-inline-btn:active { background: var(--add-btn-bg-active); }
 
 .add-entry-btn {
-  background: #08081a;
-  border: 1px solid var(--border-muted);
+  background: var(--add-btn-bg);
+  border: 1px solid var(--add-btn-border);
   border-radius: 6px;
-  color: var(--tx-primary);
+  color: var(--add-btn-fg);
   font-size: 12px;
   font-weight: 600;
   padding: 6px 12px;
@@ -577,8 +589,8 @@ html, body, #root {
   font-family: inherit;
   width: 100%;
 }
-.add-entry-btn:hover { background: #0d0d24; border-color: var(--accent); color: var(--accent); }
-.add-entry-btn:active { background: #10102a; }
+.add-entry-btn:hover { background: var(--add-btn-bg-hover); border-color: var(--accent); color: var(--add-btn-hover-fg); }
+.add-entry-btn:active { background: var(--add-btn-bg-active); }
 
 /* ── Add Section ──────────────────────────────────────────────────────────── */
 .add-section-wrap {
@@ -587,10 +599,10 @@ html, body, #root {
 }
 
 .add-section-btn {
-  background: #08081a;
-  border: 1px solid var(--border-muted);
+  background: var(--add-btn-bg);
+  border: 1px solid var(--add-btn-border);
   border-radius: 7px;
-  color: var(--tx-primary);
+  color: var(--add-btn-fg);
   font-size: 12px;
   font-weight: 600;
   padding: 8px 16px;
@@ -598,8 +610,8 @@ html, body, #root {
   transition: background 0.12s, border-color 0.12s, color 0.12s;
   width: 100%;
 }
-.add-section-btn:hover { background: #0d0d24; border-color: var(--accent); color: var(--accent); }
-.add-section-btn:active { background: #10102a; }
+.add-section-btn:hover { background: var(--add-btn-bg-hover); border-color: var(--accent); color: var(--add-btn-hover-fg); }
+.add-section-btn:active { background: var(--add-btn-bg-active); }
 
 .dropdown-backdrop {
   position: fixed;
@@ -984,6 +996,34 @@ html, body, #root {
 
 .date {
   color: var(--tx-muted);
+}
+
+/* ── Resume card thumbnail ────────────────────────────────────────────────– */
+.card-preview {
+  width: 100%;
+  height: 180px;
+  margin: 12px 0;
+  background-size: cover;
+  background-position: top center;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--bg-overlay);
+  border: 1px solid var(--border-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.card-preview img:hover {
+  transform: scale(1.02);
 }
 
 .card-tags {

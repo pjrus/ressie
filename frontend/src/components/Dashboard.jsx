@@ -9,6 +9,7 @@ import {
   exportResumeJSON,
   loadResumesList,
 } from '../utils/storageManager.js';
+import { getThumbnail } from '../utils/thumbnailManager.js';
 
 export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme, toggleTheme }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -286,6 +287,17 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
                       <span className="badge">{resume.template}</span>
                       <span className="date">{new Date(resume.lastEditedAt).toLocaleDateString()}</span>
                     </div>
+
+                    {/* Thumbnail preview */}
+                    {getThumbnail(resume.id) && (
+                      <div className="card-preview">
+                        <img
+                          src={getThumbnail(resume.id)}
+                          alt={`${resume.name} thumbnail`}
+                          onClick={() => onSelectResume(resume.id)}
+                        />
+                      </div>
+                    )}
 
                     {resume.tags.length > 0 && (
                       <div className="card-tags">
