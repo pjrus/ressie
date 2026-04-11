@@ -11,21 +11,21 @@ FROM node:20-bookworm-slim AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
-ARG TARGETARCH
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends curl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Tectonic, the preferred LaTeX engine for this app.
-RUN set -eux; \
-  case "$TARGETARCH" in \
-    amd64) tectonic_arch='x86_64' ;;
-    arm64) tectonic_arch='aarch64' ;;
-    *) echo "Unsupported architecture: $TARGETARCH" >&2; exit 1 ;;
-  esac; \
-  curl -fsSL "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.16.2/tectonic-0.16.2-${tectonic_arch}-unknown-linux-gnu.tar.gz" \
-    | tar -xz -C /usr/local/bin tectonic
+# Install Tectonic for the appropriate architecture
+RUN bash -c '\
+  if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm64" ]; then \
+    ARCH="aarch64"; \
+  else \
+    ARCH="x86_64"; \
+  fi && \
+  curl -fsSL "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.16.2/tectonic-0.16.2-${ARCH}-unknown-linux-gnu.tar.gz" \
+    | tar -xz -C /usr/local/bin tectonic \
+'
 
 COPY backend/package*.json ./backend/
 RUN cd backend && npm ci --omit=dev
