@@ -1,4 +1,4 @@
-# Resio
+# ressie
 
 A local web app for building and editing LaTeX resumes through a structured form interface — no LaTeX knowledge required. Includes a live PDF preview that recompiles as you type and supports multiple templates: Jake's Resume, Awesome-CV, and Deedy Resume.
 
@@ -90,7 +90,7 @@ choco install tectonic
 
 ```bash
 git clone <your-repo-url>
-cd texResumeApp
+cd ressie
 npm run setup      # installs deps in both backend/ and frontend/
 ```
 
@@ -136,7 +136,7 @@ http://localhost:5173
 ## Project Structure
 
 ```
-texResumeApp/
+ressie/
 ├── package.json                  # Root scripts (dev, setup)
 │
 ├── backend/

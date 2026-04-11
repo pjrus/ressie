@@ -187,7 +187,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
       {/* Toolbar */}
       <div className="toolbar">
         <div className="toolbar-group toolbar-group--left">
-          <span className="toolbar-title">Resio - Dashboard</span>
+          <span className="toolbar-title">ressie - Dashboard</span>
         </div>
 
         <div className="toolbar-group toolbar-group--right">
@@ -217,7 +217,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
         {/* Empty state */}
         {resumesList.length === 0 ? (
           <div className="empty-state">
-            <h2>Welcome to Resio</h2>
+            <h2>Welcome to ressie</h2>
             <p>Create your first resume to get started</p>
             <button className="btn btn-primary" onClick={() => setShowCreateModal(true)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
