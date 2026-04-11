@@ -40,10 +40,13 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   const [errorLog, setErrorLog] = useState('');
   const [autoCompile, setAutoCompile] = useState(true);
   const [leftWidth, setLeftWidth] = useState(52); // percent
+  const [saveState, setSaveState] = useState('idle'); // 'idle', 'saving', 'saved', 'error'
+  const [saveError, setSaveError] = useState('');
 
   const debounceTimer = useRef(null);
   const prevPdfUrl = useRef(null);
   const isDragging = useRef(false);
+  const saveStateTimer = useRef(null);
 
   // ── Compile ────────────────────────────────────────────────────────────────
   const compile = useCallback(async (data, cfg = {}) => {
@@ -135,83 +138,149 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     onBack();
   };
 
+  const handleSave = async () => {
+    // Clear any existing timer
+    if (saveStateTimer.current) {
+      clearTimeout(saveStateTimer.current);
+    }
+
+    try {
+      // Show "Saving…" immediately
+      setSaveState('saving');
+      setSaveError('');
+
+      // Call the parent save function
+      await onSave();
+
+      // Show "Saved" briefly
+      setSaveState('saved');
+
+      // After 2 seconds, return to idle
+      saveStateTimer.current = setTimeout(() => {
+        setSaveState('idle');
+      }, 2000);
+    } catch (err) {
+      // Show error state
+      setSaveState('error');
+      setSaveError(err.message || 'Failed to save');
+
+      // Auto-reset after 4 seconds
+      saveStateTimer.current = setTimeout(() => {
+        setSaveState('idle');
+        setSaveError('');
+      }, 4000);
+    }
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (saveStateTimer.current) {
+        clearTimeout(saveStateTimer.current);
+      }
+    };
+  }, []);
+
   return (
     <>
       {/* ── Toolbar ── */}
       <div className="toolbar">
-        <button className="btn btn-secondary back-button" onClick={handleBack}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 12H5M12 19l-7-7 7-7"/>
-          </svg>
-          Back
-        </button>
+        {/* ── Zone 1: Context (What is being edited) ── */}
+        <div className="toolbar-zone context-zone">
+          <button className="btn btn-secondary back-button" onClick={handleBack}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back
+          </button>
 
-        <div className="toolbar-sep" />
+          <select
+            className="template-select"
+            value={settings.template || 'jakes'}
+            onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
+          >
+            {Object.entries(TEMPLATES).map(([key, { label }]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+        </div>
 
-        <span className="toolbar-title">TeX Resume</span>
-        <div className="toolbar-sep" />
+        {/* ── Zone Separator ── */}
+        <div className="zone-divider" />
 
-        <select
-          className="template-select"
-          value={settings.template || 'jakes'}
-          onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
-        >
-          {Object.entries(TEMPLATES).map(([key, { label }]) => (
-            <option key={key} value={key}>{label}</option>
-          ))}
-        </select>
+        {/* ── Zone 2: Iteration (Core workflow) ── */}
+        <div className="toolbar-zone iteration-zone">
+          <div className="compile-group">
+            <button
+              className="btn btn-primary compile-button"
+              onClick={() => compile(resumeData, settings)}
+              disabled={status === 'compiling'}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+              Compile
+            </button>
 
-        <div className="toolbar-sep" />
+            <label className="toggle-label compact">
+              <input
+                type="checkbox"
+                checked={autoCompile}
+                onChange={(e) => setAutoCompile(e.target.checked)}
+              />
+              Auto
+            </label>
+          </div>
 
-        <button
-          className="btn btn-primary"
-          onClick={() => compile(resumeData, settings)}
-          disabled={status === 'compiling'}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-          Compile
-        </button>
+          <button
+            className={`btn save-button ${
+              saveState === 'saving' ? 'btn-saving' :
+              saveState === 'saved' ? 'btn-saved' :
+              saveState === 'error' ? 'btn-error' :
+              'btn-success'
+            }`}
+            onClick={handleSave}
+            disabled={saveState === 'saving'}
+            title={saveError || 'Save resume to browser storage'}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            <span className="save-button-text">
+              {saveState === 'saving' && 'Saving…'}
+              {saveState === 'saved' && '✓ Saved'}
+              {saveState === 'error' && '✗ Failed'}
+              {saveState === 'idle' && 'Save'}
+            </span>
+          </button>
+        </div>
 
-        <label className="toggle-label">
-          <input
-            type="checkbox"
-            checked={autoCompile}
-            onChange={(e) => setAutoCompile(e.target.checked)}
-          />
-          Auto
-        </label>
+        {/* ── Zone Separator ── */}
+        <div className="zone-divider" />
 
-        <div className="toolbar-sep" />
+        {/* ── Zone 3: Output (Exports and settings) ── */}
+        <div className="toolbar-zone output-zone">
+          <button className="btn btn-secondary" onClick={downloadTex}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Save .tex
+          </button>
 
-        <button className="btn btn-secondary" onClick={downloadTex}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          Save .tex
-        </button>
-
-        <button
-          className="btn btn-success"
-          onClick={downloadPdf}
-          disabled={status === 'compiling'}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-          </svg>
-          Export PDF
-        </button>
-
-        <button className="btn btn-success" onClick={onSave} disabled={isSaving}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-            <polyline points="17 21 17 13 7 13 7 21" />
-            <polyline points="7 3 7 8 15 8" />
-          </svg>
-          {isSaving ? 'Saving…' : 'Save'}
-        </button>
+          <button
+            className="btn btn-export"
+            onClick={downloadPdf}
+            disabled={status === 'compiling'}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            Export PDF
+          </button>
+        </div>
 
         <div className="toolbar-spacer" />
 

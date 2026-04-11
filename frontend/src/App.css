@@ -123,6 +123,7 @@ html, body, #root {
 .btn-primary   { background: var(--accent);  color: var(--accent-fg); }
 .btn-secondary { background: var(--border);  color: var(--tx-primary); }
 .btn-success   { background: var(--success); color: var(--success-fg); }
+.btn-export    { background: transparent;   color: var(--success); border: 1px solid var(--success); }
 
 /* ── Theme toggle button ──────────────────────────────────────────────────── */
 .theme-toggle {
@@ -1172,6 +1173,113 @@ html, body, #root {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ── Toolbar Zones ────────────────────────────────────────────────────────– */
+.toolbar-zone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.context-zone {
+  gap: 6px;
+}
+
+.iteration-zone {
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.output-zone {
+  gap: 6px;
+}
+
+/* Zone dividers */
+.zone-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-sub);
+  opacity: 0.4;
+  margin: 0 4px;
+}
+
+/* Compile group */
+.compile-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.compile-button {
+  margin: 0;
+}
+
+.toggle-label.compact {
+  margin: 0;
+  padding: 4px 8px;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--tx-secondary);
+}
+
+.toggle-label.compact input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+/* ── Save button state indicators ──────────────────────────────────────────– */
+.save-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.save-button-text {
+  display: inline-block;
+  min-width: 60px;
+}
+
+/* Saving state */
+.save-button.btn-saving {
+  background: var(--warning);
+  color: var(--tx-primary);
+  animation: pulse-saving 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-saving {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Saved state - green */
+.save-button.btn-saved {
+  background: var(--success);
+  color: var(--success-fg);
+  box-shadow: 0 0 12px rgba(166, 227, 161, 0.3);
+}
+
+/* Error state - red */
+.save-button.btn-error {
+  background: var(--error);
+  color: var(--tx-primary);
+  animation: shake-error 0.5s ease-in-out;
+}
+
+@keyframes shake-error {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
 }
 
 /* ── Resume card actions ──────────────────────────────────────────────────– */
