@@ -207,8 +207,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     <>
       {/* ── Toolbar ── */}
       <div className="toolbar">
-        {/* ── Zone 1: Context (What is being edited) ── */}
-        <div className="toolbar-zone context-zone">
+        <div className="toolbar-group toolbar-group--left">
           <button className="btn btn-secondary back-button" onClick={handleBack}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
@@ -225,33 +224,33 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               <option key={key} value={key}>{label}</option>
             ))}
           </select>
+
+          <label className="toggle-label compact auto-toggle">
+            <input
+              type="checkbox"
+              checked={autoCompile}
+              onChange={(e) => setAutoCompile(e.target.checked)}
+            />
+            Auto
+          </label>
+
+          <button
+            className="btn btn-primary compile-button"
+            onClick={() => compile(resumeData, settings)}
+            disabled={status === 'compiling'}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+            Compile
+          </button>
+            <div className="toolbar-status toolbar-status--inline">
+              <div className="status-dot" style={{ background: statusColor }} />
+              <span className="status-text">{statusLabel}</span>
+            </div>
         </div>
 
-        {/* ── Zone Separator ── */}
-        <div className="zone-divider" />
+        <div className="toolbar-divider" />
 
-        {/* ── Zone 2: Iteration (Core workflow) ── */}
-        <div className="toolbar-zone iteration-zone">
-          <div className="compile-group">
-            <button
-              className="btn btn-primary compile-button"
-              onClick={() => compile(resumeData, settings)}
-              disabled={status === 'compiling'}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-              Compile
-            </button>
-
-            <label className="toggle-label compact">
-              <input
-                type="checkbox"
-                checked={autoCompile}
-                onChange={(e) => setAutoCompile(e.target.checked)}
-              />
-              Auto
-            </label>
-          </div>
-
+        <div className="toolbar-group toolbar-group--right">
           <button
             className={`btn save-button ${
               saveState === 'saving' ? 'btn-saving' :
@@ -275,13 +274,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               {saveState === 'idle' && 'Save'}
             </span>
           </button>
-        </div>
 
-        {/* ── Zone Separator ── */}
-        <div className="zone-divider" />
-
-        {/* ── Zone 3: Output (Exports and settings) ── */}
-        <div className="toolbar-zone output-zone">
           <button className="btn btn-secondary" onClick={downloadTex}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -302,36 +295,28 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             </svg>
             Export PDF
           </button>
+
+          <button className="theme-toggle theme-toggle--inline" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+            {theme === 'dark' ? (
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )}
+          </button>
+
         </div>
-
-        <div className="toolbar-spacer" />
-
-        {/* Theme toggle */}
-        <button className="theme-toggle" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
-          {theme === 'dark' ? (
-            /* Sun icon */
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          ) : (
-            /* Moon icon */
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-          )}
-        </button>
-
-        <div className="toolbar-sep" />
-        <div className="status-dot" style={{ background: statusColor }} />
-        <span className="status-text">{statusLabel}</span>
       </div>
 
       {/* ── Split layout ── */}
