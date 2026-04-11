@@ -43,6 +43,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   const [leftWidth, setLeftWidth] = useState(52); // percent
   const [saveState, setSaveState] = useState('idle'); // 'idle', 'saving', 'saved', 'error'
   const [saveError, setSaveError] = useState('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const debounceTimer = useRef(null);
   const prevPdfUrl = useRef(null);
@@ -200,6 +201,13 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     };
   }, []);
 
+  // ESC to exit fullscreen
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') setIsFullscreen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <>
       {/* ── Toolbar ── */}
@@ -279,6 +287,18 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             Export PDF
           </button>
 
+          <button
+            className="btn btn-secondary"
+            onClick={() => setIsFullscreen(true)}
+            disabled={!pdfUrl}
+            title="View PDF fullscreen"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+            Full Screen
+          </button>
+
           <button className="theme-toggle theme-toggle--inline" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
             {theme === 'dark' ? (
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -301,6 +321,28 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
 
         </div>
       </div>
+
+      {/* ── Fullscreen PDF overlay ── */}
+      {isFullscreen && (
+        <div className="pdf-fullscreen-overlay">
+          <div className="pdf-fullscreen-header">
+            <span className="pdf-fullscreen-title">PDF Preview</span>
+            <button
+              className="btn btn-secondary pdf-fullscreen-close"
+              onClick={() => setIsFullscreen(false)}
+              title="Exit fullscreen (Esc)"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+              </svg>
+              Exit Full Screen
+            </button>
+          </div>
+          <div className="pdf-fullscreen-body">
+            <PdfViewer file={pdfUrl} />
+          </div>
+        </div>
+      )}
 
       {/* ── Split layout ── */}
       <div className="layout">

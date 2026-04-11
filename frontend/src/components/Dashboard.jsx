@@ -32,6 +32,9 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
   const [renameId, setRenameId] = useState(null);
   const [renameValue, setRenameValue] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [tagFilter, setTagFilter] = useState([]);
+  const [editTagsId, setEditTagsId] = useState(null);
+  const [tagInput, setTagInput] = useState('');
 
   // Filter resumes
   let filtered = resumesList.filter(r => {
@@ -39,6 +42,13 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
     if (filterBy === 'archived') return r.archived;
     return !r.archived;
   });
+
+  // Tag filter
+  if (tagFilter.length > 0) {
+    filtered = filtered.filter(r =>
+      tagFilter.some(t => (r.tags || []).includes(t))
+    );
+  }
 
   // Search
   if (searchQuery.trim()) {
@@ -66,6 +76,32 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
   const refreshList = () => {
     const newList = loadResumesList();
     onUpdate(newList);
+  };
+
+  // Collect all unique tags across non-archived resumes
+  const allTags = [...new Set(resumesList.filter(r => !r.archived).flatMap(r => r.tags || []))].sort();
+
+  const toggleTagFilter = (tag) => {
+    setTagFilter(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+  };
+
+  const addTagToResume = (resumeId) => {
+    const val = tagInput.trim();
+    if (!val) return;
+    const resume = resumesList.find(r => r.id === resumeId);
+    if (!resume) return;
+    const existing = resume.tags || [];
+    if (existing.includes(val)) { setTagInput(''); return; }
+    updateResumeMeta(resumeId, { tags: [...existing, val] });
+    setTagInput('');
+    refreshList();
+  };
+
+  const removeTagFromResume = (resumeId, tag) => {
+    const resume = resumesList.find(r => r.id === resumeId);
+    if (!resume) return;
+    updateResumeMeta(resumeId, { tags: (resume.tags || []).filter(t => t !== tag) });
+    refreshList();
   };
 
   const sanitizeFilename = (name) => (name || 'resume').replace(/[\\/:*?"<>|]/g, '').trim() || 'resume';
@@ -302,6 +338,26 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
               </button>
             </div>
 
+            {/* Tag filter bar */}
+            {allTags.length > 0 && (
+              <div className="tag-filter-bar">
+                <span className="tag-filter-label">Filter by tag:</span>
+                {allTags.map(tag => (
+                  <button
+                    key={tag}
+                    className={`tag-filter-pill ${tagFilter.includes(tag) ? 'active' : ''}`}
+                    onClick={() => toggleTagFilter(tag)}
+                  >
+                    {tag}
+                    {tagFilter.includes(tag) && <span className="tag-filter-x">×</span>}
+                  </button>
+                ))}
+                {tagFilter.length > 0 && (
+                  <button className="tag-filter-clear" onClick={() => setTagFilter([])}>Clear</button>
+                )}
+              </div>
+            )}
+
             {/* Resume grid */}
             {filtered.length === 0 ? (
               <div className="no-results">
@@ -356,11 +412,61 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
                       </div>
                     )}
 
-                    {resume.tags.length > 0 && (
-                      <div className="card-tags">
-                        {resume.tags.map((tag, i) => (
-                          <span key={i} className="tag">{tag}</span>
-                        ))}
+                    <div className="card-tags-row">
+                      {(resume.tags || []).map((tag, i) => (
+                        <span key={i} className="tag">{tag}</span>
+                      ))}
+                      <button
+                        className="tag-edit-btn"
+                        title="Edit tags"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditTagsId(editTagsId === resume.id ? null : resume.id);
+                          setTagInput('');
+                        }}
+                      >
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                          <line x1="7" y1="7" x2="7.01" y2="7"/>
+                        </svg>
+                      </button>
+                    </div>
+
+                    {editTagsId === resume.id && (
+                      <div className="card-tag-editor" onClick={(e) => e.stopPropagation()}>
+                        <div className="tag-editor-pills">
+                          {(resume.tags || []).length === 0 && (
+                            <span className="tag-editor-empty">No tags yet</span>
+                          )}
+                          {(resume.tags || []).map((tag, i) => (
+                            <span key={i} className="tag tag--removable">
+                              {tag}
+                              <button
+                                className="tag-remove"
+                                onClick={() => removeTagFromResume(resume.id, tag)}
+                                title={`Remove "${tag}"`}
+                              >×</button>
+                            </span>
+                          ))}
+                        </div>
+                        <div className="tag-input-row">
+                          <input
+                            className="tag-input"
+                            type="text"
+                            placeholder="Add tag…"
+                            value={tagInput}
+                            onChange={(e) => setTagInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') addTagToResume(resume.id);
+                              if (e.key === 'Escape') setEditTagsId(null);
+                            }}
+                            autoFocus
+                          />
+                          <button
+                            className="btn btn-primary tag-add-btn"
+                            onClick={() => addTagToResume(resume.id)}
+                          >Add</button>
+                        </div>
                       </div>
                     )}
                   </div>
