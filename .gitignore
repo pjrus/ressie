@@ -5,3 +5,5 @@ dist/
 *.aux
 *.log
 *.out
+.claude
+CLAUDE.md

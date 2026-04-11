@@ -55,6 +55,13 @@ async function compileLaTeX(source) {
   try {
     await fs.writeFile(texFile, source, 'utf8');
 
+    // Copy support class files (e.g. altacv.cls) into the temp dir
+    const templatesDir = path.join(__dirname, 'templates');
+    const clsFiles = (await fs.readdir(templatesDir)).filter((f) => f.endsWith('.cls'));
+    await Promise.all(
+      clsFiles.map((f) => fs.copyFile(path.join(templatesDir, f), path.join(tmpDir, f)))
+    );
+
     let cmd;
     if (engine === 'tectonic') {
       cmd = `tectonic --outdir "${tmpDir}" "${texFile}"`;

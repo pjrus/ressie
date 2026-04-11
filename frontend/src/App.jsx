@@ -1,7 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import FormPane from './components/FormPane.jsx';
+import PdfViewer from './components/PdfViewer.jsx';
 import { defaultResumeData, defaultSettings } from './data/defaultData.js';
 import { buildLaTeX } from './latex/builder.js';
+import { buildAwesomeCV } from './latex/awesomecv-builder.js';
+
+const TEMPLATES = {
+  jakes:    { label: "Jake's Resume", build: buildLaTeX },
+  awesomecv:{ label: 'Awesome-CV',    build: buildAwesomeCV },
+};
 
 const API = '/api';
 const DEBOUNCE_MS = 1500;
@@ -39,7 +46,7 @@ export default function App() {
       const res = await fetch(`${API}/compile`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ source: buildLaTeX(data, cfg) }),
+        body:    JSON.stringify({ source: (TEMPLATES[cfg.template] || TEMPLATES.jakes).build(data, cfg) }),
       });
       if (!res.ok) {
         const { error, detail } = await res.json();
@@ -69,7 +76,8 @@ export default function App() {
 
   // ── Download .tex ──────────────────────────────────────────────────────────
   const downloadTex = () => {
-    const blob = new Blob([buildLaTeX(resumeData, settings)], { type: 'text/plain' });
+    const build = (TEMPLATES[settings.template] || TEMPLATES.jakes).build;
+    const blob = new Blob([build(resumeData, settings)], { type: 'text/plain' });
     const url  = URL.createObjectURL(blob);
     const a    = Object.assign(document.createElement('a'), { href: url, download: 'resume.tex' });
     a.click();
@@ -112,6 +120,18 @@ export default function App() {
       {/* ── Toolbar ── */}
       <div className="toolbar">
         <span className="toolbar-title">TeX Resume</span>
+        <div className="toolbar-sep" />
+
+        <select
+          className="template-select"
+          value={settings.template || 'jakes'}
+          onChange={(e) => setSettings((s) => ({ ...s, template: e.target.value }))}
+        >
+          {Object.entries(TEMPLATES).map(([key, { label }]) => (
+            <option key={key} value={key}>{label}</option>
+          ))}
+        </select>
+
         <div className="toolbar-sep" />
 
         <button
@@ -208,7 +228,7 @@ export default function App() {
         <div className="pane preview-wrap" style={{ width: `${100 - leftWidth}%` }}>
           <div className="pane-label">PDF Preview</div>
           {pdfUrl ? (
-            <iframe key={pdfUrl} src={pdfUrl} title="PDF Preview" />
+            <PdfViewer file={pdfUrl} />
           ) : (
             <div className="preview-placeholder">
               <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
