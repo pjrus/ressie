@@ -72,7 +72,7 @@ async function compileLaTeX(source) {
     }
 
     const { stdout, stderr } = await execAsync(cmd, {
-      timeout: 60000,
+      timeout: 180000, // 3 min — tectonic downloads packages on first use
       env: { ...process.env, PATH: `/opt/homebrew/bin:/usr/local/bin:${process.env.PATH}` },
     });
 
@@ -122,7 +122,7 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }));
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Backend running on http://localhost:${PORT}`);
-  findLatexEngine().then((e) =>
-    console.log(`LaTeX engine: ${e ?? 'NONE — install tectonic: brew install tectonic'}`)
-  );
+  findLatexEngine().then((e) => {
+    console.log(`LaTeX engine: ${e ?? 'NONE — install tectonic: brew install tectonic'}`);
+  });
 });

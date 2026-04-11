@@ -1,0 +1,79 @@
+% Deedy Resume style reference template (single-column modern-deedy fork)
+% This file is for reference only. The app sends a fully self-contained
+% generated source to /api/compile and does not read this file at runtime.
+
+\documentclass[10pt,letterpaper]{article}
+\usepackage[margin=0.65in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{ragged2e}
+\usepackage{tabularx}
+
+\definecolor{deedyblue}{HTML}{1E4E79}
+\definecolor{deedytext}{HTML}{1B1B1B}
+\definecolor{deedymuted}{HTML}{5D6D7E}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist[itemize]{leftmargin=*, itemsep=1pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+
+\titleformat{\section}{\large\bfseries\color{deedyblue}}{}{0em}{}[\vspace{2pt}\hrule\vspace{3pt}]
+\titleformat{\subsection}{\normalsize\bfseries\color{deedyblue}}{}{0em}{}
+\titlespacing*{\section}{0pt}{4pt}{2pt}
+
+\newcommand{\sectionsep}{\vspace{6pt}}
+
+\begin{document}
+
+\begin{center}
+{\Huge\bfseries First Last Name}\\[2pt]
+{\small\color{deedymuted}phone \textbar\ email \textbar\ website \textbar\ linkedin}
+\end{center}
+
+\vspace{8pt}
+\section{Education}
+\begin{tabularx}{\linewidth}{Xr}
+\textbf{University Name} & \textit{Aug. 2022 -- May 2026}
+\end{tabularx}
+Degree title\\
+\textit{City, State}
+
+\sectionsep
+\section{Skills}
+\textbf{Languages}: Python, JavaScript, TypeScript\\
+\textbf{Frameworks}: React, Node.js, Express
+
+\sectionsep
+\section{Awards}
+Dean's List (2024)\\
+AWS Certified Cloud Practitioner
+
+\sectionsep
+\section{Experience}
+\begin{tabularx}{\linewidth}{Xr}
+\textbf{Software Engineer Intern} & \textit{Jun. 2025 -- Aug. 2025}
+\end{tabularx}
+\textit{Acme Corp, Remote}
+\begin{itemize}
+  \item Built internal tools used by 50+ team members.
+  \item Improved deployment workflow and reduced release time by 30\%.
+\end{itemize}
+
+\sectionsep
+\section{Projects}
+\begin{tabularx}{\linewidth}{Xr}
+\textbf{Project Name} & \textit{Jan. 2025 -- Present}
+\end{tabularx}
+\textit{React, TypeScript}\,\textbar\,\href{https://example.com}{example.com}
+\begin{itemize}
+  \item Implemented core product features and analytics dashboards.
+  \item Designed responsive UI and integrated REST APIs.
+\end{itemize}
+
+\end{document}

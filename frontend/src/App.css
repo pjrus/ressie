@@ -544,40 +544,40 @@ html, body, #root {
 
 /* ── Add buttons ──────────────────────────────────────────────────────────── */
 .add-inline-btn {
-  background: transparent;
-  border: 1.5px dashed var(--accent);
+  background: #08081a;
+  border: 1px solid var(--border-muted);
   border-radius: 5px;
-  color: var(--accent);
+  color: var(--tx-primary);
   font-size: 12px;
   font-weight: 600;
   padding: 6px 12px;
   cursor: pointer;
-  transition: background 0.12s, opacity 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
   margin-top: 2px;
   width: 100%;
   text-align: left;
-  opacity: 0.65;
   font-family: inherit;
 }
-.add-inline-btn:hover { background: var(--border); opacity: 1; }
+.add-inline-btn:hover { background: #0d0d24; border-color: var(--accent); color: var(--accent); }
+.add-inline-btn:active { background: #10102a; }
 
 .add-entry-btn {
-  background: transparent;
-  border: 1.5px dashed var(--accent);
+  background: #08081a;
+  border: 1px solid var(--border-muted);
   border-radius: 6px;
-  color: var(--accent);
+  color: var(--tx-primary);
   font-size: 12px;
   font-weight: 600;
   padding: 6px 12px;
   cursor: pointer;
   text-align: left;
-  transition: background 0.12s, opacity 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
   margin-top: 2px;
-  opacity: 0.65;
   font-family: inherit;
   width: 100%;
 }
-.add-entry-btn:hover { background: var(--border); opacity: 1; }
+.add-entry-btn:hover { background: #0d0d24; border-color: var(--accent); color: var(--accent); }
+.add-entry-btn:active { background: #10102a; }
 
 /* ── Add Section ──────────────────────────────────────────────────────────── */
 .add-section-wrap {
@@ -586,18 +586,19 @@ html, body, #root {
 }
 
 .add-section-btn {
-  background: transparent;
-  border: 1px dashed var(--border);
+  background: #08081a;
+  border: 1px solid var(--border-muted);
   border-radius: 7px;
-  color: var(--tx-dim);
+  color: var(--tx-primary);
   font-size: 12px;
   font-weight: 600;
   padding: 8px 16px;
   cursor: pointer;
-  transition: border-color 0.12s, color 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
   width: 100%;
 }
-.add-section-btn:hover { border-color: var(--accent); color: var(--accent); }
+.add-section-btn:hover { background: #0d0d24; border-color: var(--accent); color: var(--accent); }
+.add-section-btn:active { background: #10102a; }
 
 .dropdown-backdrop {
   position: fixed;

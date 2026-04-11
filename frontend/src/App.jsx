@@ -4,10 +4,32 @@ import PdfViewer from './components/PdfViewer.jsx';
 import { defaultResumeData, defaultSettings } from './data/defaultData.js';
 import { buildLaTeX } from './latex/builder.js';
 import { buildAwesomeCV } from './latex/awesomecv-builder.js';
+import { buildDeedyResume } from './latex/deedy-builder.js';
 
 const TEMPLATES = {
-  jakes:    { label: "Jake's Resume", build: buildLaTeX },
-  awesomecv:{ label: 'Awesome-CV',    build: buildAwesomeCV },
+  jakes: {
+    label: "Jake's Resume",
+    build: buildLaTeX,
+    defaults: { fontSize: '11', marginTop: '0.5', marginBottom: '0.5', marginLeft: '0.5', marginRight: '0.5' },
+  },
+  awesomecv: {
+    label: 'Awesome-CV',
+    build: buildAwesomeCV,
+    defaults: { fontSize: '11' },
+  },
+  deedy: {
+    label: 'Deedy Resume',
+    build: buildDeedyResume,
+    defaults: {
+      fontSize: '10',
+      marginTop: '0.6',
+      marginBottom: '0.6',
+      marginLeft: '0.65',
+      marginRight: '0.65',
+      deedyColumnRatio: '0.34,0.66',
+      deedySectionSpacing: '8',
+    },
+  },
 };
 
 const API = '/api';
@@ -33,6 +55,11 @@ export default function App() {
   }, [theme]);
 
   const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+
+  const applyTemplateDefaults = (prev, templateKey) => {
+    const selected = TEMPLATES[templateKey] || TEMPLATES.jakes;
+    return { ...prev, ...(selected.defaults || {}), template: templateKey };
+  };
 
   const debounceTimer = useRef(null);
   const prevPdfUrl    = useRef(null);
@@ -125,7 +152,7 @@ export default function App() {
         <select
           className="template-select"
           value={settings.template || 'jakes'}
-          onChange={(e) => setSettings((s) => ({ ...s, template: e.target.value }))}
+          onChange={(e) => setSettings((s) => applyTemplateDefaults(s, e.target.value))}
         >
           {Object.entries(TEMPLATES).map(([key, { label }]) => (
             <option key={key} value={key}>{label}</option>
