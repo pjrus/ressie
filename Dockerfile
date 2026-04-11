@@ -13,7 +13,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends curl ca-certificates \
+  && apt-get install -y --no-install-recommends curl ca-certificates libgraphite2-3 libharfbuzz0b libfreetype6 libfontconfig1 tar \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Tectonic for the appropriate architecture
@@ -31,6 +31,7 @@ COPY backend/package*.json ./backend/
 RUN cd backend && npm ci --omit=dev
 
 COPY backend ./backend
+COPY backend/templates ./backend/templates
 COPY --from=frontend-build /app/frontend/dist ./backend/public
 
 EXPOSE 3001
