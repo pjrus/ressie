@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -414,15 +414,59 @@ function HeaderEditor({ header, onChange }) {
 
 function AddSectionMenu({ onAdd }) {
   const [open, setOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState({});
+  const buttonRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const updateMenuPosition = () => {
+      if (!buttonRef.current) return;
+
+      const rect = buttonRef.current.getBoundingClientRect();
+      const viewportPad = 12;
+      const gap = 6;
+      const minMenuHeight = 140;
+      const preferredMenuHeight = 280;
+
+      const spaceBelow = window.innerHeight - rect.bottom - viewportPad;
+      const spaceAbove = rect.top - viewportPad;
+      const openUpward = spaceBelow < minMenuHeight && spaceAbove > spaceBelow;
+
+      const available = Math.max(minMenuHeight, openUpward ? spaceAbove - gap : spaceBelow - gap);
+      const maxHeight = Math.min(preferredMenuHeight, available);
+      const top = openUpward
+        ? Math.max(viewportPad, rect.top - maxHeight - gap)
+        : rect.bottom + gap;
+      const left = Math.min(rect.left, window.innerWidth - viewportPad - rect.width);
+
+      setMenuStyle({
+        top: `${Math.round(top)}px`,
+        left: `${Math.round(Math.max(viewportPad, left))}px`,
+        minWidth: `${Math.round(Math.max(rect.width, 190))}px`,
+        maxHeight: `${Math.round(maxHeight)}px`,
+      });
+    };
+
+    updateMenuPosition();
+    window.addEventListener('resize', updateMenuPosition);
+    window.addEventListener('scroll', updateMenuPosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updateMenuPosition);
+      window.removeEventListener('scroll', updateMenuPosition, true);
+    };
+  }, [open]);
+
   return (
     <div className="add-section-wrap">
-      <button className="add-section-btn" onClick={() => setOpen((o) => !o)}>
+      <button ref={buttonRef} className="add-section-btn" onClick={() => setOpen((o) => !o)}>
         + Add Section
       </button>
       {open && (
         <>
           <div className="dropdown-backdrop" onClick={() => setOpen(false)} />
-          <div className="dropdown">
+          <div className="dropdown dropdown--floating" style={menuStyle}>
             {SECTION_TYPES.map(({ type, label }) => (
               <button
                 key={type}
