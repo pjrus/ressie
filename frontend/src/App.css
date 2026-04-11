@@ -316,7 +316,8 @@ html, body, #root {
 /* ── Main layout ──────────────────────────────────────────────────────────── */
 .layout {
   display: flex;
-  height: calc(100vh - 44px);
+  height: calc(100vh - 60px);
+  height: calc(100dvh - 60px);
   overflow: hidden;
 }
 
@@ -482,13 +483,14 @@ html, body, #root {
   border-top: 1px solid var(--error);
   padding: 8px 14px;
   font-size: 11px;
+  line-height: 1.45;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   color: var(--error);
-  max-height: 100px;
+  max-height: min(34vh, 260px);
   overflow-y: auto;
   white-space: pre-wrap;
   flex-shrink: 0;
-  background: var(--bg-base);
+  background: var(--error-bg);
 }
 
 /* ── Form pane ────────────────────────────────────────────────────────────── */
