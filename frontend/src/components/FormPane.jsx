@@ -433,14 +433,20 @@ function AddSectionMenu({ onAdd }) {
 
       const spaceBelow = window.innerHeight - rect.bottom - viewportPad;
       const spaceAbove = rect.top - viewportPad;
-      const openUpward = spaceBelow < minMenuHeight && spaceAbove > spaceBelow;
+      // Only open upward if there's very little space below AND significantly more space above
+      const openUpward = spaceBelow < 80 && spaceAbove > 200;
 
       const available = Math.max(minMenuHeight, openUpward ? spaceAbove - gap : spaceBelow - gap);
       const maxHeight = Math.min(preferredMenuHeight, available);
       const top = openUpward
         ? Math.max(viewportPad, rect.top - maxHeight - gap)
         : rect.bottom + gap;
-      const left = Math.min(rect.left, window.innerWidth - viewportPad - rect.width);
+
+      // Calculate menu width (consistent with minWidth set below)
+      const menuWidth = Math.max(rect.width, 190);
+      // Position menu at button's left, but constrain if it would overflow right edge
+      const maxLeftPos = window.innerWidth - menuWidth - viewportPad;
+      const left = Math.min(rect.left, maxLeftPos);
 
       setMenuStyle({
         top: `${Math.round(top)}px`,

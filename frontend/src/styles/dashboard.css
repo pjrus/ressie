@@ -704,3 +704,100 @@
   height: 1px;
   background: var(--border-sub);
 }
+
+/* ── Secondary button style ───────────────────────────────────────────────── */
+.btn-secondary {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--tx-primary);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+  border-color: var(--accent);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Import file section styling ──────────────────────────────────────────── */
+.import-file-section {
+  padding: 16px;
+  background: var(--bg-base);
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--tx-primary);
+}
+
+.import-file-section:hover {
+  border-color: var(--accent);
+  background: var(--bg-surface);
+}
+
+.import-file-section:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── File selected indicator ──────────────────────────────────────────────── */
+.import-file-selected {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--tx-primary);
+}
+
+.import-file-selected svg {
+  flex-shrink: 0;
+  color: var(--success);
+}
+
+/* ── Error message in modal ──────────────────────────────────────────────── */
+.import-error {
+  padding: 12px;
+  background: rgba(231, 111, 109, 0.1);
+  border-left: 3px solid #e76f6d;
+  border-radius: 4px;
+  color: #e76f6d;
+  font-size: 12px;
+  margin: 12px 0;
+  line-height: 1.4;
+}
+
+/* ── Success message in modal ────────────────────────────────────────────── */
+.import-success {
+  padding: 12px;
+  background: rgba(165, 214, 167, 0.1);
+  border-left: 3px solid #a5d6a7;
+  border-radius: 4px;
+  color: #2e7d32;
+  font-size: 12px;
+  margin: 12px 0;
+  line-height: 1.4;
+}

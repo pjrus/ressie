@@ -3,6 +3,8 @@
  * Handles all persistence of resume metadata, data, and version history
  */
 
+import { loadVersions } from './versionManager.js';
+
 const STORAGE_KEYS = {
   RESUMES_LIST: 'ressie:resumes',
   RESUME_DATA: (id) => `ressie:resume:${id}`,
@@ -297,5 +299,236 @@ export function getStorageQuota() {
   } catch (err) {
     console.error('Error checking storage quota:', err);
     return null;
+  }
+}
+
+/**
+ * Validate imported JSON against expected schema
+ * @param {Object} obj - JSON object to validate
+ * @param {string} type - 'single' | 'backup' - what type of export this is
+ * @returns {Object} {isValid: boolean, errors: string[]}
+ */
+export function validateResumeJSON(obj, type = 'single') {
+  const errors = [];
+
+  if (!obj || typeof obj !== 'object') {
+    errors.push('Input must be a valid JSON object');
+    return { isValid: false, errors };
+  }
+
+  if (type === 'single') {
+    // Check required top-level fields
+    if (!obj.metadata) errors.push('Missing required field: metadata');
+    if (!obj.data) errors.push('Missing required field: data');
+    if (!obj.settings) errors.push('Missing required field: settings');
+
+    // Validate metadata
+    if (obj.metadata) {
+      if (!obj.metadata.name || typeof obj.metadata.name !== 'string') {
+        errors.push('metadata.name must be a non-empty string');
+      }
+      if (!obj.metadata.template) {
+        errors.push('metadata.template is required');
+      }
+      const validTemplates = ['jakes', 'awesomecv', 'deedy'];
+      if (!validTemplates.includes(obj.metadata.template)) {
+        errors.push(`metadata.template must be one of: ${validTemplates.join(', ')}`);
+      }
+    }
+
+    // Validate data structure
+    if (obj.data) {
+      if (!('header' in obj.data)) errors.push('data.header is required');
+      if (!Array.isArray(obj.data.sections)) {
+        errors.push('data.sections must be an array');
+      }
+    }
+
+    // Validate settings
+    if (obj.settings) {
+      if (!obj.settings.template) {
+        errors.push('settings.template is required');
+      }
+    }
+  } else if (type === 'backup') {
+    if (!obj.version) errors.push('Missing backup version field');
+    if (!obj.exportedAt) errors.push('Missing exportedAt timestamp');
+    if (!Array.isArray(obj.resumes)) {
+      errors.push('resumes must be an array');
+    } else {
+      obj.resumes.forEach((resume, idx) => {
+        if (!resume.metadata || !resume.data || !resume.settings) {
+          errors.push(`Resume ${idx}: missing required fields (metadata, data, settings)`);
+        }
+      });
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Import a single resume from exported JSON
+ * @param {Object} jsonData - Parsed JSON from exported file
+ * @returns {string|null} New resume ID if successful, null on failure
+ */
+export function importResumeJSON(jsonData) {
+  try {
+    // Validate structure
+    const validation = validateResumeJSON(jsonData, 'single');
+    if (!validation.isValid) {
+      console.error('Validation errors:', validation.errors);
+      throw new Error(validation.errors[0]);
+    }
+
+    // Generate new ID for imported resume
+    const newId = uid();
+
+    // Prepare metadata with new ID and timestamps
+    const metadata = {
+      ...jsonData.metadata,
+      id: newId,
+      createdAt: Date.now(),
+      lastEditedAt: Date.now(),
+      pinned: false, // Always default to unpinned
+      archived: false, // Always default to not archived
+    };
+
+    // Update resumes list
+    const list = loadResumesList();
+    list.push(metadata);
+    saveResumesList(list);
+
+    // Save resume data with new ID
+    const resumeData = JSON.parse(JSON.stringify(jsonData.data));
+    const settings = JSON.parse(JSON.stringify(jsonData.settings));
+    settings.template = metadata.template; // Ensure template consistency
+
+    saveResume(newId, resumeData, settings);
+
+    // Optionally import versions if they exist
+    if (jsonData.versions && Array.isArray(jsonData.versions)) {
+      try {
+        const versionsStorage = jsonData.versions.map(v => ({
+          ...v,
+          versionId: uid(), // Generate new version IDs
+        }));
+        localStorage.setItem(
+          STORAGE_KEYS.RESUME_VERSIONS(newId),
+          JSON.stringify(versionsStorage)
+        );
+      } catch (versionErr) {
+        // Soft error: resume imported successfully, but versions failed
+        console.warn('Could not import versions:', versionErr);
+      }
+    }
+
+    return newId;
+  } catch (err) {
+    console.error('Error importing resume:', err);
+    return null;
+  }
+}
+
+/**
+ * Export entire app backup (all resumes + metadata + version history)
+ * @returns {string|null} JSON string of backup, null on error
+ */
+export function exportFullBackup() {
+  try {
+    const list = loadResumesList();
+    const backupData = {
+      version: '1.0', // Backup format version for future migrations
+      exportedAt: new Date().toISOString(),
+      resumes: [],
+    };
+
+    list.forEach(metadata => {
+      const resume = loadResume(metadata.id);
+      if (!resume) {
+        console.warn(`Could not load resume ${metadata.id}`);
+        return;
+      }
+
+      const versions = loadVersions(metadata.id);
+
+      backupData.resumes.push({
+        metadata,
+        data: resume.data,
+        settings: resume.settings,
+        versions: versions.length > 0 ? versions : undefined, // Omit if empty
+      });
+    });
+
+    return JSON.stringify(backupData, null, 2);
+  } catch (err) {
+    console.error('Error exporting backup:', err);
+    return null;
+  }
+}
+
+/**
+ * Import entire backup, restoring all resumes and version history
+ * @param {Object} backupData - Parsed backup JSON
+ * @param {Object} options - {skipVersions: false, overwriteExisting: false}
+ * @returns {Object} {success: boolean, message: string, importedCount: number, errors: string[]}
+ */
+export function importFullBackup(backupData, options = {}) {
+  const {
+    skipVersions = false,
+    overwriteExisting = false, // Not implemented yet, reserved for future
+  } = options;
+
+  const result = {
+    success: false,
+    message: '',
+    importedCount: 0,
+    errors: [],
+  };
+
+  try {
+    // Validate backup structure
+    const validation = validateResumeJSON(backupData, 'backup');
+    if (!validation.isValid) {
+      result.message = validation.errors[0];
+      result.errors = validation.errors;
+      return result;
+    }
+
+    // Import each resume in the backup
+    backupData.resumes.forEach((resumeItem, idx) => {
+      try {
+        // Prepare single resume export format
+        const singleExport = {
+          metadata: resumeItem.metadata,
+          data: resumeItem.data,
+          settings: resumeItem.settings,
+          versions: skipVersions ? undefined : resumeItem.versions,
+        };
+
+        const importedId = importResumeJSON(singleExport);
+        if (importedId) {
+          result.importedCount++;
+        } else {
+          result.errors.push(`Resume ${idx}: Failed to import`);
+        }
+      } catch (err) {
+        result.errors.push(`Resume ${idx}: ${err.message}`);
+      }
+    });
+
+    result.success = result.importedCount > 0;
+    result.message = result.importedCount === backupData.resumes.length
+      ? 'All resumes imported successfully'
+      : `Imported ${result.importedCount} of ${backupData.resumes.length} resumes`;
+
+    return result;
+  } catch (err) {
+    result.message = err.message;
+    result.errors.push(err.message);
+    return result;
   }
 }

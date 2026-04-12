@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CreateResumeModal from './CreateResumeModal.jsx';
+import ImportResumeModal from './ImportResumeModal.jsx';
 import QuickActionsMenu from './QuickActionsMenu.jsx';
 import {
   updateResumeMeta,
@@ -9,6 +10,8 @@ import {
   exportResumeJSON,
   loadResume,
   loadResumesList,
+  exportFullBackup,
+  importFullBackup,
 } from '../utils/storageManager.js';
 import { getThumbnail } from '../utils/thumbnailManager.js';
 import { buildLaTeX } from '../latex/builder.js';
@@ -35,6 +38,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
   const [tagFilter, setTagFilter] = useState([]);
   const [editTagsId, setEditTagsId] = useState(null);
   const [tagInput, setTagInput] = useState('');
+  const [showImportModal, setShowImportModal] = useState(false);
 
   // Filter resumes
   let filtered = resumesList.filter(r => {
@@ -218,6 +222,28 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
     setDeleteConfirmId(null);
   };
 
+  const handleImportResume = (newResumeId, resumeName) => {
+    refreshList();
+    setShowImportModal(false);
+  };
+
+  const handleDownloadBackup = () => {
+    const backup = exportFullBackup();
+    if (!backup) {
+      window.alert('Failed to export backup. Please try again.');
+      return;
+    }
+
+    const date = new Date().toISOString().split('T')[0];
+    const blob = new Blob([backup], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup-${date}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="dashboard">
       {/* Toolbar */}
@@ -273,6 +299,32 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
                   <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
                 Create New Resume
+              </button>
+
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowImportModal(true)}
+                title="Import a resume from a JSON file"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                Import Resume
+              </button>
+
+              <button
+                className="btn btn-secondary"
+                onClick={handleDownloadBackup}
+                title="Download all resumes as a backup"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Download Backup
               </button>
 
               <input
@@ -534,6 +586,13 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
             onSelectResume(null, { name, template });
           }}
           existingCount={resumesList.length}
+        />
+      )}
+
+      {showImportModal && (
+        <ImportResumeModal
+          onClose={() => setShowImportModal(false)}
+          onImportSuccess={handleImportResume}
         />
       )}
     </div>
