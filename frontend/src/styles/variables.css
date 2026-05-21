@@ -1,13 +1,13 @@
 /* ── Theme variables ──────────────────────────────────────────────────────── */
-/* Dark theme: True Black */
+/* Dark theme: Dark Gray */
 :root {
-  --bg-base:      #0c0c0c;
-  --bg-surface:   #141414;
-  --bg-overlay:   #1c1c1c;
-  --bg-hover:     #222222;
-  --border:       #242424;
-  --border-sub:   #1e1e1e;
-  --border-muted: #2e2e2e;
+  --bg-base:      #161616;
+  --bg-surface:   #1e1e1e;
+  --bg-overlay:   #262626;
+  --bg-hover:     #2e2e2e;
+  --border:       #333333;
+  --border-sub:   #2a2a2a;
+  --border-muted: #3a3a3a;
   --tx-primary:   #ebebeb;
   --tx-secondary: #a0a0a0;
   --tx-muted:     #6a6a6a;
@@ -41,11 +41,11 @@
   --add-btn-border: var(--border-muted);
   --add-btn-fg:   var(--tx-primary);
   --add-btn-hover-fg: var(--accent);
-  --navbar-bg:             rgba(10, 10, 10, 0.80);
-  --navbar-border:         rgba(255, 255, 255, 0.06);
-  --navbar-divider:        rgba(255, 255, 255, 0.09);
-  --navbar-surface:        rgba(255, 255, 255, 0.03);
-  --navbar-surface-hover:  rgba(255, 255, 255, 0.07);
+  --navbar-bg:             rgba(20, 20, 20, 0.85);
+  --navbar-border:         rgba(255, 255, 255, 0.10);
+  --navbar-divider:        rgba(255, 255, 255, 0.13);
+  --navbar-surface:        rgba(255, 255, 255, 0.05);
+  --navbar-surface-hover:  rgba(255, 255, 255, 0.10);
   --navbar-text:           #ebebeb;
   --navbar-muted:          #a0a0a0;
 }
@@ -65,9 +65,9 @@
   --tx-faint:     #9ca0b0;
   --tx-dim:       #acb0be;
   --tx-ghost:     #ccd0da;
-  --accent:       #8839ef;
-  --accent-fg:    #eff1f5;
-  --accent-glow:  rgba(136, 57, 239, 0.18);
+  --accent:       #1a1a1a;
+  --accent-fg:    #ffffff;
+  --accent-glow:  rgba(0, 0, 0, 0.12);
   --success:      #40a02b;
   --success-fg:   #eff1f5;
   --success-bg:   #e6f4e3;
@@ -79,11 +79,11 @@
   --shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.1);
   --shadow-lg:    0 20px 60px rgba(0, 0, 0, 0.15);
-  --btn-primary-from:   #8839ef;
-  --btn-primary-to:     #6d28d9;
+  --btn-primary-from:   #1a1a1a;
+  --btn-primary-to:     #383838;
   --btn-primary-color:  #ffffff;
-  --btn-primary-border: rgba(136, 57, 239, 0.35);
-  --btn-primary-glow:   rgba(136, 57, 239, 0.2);
+  --btn-primary-border: rgba(0, 0, 0, 0.25);
+  --btn-primary-glow:   rgba(0, 0, 0, 0.12);
   --btn-success-from: #4f9e49;
   --btn-success-to:   #40a02b;
   --add-btn-bg:   #f3f5f9;
@@ -91,7 +91,7 @@
   --add-btn-bg-active: #dde3ee;
   --add-btn-border: #c9cfdb;
   --add-btn-fg:   #4c4f69;
-  --add-btn-hover-fg: #8839ef;
+  --add-btn-hover-fg: #1a1a1a;
   --navbar-bg: rgba(239, 241, 245, 0.90);
   --navbar-border: rgba(76, 79, 105, 0.08);
   --navbar-divider: rgba(76, 79, 105, 0.10);

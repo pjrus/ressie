@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import CreateResumeModal from './CreateResumeModal.jsx';
 import ImportResumeModal from './ImportResumeModal.jsx';
+import HelpModal from './HelpModal.jsx';
 import QuickActionsMenu from './QuickActionsMenu.jsx';
 import {
   updateResumeMeta,
@@ -39,6 +40,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
   const [editTagsId, setEditTagsId] = useState(null);
   const [tagInput, setTagInput] = useState('');
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   // Filter resumes
   let filtered = resumesList.filter(r => {
@@ -249,7 +251,15 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
       {/* Toolbar */}
       <div className="toolbar">
         <div className="toolbar-group toolbar-group--left">
-          <span className="toolbar-title">ressie - Dashboard</span>
+          <span className="toolbar-title">RESSIE - Dashboard</span>
+          <button
+            className="theme-toggle theme-toggle--inline"
+            onClick={() => setShowHelpModal(true)}
+            title="Help — import your CV"
+            style={{ fontSize: '13px', fontWeight: '600', width: '28px', height: '28px' }}
+          >
+            ?
+          </button>
         </div>
 
         <div className="toolbar-group toolbar-group--right">
@@ -279,7 +289,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
         {/* Empty state */}
         {resumesList.length === 0 ? (
           <div className="empty-state">
-            <h2>Welcome to ressie</h2>
+            <h2>Welcome to RESSIE</h2>
             <p>Create your first resume to get started</p>
             <button className="btn btn-primary" onClick={() => setShowCreateModal(true)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -293,7 +303,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
           <>
             {/* Controls - moved above recent activity for mobile UX */}
             <section className="dashboard-controls">
-              <button className="btn btn-primary" onClick={() => setShowCreateModal(true)}>
+              <button className="btn btn-secondary" onClick={() => setShowCreateModal(true)}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <line x1="5" y1="12" x2="19" y2="12" />
@@ -594,6 +604,9 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
           onClose={() => setShowImportModal(false)}
           onImportSuccess={handleImportResume}
         />
+      )}
+      {showHelpModal && (
+        <HelpModal onClose={() => setShowHelpModal(false)} />
       )}
     </div>
   );

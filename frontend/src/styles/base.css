@@ -273,6 +273,30 @@ html, body, #root {
   margin: 0;
 }
 
+:root .compile-button {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--tx-primary);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: none;
+}
+
+:root .compile-button:hover {
+  background: rgba(255, 255, 255, 0.10);
+  box-shadow: none;
+}
+
+[data-theme="light"] .compile-button {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+[data-theme="light"] .compile-button:hover {
+  background: #f0f0f0;
+  box-shadow: none;
+}
+
 /* ── Save button state indicators ──────────────────────────────────────────── */
 .save-button {
   display: flex;
@@ -280,12 +304,22 @@ html, body, #root {
   gap: 6px;
   transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  min-width: 94px;
 }
 
 .save-button-text {
   display: inline-block;
-  min-width: 60px;
+}
+
+:root .save-button {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--tx-primary);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: none;
+}
+
+:root .save-button:hover {
+  background: rgba(255, 255, 255, 0.10);
+  box-shadow: none;
 }
 
 .save-button.btn-saving {
