@@ -65,7 +65,7 @@
 }
 
 .activity-item:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   border-color: var(--accent);
 }
 
@@ -192,9 +192,10 @@
 }
 
 .resume-card:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   border-color: var(--accent);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 
 .card-header {
@@ -466,7 +467,7 @@
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
   max-width: 400px;
   width: 90%;
   max-height: 90vh;
@@ -510,7 +511,7 @@
 }
 
 .modal-close:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   color: var(--tx-primary);
 }
 
@@ -593,7 +594,7 @@
 }
 
 .template-option:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   border-color: var(--accent);
 }
 
@@ -654,7 +655,7 @@
 }
 
 .card-menu-btn:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   color: var(--tx-primary);
 }
 
@@ -667,7 +668,7 @@
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-md);
   z-index: 10;
   min-width: 160px;
   overflow: hidden;
@@ -691,7 +692,7 @@
 }
 
 .quick-action-item:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   color: var(--accent);
 }
 
@@ -722,7 +723,7 @@
 }
 
 .btn-secondary:hover {
-  background: var(--border);
+  background: var(--bg-hover);
   border-color: var(--accent);
 }
 
@@ -781,10 +782,10 @@
 /* ── Error message in modal ──────────────────────────────────────────────── */
 .import-error {
   padding: 12px;
-  background: rgba(231, 111, 109, 0.1);
-  border-left: 3px solid #e76f6d;
+  background: var(--error-bg);
+  border-left: 3px solid var(--error);
   border-radius: 4px;
-  color: #e76f6d;
+  color: var(--error);
   font-size: 12px;
   margin: 12px 0;
   line-height: 1.4;
@@ -793,10 +794,10 @@
 /* ── Success message in modal ────────────────────────────────────────────── */
 .import-success {
   padding: 12px;
-  background: rgba(165, 214, 167, 0.1);
-  border-left: 3px solid #a5d6a7;
+  background: var(--success-bg);
+  border-left: 3px solid var(--success);
   border-radius: 4px;
-  color: #2e7d32;
+  color: var(--success);
   font-size: 12px;
   margin: 12px 0;
   line-height: 1.4;

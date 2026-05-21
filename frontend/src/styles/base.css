@@ -93,8 +93,8 @@ html, body, #root {
   min-width: 0;
   height: 36px;
 }
-.template-select:hover { border-color: rgba(203, 166, 247, 0.45); box-shadow: 0 0 0 1px rgba(203, 166, 247, 0.08); }
-.template-select:focus { border-color: var(--accent); background: var(--navbar-surface-hover); box-shadow: 0 0 0 2px rgba(203, 166, 247, 0.08); }
+.template-select:hover { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-glow); }
+.template-select:focus { border-color: var(--accent); background: var(--navbar-surface-hover); box-shadow: 0 0 0 2px var(--accent-glow); }
 .template-select option { background: var(--bg-surface); color: var(--tx-primary); }
 
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
@@ -118,15 +118,15 @@ html, body, #root {
 .btn:active   { transform: translateY(0); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
 
-.toolbar .btn-primary {
-  background: linear-gradient(135deg, #9b5cf7, #7c3aed);
-  color: #ffffff;
-  border-color: rgba(168, 130, 255, 0.18);
-  box-shadow: 0 0 15px rgba(168, 130, 255, 0.2);
+.btn-primary {
+  background: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to));
+  color: var(--btn-primary-color);
+  border-color: var(--btn-primary-border);
+  box-shadow: 0 0 14px var(--btn-primary-glow);
 }
 
-.toolbar .btn-primary:hover {
-  box-shadow: 0 0 18px rgba(168, 130, 255, 0.28);
+.btn-primary:hover {
+  box-shadow: 0 0 20px var(--btn-primary-glow);
 }
 
 .toolbar .btn-secondary,
@@ -139,19 +139,19 @@ html, body, #root {
 .toolbar .btn-secondary:hover,
 .toolbar .btn-export:hover {
   background: var(--navbar-surface-hover);
-  border-color: rgba(203, 166, 247, 0.35);
+  border-color: var(--accent-glow);
   color: var(--tx-primary);
 }
 
-.toolbar .btn-success {
-  background: linear-gradient(135deg, #4f9e49, #40a02b);
+.btn-success {
+  background: linear-gradient(135deg, var(--btn-success-from), var(--btn-success-to));
   color: var(--success-fg);
-  border-color: rgba(64, 160, 43, 0.18);
-  box-shadow: 0 0 14px rgba(64, 160, 43, 0.14);
+  border-color: var(--success-glow);
+  box-shadow: 0 0 14px var(--success-glow);
 }
 
-.toolbar .btn-success:hover {
-  box-shadow: 0 0 18px rgba(64, 160, 43, 0.18);
+.btn-success:hover {
+  box-shadow: 0 0 22px var(--success-glow);
 }
 
 .toolbar .btn:disabled {
@@ -302,7 +302,7 @@ html, body, #root {
 .save-button.btn-saved {
   background: var(--success);
   color: var(--success-fg);
-  box-shadow: 0 0 12px rgba(166, 227, 161, 0.3);
+  box-shadow: 0 0 12px var(--success-glow);
 }
 
 .save-button.btn-error {

@@ -29,7 +29,7 @@
   font-weight: 700;
   letter-spacing: 0.9px;
   text-transform: uppercase;
-  color: var(--tx-dim);
+  color: var(--tx-primary);
   background: transparent;
   border-bottom: 0;
 }
@@ -108,7 +108,7 @@
   font-weight: 600;
   transition: background 0.12s, color 0.12s;
 }
-.pdf-ctrl-btn:hover:not(:disabled) { background: var(--border); color: var(--tx-primary); }
+.pdf-ctrl-btn:hover:not(:disabled) { background: var(--bg-hover); color: var(--tx-primary); }
 .pdf-ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .pdf-zoom-label {
@@ -136,7 +136,7 @@
 }
 
 .pdf-page {
-  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-sm);
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -272,7 +272,7 @@
   padding: 0;
   touch-action: none;
 }
-.drag-handle:hover  { color: var(--tx-secondary); background: var(--border); }
+.drag-handle:hover  { color: var(--tx-secondary); background: var(--bg-hover); }
 .drag-handle:active { cursor: grabbing; }
 
 .drag-handle-placeholder { width: 20px; flex-shrink: 0; }
@@ -289,8 +289,8 @@
   border-radius: 4px;
   min-width: 0;
 }
-.section-title-input:hover { background: var(--border); }
-.section-title-input:focus { background: var(--border); }
+.section-title-input:hover { background: var(--bg-hover); }
+.section-title-input:focus { background: var(--bg-hover); }
 
 .section-title-static {
   flex: 1;
@@ -316,7 +316,7 @@
   flex-shrink: 0;
   transition: background 0.12s, color 0.12s;
 }
-.icon-btn:hover        { background: var(--border); color: var(--tx-primary); }
+.icon-btn:hover        { background: var(--bg-hover); color: var(--tx-primary); }
 .icon-btn.danger:hover { background: var(--error-bg); color: var(--error); }
 .icon-btn.sm           { width: 20px; height: 20px; border-radius: 4px; }
 
@@ -511,7 +511,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow-md);
 }
 
 .dropdown--floating {
@@ -530,7 +530,7 @@
   cursor: pointer;
   transition: background 0.1s;
 }
-.dropdown-item:hover { background: var(--border); color: var(--accent); }
+.dropdown-item:hover { background: var(--bg-hover); color: var(--accent); }
 
 /* ── Date range picker ────────────────────────────────────────────────────── */
 .date-range-picker {
