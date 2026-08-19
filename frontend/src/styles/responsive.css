@@ -213,15 +213,19 @@
   }
 
   .activity-list::-webkit-scrollbar-thumb {
-    background: var(--border-sub);
-    border-radius: 2px;
+    background: var(--border-muted);
+    border-radius: 0;
   }
 
+  /* The recent list turns into a horizontal strip here, so each entry needs a
+     full hairline box rather than the single rule it carries when stacked. */
   .activity-item {
     flex: 0 0 auto;
     width: 160px;
     min-width: 160px;
     padding: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
   }
 
   .activity-name {
@@ -306,17 +310,19 @@
   }
 
   /* Add section: bottom sheet on mobile */
+  /* Square, like every other surface — the sheet is a drawer of the ledger
+     sliding open, not a rounded card. */
   .add-section-sheet {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     z-index: 1000;
-    background: var(--bg-base);
-    border-top: 1px solid var(--border-sub);
-    border-radius: 16px 16px 0 0;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    border-radius: 0;
     padding: 8px 0 32px;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-lg);
     animation: sheetSlideUp 0.22s ease;
   }
 
@@ -330,9 +336,9 @@
     content: '';
     display: block;
     width: 36px;
-    height: 4px;
-    background: var(--border-sub);
-    border-radius: 2px;
+    height: 3px;
+    background: var(--border-muted);
+    border-radius: 0;
     margin: 8px auto 0;
   }
 
@@ -347,7 +353,7 @@
     cursor: pointer;
     color: var(--tx-secondary);
     padding: 8px 14px 4px;
-    border-bottom: 1px solid var(--border-sub);
+    border-bottom: 1px solid var(--border);
     margin-bottom: 4px;
   }
 
@@ -362,8 +368,8 @@
   }
 
   .add-section-sheet .dropdown-item:active {
-    background: var(--border);
-    color: var(--accent);
+    background: var(--accent-wash);
+    color: var(--accent-ink);
   }
 
   /* Backdrop for bottom sheet */
@@ -371,7 +377,7 @@
     position: fixed;
     inset: 0;
     z-index: 999;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(21, 23, 28, 0.45);
   }
 
   .add-section-wrap {
@@ -396,7 +402,7 @@
   .mobile-drawer-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(21, 23, 28, 0.45);
     z-index: 1000;
   }
 
@@ -408,12 +414,12 @@
     bottom: 0;
     width: 260px;
     max-width: 85vw;
-    background: var(--bg-base);
-    border-left: 1px solid var(--border-sub);
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border);
     z-index: 1001;
     display: flex;
     flex-direction: column;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.25);
+    box-shadow: var(--shadow-lg);
     animation: drawerSlideIn 0.2s ease;
   }
 
@@ -427,9 +433,11 @@
     align-items: center;
     justify-content: space-between;
     padding: 14px 16px;
-    border-bottom: 1px solid var(--border-sub);
-    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-display);
+    font-size: 15px;
     font-weight: 600;
+    letter-spacing: -0.018em;
     color: var(--tx-primary);
   }
 
@@ -442,20 +450,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
 
   .mobile-drawer-close:hover {
-    background: var(--border);
+    background: var(--bg-overlay);
     color: var(--tx-primary);
   }
 
   .mobile-drawer-section-label {
     padding: 10px 16px 4px;
+    font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.09em;
     color: var(--tx-secondary);
   }
 
@@ -469,13 +478,15 @@
     border: none;
     cursor: pointer;
     color: var(--tx-primary);
+    font-family: var(--font-sans);
     font-size: 14px;
     text-align: left;
-    transition: background 0.1s;
+    transition: background 0.1s, color 0.1s;
   }
 
   .mobile-drawer-item:hover:not(:disabled) {
-    background: var(--border);
+    background: var(--accent-wash);
+    color: var(--accent-ink);
   }
 
   .mobile-drawer-item:disabled {

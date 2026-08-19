@@ -256,7 +256,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
             className="theme-toggle theme-toggle--inline"
             onClick={() => setShowHelpModal(true)}
             title="Help — import your CV"
-            style={{ fontSize: '13px', fontWeight: '600', width: '28px', height: '28px' }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 500, width: '28px', height: '28px' }}
           >
             ?
           </button>
@@ -581,7 +581,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={() => setDeleteConfirmId(null)}>Cancel</button>
-              <button className="btn" style={{ background: 'var(--error)', color: 'var(--tx-primary)' }} onClick={handleDeleteConfirm}>Delete</button>
+              <button className="btn btn-danger" onClick={handleDeleteConfirm}>Delete</button>
             </div>
           </div>
         </div>

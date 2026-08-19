@@ -10,7 +10,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 24px;
+  padding: 32px;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
 }
@@ -25,13 +25,16 @@
 }
 
 .empty-state h2 {
+  font-family: var(--font-display);
   font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
   color: var(--tx-primary);
 }
 
 .empty-state p {
   font-size: 14px;
-  color: var(--tx-muted);
+  color: var(--tx-secondary);
 }
 
 /* ── Recent Activity ──────────────────────────────────────────────────────── */
@@ -39,34 +42,42 @@
   margin-bottom: 32px;
 }
 
+/* Section headings are eyebrows: the ledger names its columns quietly. */
 .recent-activity h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--tx-primary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--tx-secondary);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
 }
 
 .activity-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
+/* Ruled rows rather than detached tiles — one hairline between each entry. */
 .activity-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  padding: 11px 12px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.12s, color 0.12s;
 }
 
 .activity-item:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent);
+  background: var(--bg-surface);
+  color: var(--accent);
 }
 
 .activity-info {
@@ -74,15 +85,20 @@
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  min-width: 0;
 }
 
 .activity-name {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--tx-primary);
 }
 
+.activity-item:hover .activity-name { color: var(--accent); }
+
 .activity-time {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 11px;
   color: var(--tx-muted);
 }
@@ -90,8 +106,8 @@
 /* ── Dashboard Controls ───────────────────────────────────────────────────── */
 .dashboard-controls {
   display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
   align-items: center;
 }
@@ -99,69 +115,65 @@
 .search-input {
   flex: 1;
   min-width: 200px;
-  padding: 8px 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 12px;
+  height: 36px;
+  padding: 0 12px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
   color: var(--tx-primary);
   outline: none;
-  transition: border-color 0.15s;
-  font-family: inherit;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
 
-.search-input::placeholder {
-  color: var(--tx-faint);
-}
-
-.search-input:hover {
-  border-color: var(--border-muted);
-}
-
+.search-input::placeholder { color: var(--tx-faint); }
+.search-input:hover { border-color: var(--tx-secondary); }
 .search-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .sort-select {
-  padding: 8px 12px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 12px;
+  height: 36px;
+  padding: 0 12px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
   color: var(--tx-primary);
   outline: none;
   cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.15s;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
 
-.sort-select:hover {
-  border-color: var(--border-muted);
-}
-
+.sort-select:hover { border-color: var(--tx-secondary); }
 .sort-select:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 /* ── Filter buttons ───────────────────────────────────────────────────────── */
 .filter-buttons {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 6px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 6px 12px;
+  height: 28px;
+  padding: 0 12px;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 600;
-  color: var(--tx-primary);
+  font-weight: 500;
+  color: var(--tx-secondary);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  font-family: inherit;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 
 .filter-btn:hover {
@@ -169,6 +181,7 @@
   color: var(--accent);
 }
 
+/* Selection is the one thing that earns a solid ultramarine fill. */
 .filter-btn.active {
   background: var(--accent);
   border-color: var(--accent);
@@ -182,20 +195,22 @@
   gap: 16px;
 }
 
+/* Lifted white on warm paper, separated by a hairline; the ambient shadow is
+   barely there. Only hover escalates it — a real lift off the page. */
 .resume-card {
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 14px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
 }
 
 .resume-card:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--accent-hairline);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .card-header {
@@ -203,12 +218,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .card-header h3 {
-  font-size: 14px;
+  font-family: var(--font-display);
+  font-size: 15px;
   font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.018em;
   color: var(--tx-primary);
   margin: 0;
   flex: 1;
@@ -216,7 +234,7 @@
 }
 
 .pin-badge {
-  font-size: 14px;
+  font-size: 13px;
   flex-shrink: 0;
 }
 
@@ -224,22 +242,30 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-size: 11px;
 }
 
+/* A template name is a category, not a status or the brand — so it stays
+   neutral. Colour in this system reports; it does not label. */
 .badge {
   display: inline-block;
-  padding: 3px 6px;
-  background: var(--accent);
-  color: var(--accent-fg);
-  border-radius: 4px;
-  font-weight: 600;
-  text-transform: uppercase;
+  padding: 4px 6px;
+  background: var(--bg-overlay);
+  color: var(--tx-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 .date {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   color: var(--tx-muted);
 }
 
@@ -250,10 +276,10 @@
   margin: 12px 0;
   background-size: cover;
   background-position: top center;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   background-color: var(--bg-overlay);
-  border: 1px solid var(--border-muted);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -264,11 +290,6 @@
   height: 100%;
   object-fit: cover;
   cursor: pointer;
-  transition: transform 0.15s;
-}
-
-.card-preview img:hover {
-  transform: scale(1.02);
 }
 
 /* ── Tags ─────────────────────────────────────────────────────────────────── */
@@ -286,20 +307,22 @@
   min-height: 24px;
 }
 
+/* Square chips, not pills — no rounded corner survives anywhere in the system. */
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 7px;
-  background: var(--border-sub);
-  color: var(--tx-muted);
-  border-radius: 999px;
+  padding: 3px 7px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--border);
+  color: var(--tx-secondary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
   font-size: 10px;
+  letter-spacing: 0.04em;
 }
 
-.tag--removable {
-  padding-right: 4px;
-}
+.tag--removable { padding-right: 4px; }
 
 .tag-remove {
   background: none;
@@ -309,8 +332,8 @@
   font-size: 13px;
   line-height: 1;
   padding: 0 1px;
-  opacity: 0.6;
-  transition: opacity 0.15s;
+  opacity: 0.7;
+  transition: opacity 0.12s, color 0.12s;
 }
 
 .tag-remove:hover {
@@ -323,27 +346,25 @@
   align-items: center;
   justify-content: center;
   background: none;
-  border: 1px solid var(--border-sub);
-  border-radius: 999px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   color: var(--tx-muted);
   cursor: pointer;
-  padding: 2px 5px;
-  opacity: 0.5;
-  transition: opacity 0.15s, border-color 0.15s;
+  padding: 3px 5px;
+  transition: border-color 0.12s, color 0.12s;
 }
 
 .tag-edit-btn:hover {
-  opacity: 1;
   border-color: var(--accent);
   color: var(--accent);
 }
 
 .card-tag-editor {
-  margin-top: 6px;
+  margin-top: 8px;
   padding: 8px;
   background: var(--bg-overlay);
-  border: 1px solid var(--border-sub);
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
 }
 
 .tag-editor-pills {
@@ -357,7 +378,6 @@
 .tag-editor-empty {
   font-size: 11px;
   color: var(--tx-muted);
-  opacity: 0.6;
 }
 
 .tag-input-row {
@@ -367,22 +387,25 @@
 
 .tag-input {
   flex: 1;
-  padding: 4px 8px;
+  padding: 5px 8px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-sub);
-  border-radius: 4px;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
   color: var(--tx-primary);
+  font-family: var(--font-sans);
   font-size: 12px;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
 
 .tag-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .tag-add-btn {
-  padding: 4px 10px;
+  padding: 0 10px;
+  height: 28px;
   font-size: 12px;
 }
 
@@ -392,14 +415,17 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   padding: 6px 0;
 }
 
 .tag-filter-label {
-  font-size: 11px;
-  color: var(--tx-muted);
-  opacity: 0.7;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--tx-secondary);
   white-space: nowrap;
 }
 
@@ -407,14 +433,15 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 4px 10px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-sub);
-  border-radius: 999px;
-  color: var(--tx-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--tx-secondary);
+  font-family: var(--font-mono);
   font-size: 11px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 
 .tag-filter-pill:hover {
@@ -422,11 +449,13 @@
   color: var(--accent);
 }
 
+/* Selected filters take the wash-and-ink pairing rather than a full fill, so
+   a row of them doesn't shout over the cards beneath. */
 .tag-filter-pill.active {
-  background: var(--accent);
+  background: var(--accent-wash);
   border-color: var(--accent);
-  color: var(--bg-base);
-  font-weight: 600;
+  color: var(--accent-ink);
+  font-weight: 500;
 }
 
 .tag-filter-x {
@@ -438,16 +467,14 @@
   background: none;
   border: none;
   color: var(--tx-muted);
+  font-family: var(--font-sans);
   font-size: 11px;
   cursor: pointer;
-  opacity: 0.6;
   text-decoration: underline;
   padding: 2px 4px;
 }
 
-.tag-filter-clear:hover {
-  opacity: 1;
-}
+.tag-filter-clear:hover { color: var(--accent); }
 
 /* ── Modal ────────────────────────────────────────────────────────────────── */
 .modal-overlay {
@@ -456,19 +483,20 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(21, 23, 28, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
 
+/* A true overlay — one of the few places shadow is allowed to escalate. */
 .modal {
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  max-width: 400px;
+  max-width: 420px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -486,8 +514,11 @@
 }
 
 .modal-header h2 {
-  font-size: 16px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.018em;
   margin: 0;
   color: var(--tx-primary);
 }
@@ -501,17 +532,17 @@
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   color: var(--tx-secondary);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
-  font-family: inherit;
+  transition: background 0.12s, color 0.12s;
+  font-family: var(--font-sans);
 }
 
 .modal-close:hover {
-  background: var(--bg-hover);
+  background: var(--bg-overlay);
   color: var(--tx-primary);
 }
 
@@ -535,39 +566,37 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .form-group label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--tx-primary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tx-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.09em;
 }
 
 .form-input {
-  padding: 8px 12px;
+  height: 36px;
+  padding: 0 12px;
   background: var(--bg-base);
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
   font-size: 13px;
   color: var(--tx-primary);
   outline: none;
-  transition: border-color 0.15s;
-  font-family: inherit;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
 
-.form-input::placeholder {
-  color: var(--tx-faint);
-}
-
-.form-input:hover {
-  border-color: var(--border-muted);
-}
-
+.form-input::placeholder { color: var(--tx-faint); }
+.form-input:hover { border-color: var(--tx-secondary); }
 .form-input:focus {
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .form-group small {
@@ -578,7 +607,7 @@
 .template-options {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .template-option {
@@ -588,13 +617,18 @@
   padding: 10px;
   background: var(--bg-base);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.12s, border-color 0.12s;
 }
 
 .template-option:hover {
-  background: var(--bg-hover);
+  background: var(--bg-overlay);
+  border-color: var(--accent);
+}
+
+.template-option:has(input:checked) {
+  background: var(--accent-wash);
   border-color: var(--accent);
 }
 
@@ -620,15 +654,11 @@
 .card-title {
   flex: 1;
   cursor: pointer;
+  min-width: 0;
 }
 
-.card-title h3 {
-  margin: 0;
-}
-
-.card-title:hover h3 {
-  color: var(--accent);
-}
+.card-title h3 { margin: 0; }
+.card-title:hover h3 { color: var(--accent); }
 
 .card-actions {
   display: flex;
@@ -646,16 +676,16 @@
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: 6px;
-  color: var(--tx-secondary);
+  border-radius: var(--radius-sm);
+  color: var(--tx-muted);
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
-  font-family: inherit;
+  transition: background 0.12s, color 0.12s;
+  font-family: var(--font-sans);
 }
 
 .card-menu-btn:hover {
-  background: var(--bg-hover);
+  background: var(--bg-overlay);
   color: var(--tx-primary);
 }
 
@@ -667,10 +697,10 @@
   margin-top: 4px;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
   z-index: 10;
-  min-width: 160px;
+  min-width: 168px;
   overflow: hidden;
 }
 
@@ -679,21 +709,21 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 9px 12px;
   background: transparent;
   border: none;
   color: var(--tx-primary);
   cursor: pointer;
+  font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   text-align: left;
-  font-family: inherit;
-  transition: background 0.12s, color 0.12s;
+  transition: background 0.1s, color 0.1s;
 }
 
 .quick-action-item:hover {
-  background: var(--bg-hover);
-  color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent-ink);
 }
 
 .quick-action-item.danger:hover {
@@ -703,56 +733,62 @@
 
 .quick-actions-divider {
   height: 1px;
-  background: var(--border-sub);
+  background: var(--border);
 }
 
 /* ── Secondary button style ───────────────────────────────────────────────── */
+/* A bordered paper surface with no fill: hover darkens the rule, not the
+   ground. */
 .btn-secondary {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   color: var(--tx-primary);
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 13px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: background 0.15s, border-color 0.15s;
+  gap: 6px;
+  transition: background 0.12s, border-color 0.12s;
   white-space: nowrap;
 }
 
-.btn-secondary:hover {
-  background: var(--bg-hover);
-  border-color: var(--accent);
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-overlay);
+  border-color: var(--tx-secondary);
 }
 
-.btn-secondary:active {
-  transform: translateY(1px);
-}
+.btn-secondary:active { transform: translateY(1px); }
 
 .btn-secondary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* ── Import file section styling ──────────────────────────────────────────── */
 .import-file-section {
-  padding: 16px;
+  padding: 20px 16px;
   background: var(--bg-base);
-  border: 2px dashed var(--border);
-  border-radius: 8px;
+  border: 1px dashed var(--border-muted);
+  border-radius: var(--radius-md);
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.12s, background 0.12s, color 0.12s;
   margin: 12px 0;
+  font-family: var(--font-sans);
   font-size: 13px;
-  color: var(--tx-primary);
+  color: var(--tx-secondary);
 }
 
 .import-file-section:hover {
   border-color: var(--accent);
-  background: var(--bg-surface);
+  color: var(--accent);
 }
 
 .import-file-section:disabled {
@@ -763,12 +799,12 @@
 /* ── File selected indicator ──────────────────────────────────────────────── */
 .import-file-selected {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   padding: 12px;
-  background: var(--bg-surface);
+  background: var(--bg-overlay);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   margin: 12px 0;
   font-size: 13px;
   color: var(--tx-primary);
@@ -779,26 +815,27 @@
   color: var(--success);
 }
 
-/* ── Error message in modal ──────────────────────────────────────────────── */
+/* ── Result messages ─────────────────────────────────────────────────────── */
+/* A 3px rail on the leading edge — the sharpest signal in the system, and the
+   only shape flourish it allows itself. */
 .import-error {
-  padding: 12px;
+  padding: 10px 12px;
   background: var(--error-bg);
   border-left: 3px solid var(--error);
-  border-radius: 4px;
+  border-radius: 0;
   color: var(--error);
   font-size: 12px;
   margin: 12px 0;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
-/* ── Success message in modal ────────────────────────────────────────────── */
 .import-success {
-  padding: 12px;
+  padding: 10px 12px;
   background: var(--success-bg);
   border-left: 3px solid var(--success);
-  border-radius: 4px;
+  border-radius: 0;
   color: var(--success);
   font-size: 12px;
   margin: 12px 0;
-  line-height: 1.4;
+  line-height: 1.45;
 }

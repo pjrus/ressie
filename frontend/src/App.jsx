@@ -24,9 +24,11 @@ export default function App() {
   const [isSaving, setIsSaving] = useState(false);
 
   // Theme
+  // Paper is the default ground; dark mode is the inversion, taken only when
+  // the system explicitly asks for it.
   const [theme, setTheme] = useState(
     () => localStorage.getItem('theme') ??
-          (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
   );
 
   // Apply theme

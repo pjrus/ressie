@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 6px 12px;
+  padding: 7px 12px;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
@@ -25,11 +25,13 @@
 
 .pane-label {
   padding: 0;
+  font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.9px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--tx-primary);
+  color: var(--tx-secondary);
   background: transparent;
   border-bottom: 0;
 }
@@ -38,17 +40,18 @@
   height: 32px;
   min-width: 170px;
   max-width: 220px;
-  background-color: var(--bg-overlay);
-  border-color: var(--border);
+  background-color: var(--bg-base);
+  border-color: var(--border-muted);
   color: var(--tx-primary);
 }
 
+/* The split between editing and output is a ruled gutter, not a bar. */
 .divider {
   width: 4px;
   background: var(--border);
   cursor: col-resize;
   flex-shrink: 0;
-  transition: background 0.15s;
+  transition: background 0.12s;
 }
 .divider:hover { background: var(--accent); }
 
@@ -79,7 +82,11 @@
   min-height: 32px;
 }
 
+/* Page counts and zoom levels change constantly; mono keeps the controls from
+   shifting under the cursor as the digits do. */
 .pdf-page-info {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: 11px;
   color: var(--tx-muted);
   white-space: nowrap;
@@ -98,22 +105,23 @@
   min-width: 26px;
   height: 24px;
   padding: 0 4px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   border: none;
   background: transparent;
   color: var(--tx-secondary);
   cursor: pointer;
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-family: inherit;
-  font-weight: 600;
+  font-weight: 500;
   transition: background 0.12s, color 0.12s;
 }
-.pdf-ctrl-btn:hover:not(:disabled) { background: var(--bg-hover); color: var(--tx-primary); }
-.pdf-ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.pdf-ctrl-btn:hover:not(:disabled) { background: var(--bg-overlay); color: var(--tx-primary); }
+.pdf-ctrl-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .pdf-zoom-label {
-  min-width: 36px;
+  min-width: 40px;
   text-align: center;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
@@ -135,9 +143,12 @@
   min-width: min-content;
 }
 
+/* The compiled page is a real sheet lying on the desk — the one place in the
+   product where a drop shadow is describing an actual object. */
 .pdf-page {
-  box-shadow: var(--shadow-sm);
-  border-radius: 2px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -150,8 +161,11 @@
   align-items: center;
   justify-content: center;
   padding: 40px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
   color: var(--tx-muted);
-  font-size: 12px;
 }
 
 .preview-placeholder {
@@ -159,7 +173,7 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  color: var(--tx-ghost);
+  color: var(--tx-dim);
 }
 .preview-placeholder p { font-size: 12px; }
 
@@ -178,16 +192,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
-  border-bottom: 1px solid var(--border-sub);
+  border-bottom: 1px solid var(--border);
   background: var(--bg-surface);
   flex-shrink: 0;
 }
 
 .pdf-fullscreen-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--tx-primary);
-  opacity: 0.7;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--tx-secondary);
 }
 
 .pdf-fullscreen-body {
@@ -203,12 +219,15 @@
 }
 
 /* ── Error panel ──────────────────────────────────────────────────────────── */
+/* A rust rail on the leading edge, and the log itself in the mono face it was
+   written in. */
 .error-panel {
   border-top: 1px solid var(--error);
+  border-left: 3px solid var(--error);
   padding: 8px 14px;
+  font-family: var(--font-mono);
   font-size: 11px;
-  line-height: 1.45;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  line-height: 1.5;
   color: var(--error);
   max-height: min(34vh, 260px);
   overflow-y: auto;
@@ -227,6 +246,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: var(--bg-base);
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
 }
@@ -236,7 +256,7 @@
   flex-shrink: 0;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
 
 .section-card--header .section-card-header { cursor: default; }
@@ -246,15 +266,14 @@
   align-items: center;
   gap: 7px;
   padding: 7px 10px;
-  background: var(--bg-base);
+  background: var(--bg-overlay);
   border-bottom: 1px solid var(--border);
   min-height: 36px;
-  border-radius: 8px 8px 0 0;
+  border-radius: var(--radius-lg);
 }
 
 .section-card-header:last-child {
   border-bottom: none;
-  border-radius: 8px;
 }
 
 .drag-handle {
@@ -263,7 +282,7 @@
   justify-content: center;
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   border: none;
   background: transparent;
   color: var(--tx-dim);
@@ -280,24 +299,33 @@
 .section-title-input {
   flex: 1;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   outline: none;
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
+  letter-spacing: -0.018em;
   color: var(--tx-primary);
-  padding: 2px 4px;
-  border-radius: 4px;
+  padding: 3px 5px;
+  border-radius: var(--radius-sm);
   min-width: 0;
+  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
-.section-title-input:hover { background: var(--bg-hover); }
-.section-title-input:focus { background: var(--bg-hover); }
+.section-title-input:hover { background: var(--bg-surface); border-color: var(--border); }
+.section-title-input:focus {
+  background: var(--bg-surface);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
 
 .section-title-static {
   flex: 1;
+  font-family: var(--font-display);
   font-size: 13px;
   font-weight: 600;
-  color: var(--accent);
-  padding: 2px 4px;
+  letter-spacing: -0.018em;
+  color: var(--tx-primary);
+  padding: 3px 5px;
 }
 
 /* ── Icon buttons ─────────────────────────────────────────────────────────── */
@@ -307,7 +335,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   border: none;
   background: transparent;
   color: var(--tx-faint);
@@ -318,7 +346,7 @@
 }
 .icon-btn:hover        { background: var(--bg-hover); color: var(--tx-primary); }
 .icon-btn.danger:hover { background: var(--error-bg); color: var(--error); }
-.icon-btn.sm           { width: 20px; height: 20px; border-radius: 4px; }
+.icon-btn.sm           { width: 20px; height: 20px; }
 
 /* ── Section body ─────────────────────────────────────────────────────────── */
 .section-body {
@@ -330,9 +358,9 @@
 
 /* ── Entry cards ──────────────────────────────────────────────────────────── */
 .entry-card {
-  background: var(--bg-overlay);
-  border: 1px solid var(--border-sub);
-  border-radius: 6px;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   padding: 8px 10px 10px;
   display: flex;
   flex-direction: column;
@@ -354,8 +382,11 @@
 }
 
 .entry-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
   color: var(--tx-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -373,42 +404,47 @@
 .field-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  gap: 7px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   grid-column: span 2;
 }
 .field--half { grid-column: span 1; }
 
 .field-label {
+  font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--tx-secondary);
   user-select: none;
 }
 
 .field-input {
-  background: var(--bg-base);
+  background: var(--bg-surface);
   border: 1px solid var(--border-muted);
-  border-radius: 5px;
-  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-family: var(--font-sans);
   font-size: 12px;
   color: var(--tx-primary);
   outline: none;
   resize: vertical;
-  font-family: inherit;
   line-height: 1.45;
   width: 100%;
-  transition: border-color 0.12s, background 0.12s;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
-.field-input:hover  { border-color: var(--border-muted); }
-.field-input:focus  { border-color: var(--accent); background: var(--bg-surface); }
+.field-input:hover  { border-color: var(--tx-secondary); }
+.field-input:focus  {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
 .field-input::placeholder { color: var(--tx-faint); }
 .field-input[rows]  { touch-action: auto; }
 
@@ -417,8 +453,8 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding-top: 6px;
-  border-top: 1px solid var(--border-sub);
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
 }
 
 .bullet-list > .field-label { margin-bottom: 2px; }
@@ -429,52 +465,49 @@
   gap: 6px;
 }
 
+/* Square, like every other mark in the system. */
 .bullet-dot {
-  color: var(--tx-dim);
-  padding-top: 6px;
-  font-size: 13px;
+  width: 4px;
+  height: 4px;
+  background: var(--tx-dim);
+  margin-top: 11px;
   flex-shrink: 0;
-  line-height: 1;
+  font-size: 0;
+  overflow: hidden;
 }
 
 .bullet-input { flex: 1; }
 
 /* ── Add buttons ──────────────────────────────────────────────────────────── */
-.add-inline-btn {
-  background: var(--add-btn-bg);
-  border: 1px solid var(--add-btn-border);
-  border-radius: 5px;
-  color: var(--add-btn-fg);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
-  margin-top: 2px;
-  width: 100%;
-  text-align: left;
-  font-family: inherit;
-}
-.add-inline-btn:hover { background: var(--add-btn-bg-hover); border-color: var(--accent); color: var(--add-btn-hover-fg); }
-.add-inline-btn:active { background: var(--add-btn-bg-active); }
-
+/* Bordered paper with no fill; hover brings the rule and the label to
+   ultramarine rather than flooding the surface. */
+.add-inline-btn,
 .add-entry-btn {
   background: var(--add-btn-bg);
-  border: 1px solid var(--add-btn-border);
-  border-radius: 6px;
-  color: var(--add-btn-fg);
+  border: 1px dashed var(--add-btn-border);
+  border-radius: var(--radius-sm);
+  color: var(--tx-secondary);
+  font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 600;
-  padding: 6px 12px;
+  font-weight: 500;
+  padding: 7px 12px;
   cursor: pointer;
-  text-align: left;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
   margin-top: 2px;
-  font-family: inherit;
   width: 100%;
+  text-align: left;
 }
-.add-entry-btn:hover { background: var(--add-btn-bg-hover); border-color: var(--accent); color: var(--add-btn-hover-fg); }
-.add-entry-btn:active { background: var(--add-btn-bg-active); }
+.add-inline-btn:hover,
+.add-entry-btn:hover {
+  background: var(--add-btn-bg-hover);
+  border-color: var(--accent);
+  color: var(--add-btn-hover-fg);
+}
+.add-inline-btn:active,
+.add-entry-btn:active {
+  background: var(--add-btn-bg-active);
+  transform: translateY(1px);
+}
 
 /* ── Add Section dropdown ─────────────────────────────────────────────────── */
 .add-section-wrap {
@@ -485,17 +518,26 @@
 .add-section-btn {
   background: var(--add-btn-bg);
   border: 1px solid var(--add-btn-border);
-  border-radius: 7px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   color: var(--add-btn-fg);
+  font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 600;
-  padding: 8px 16px;
+  font-weight: 500;
+  padding: 9px 16px;
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
   width: 100%;
 }
-.add-section-btn:hover { background: var(--add-btn-bg-hover); border-color: var(--accent); color: var(--add-btn-hover-fg); }
-.add-section-btn:active { background: var(--add-btn-bg-active); }
+.add-section-btn:hover {
+  background: var(--add-btn-bg-hover);
+  border-color: var(--accent);
+  color: var(--add-btn-hover-fg);
+}
+.add-section-btn:active {
+  background: var(--add-btn-bg-active);
+  transform: translateY(1px);
+}
 
 .dropdown-backdrop {
   position: fixed;
@@ -503,15 +545,16 @@
   z-index: 50;
 }
 
+/* A true overlay — shadow escalates because it genuinely leaves the page. */
 .dropdown {
   min-width: 190px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-muted);
-  border-radius: 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 100;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .dropdown--floating {
@@ -525,12 +568,13 @@
   background: transparent;
   border: none;
   color: var(--tx-primary);
+  font-family: var(--font-sans);
   font-size: 12px;
   text-align: left;
   cursor: pointer;
-  transition: background 0.1s;
+  transition: background 0.1s, color 0.1s;
 }
-.dropdown-item:hover { background: var(--bg-hover); color: var(--accent); }
+.dropdown-item:hover { background: var(--accent-wash); color: var(--accent-ink); }
 
 /* ── Date range picker ────────────────────────────────────────────────────── */
 .date-range-picker {
@@ -547,24 +591,30 @@
 }
 
 .date-select {
-  background: var(--bg-base);
+  background: var(--bg-surface);
   border: 1px solid var(--border-muted);
-  border-radius: 5px;
-  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  font-family: var(--font-sans);
   font-size: 12px;
   color: var(--tx-primary);
   outline: none;
-  font-family: inherit;
   cursor: pointer;
-  transition: border-color 0.12s, background 0.12s;
+  transition: border-color 0.12s, box-shadow 0.12s;
 }
-.date-select:hover { border-color: var(--border-muted); }
-.date-select:focus { border-color: var(--accent); background: var(--bg-surface); }
+.date-select:hover { border-color: var(--tx-secondary); }
+.date-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
 .date-select option { background: var(--bg-surface); color: var(--tx-primary); }
 
+/* A year is a figure: set it in mono so the field never reflows. */
 .date-year-input {
-  width: 56px;
+  width: 60px;
   flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .date-separator {
@@ -578,18 +628,23 @@
 .present-badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 9px;
-  background: var(--accent);
-  color: var(--accent-fg);
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 4px 9px;
+  background: var(--accent-wash);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 .present-check-label {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-size: 11px;
   color: var(--tx-secondary);
   cursor: pointer;
@@ -604,7 +659,7 @@
   flex-shrink: 0;
   background: var(--bg-surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -616,19 +671,21 @@
   padding: 9px 12px;
   background: transparent;
   border: none;
-  color: var(--tx-muted);
-  font-size: 12px;
-  font-weight: 600;
+  color: var(--tx-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
   cursor: pointer;
   text-align: left;
   transition: color 0.12s;
-  font-family: inherit;
 }
 .advanced-settings-toggle:hover { color: var(--tx-primary); }
 
 .advanced-settings-body {
   padding: 8px 10px 12px;
-  border-top: 1px solid var(--border-sub);
+  border-top: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -636,6 +693,5 @@
 
 .advanced-hint {
   font-size: 11px;
-  color: var(--tx-faint);
-  font-style: italic;
+  color: var(--tx-muted);
 }

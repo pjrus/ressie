@@ -174,7 +174,7 @@ export default function HelpModal({ onClose }) {
 
         <div className="modal-content" style={{ padding: '0' }}>
           <p style={{ padding: '16px 20px 0', margin: 0, fontSize: '13px', color: 'var(--tx-secondary)', lineHeight: '1.5' }}>
-            Copy a prompt below, paste it into an AI assistant (Claude, ChatGPT, etc.) along with your CV text, then save the output as a <code style={{ fontFamily: 'monospace', fontSize: '12px', background: 'var(--bg-overlay)', padding: '1px 5px', borderRadius: '3px' }}>.json</code> file and use <strong>Import Resume</strong> to load it.
+            Copy a prompt below, paste it into an AI assistant (Claude, ChatGPT, etc.) along with your CV text, then save the output as a <code style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', background: 'var(--bg-overlay)', border: '1px solid var(--border)', padding: '1px 5px' }}>.json</code> file and use <strong>Import Resume</strong> to load it.
           </p>
 
           {/* Tabs */}
@@ -186,12 +186,13 @@ export default function HelpModal({ onClose }) {
                 style={{
                   background: 'none',
                   border: 'none',
-                  borderBottom: activeTab === p.id ? '2px solid var(--tx-primary)' : '2px solid transparent',
+                  borderBottom: activeTab === p.id ? '2px solid var(--accent)' : '2px solid transparent',
                   padding: '8px 14px',
                   marginBottom: '-1px',
+                  fontFamily: 'var(--font-sans)',
                   fontSize: '13px',
-                  fontWeight: activeTab === p.id ? '600' : '400',
-                  color: activeTab === p.id ? 'var(--tx-primary)' : 'var(--tx-secondary)',
+                  fontWeight: activeTab === p.id ? 600 : 400,
+                  color: activeTab === p.id ? 'var(--accent)' : 'var(--tx-secondary)',
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
                 }}
@@ -211,7 +212,6 @@ export default function HelpModal({ onClose }) {
               <pre style={{
                 background: 'var(--bg-overlay)',
                 border: '1px solid var(--border)',
-                borderRadius: '6px',
                 padding: '14px',
                 fontSize: '11.5px',
                 lineHeight: '1.55',
@@ -221,7 +221,7 @@ export default function HelpModal({ onClose }) {
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
                 margin: 0,
-                fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+                fontFamily: 'var(--font-mono)',
               }}>
                 {active.text}
               </pre>
@@ -234,11 +234,13 @@ export default function HelpModal({ onClose }) {
                   right: '10px',
                   background: copiedId === active.id ? 'var(--success)' : 'var(--bg-surface)',
                   color: copiedId === active.id ? 'var(--success-fg)' : 'var(--tx-secondary)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '5px',
-                  padding: '4px 10px',
-                  fontSize: '11px',
-                  fontWeight: '500',
+                  border: `1px solid ${copiedId === active.id ? 'var(--success)' : 'var(--border)'}`,
+                  padding: '5px 10px',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '10px',
+                  fontWeight: 500,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.09em',
                   cursor: 'pointer',
                   transition: 'background 0.15s, color 0.15s',
                 }}

@@ -4,14 +4,61 @@
 html, body, #root {
   height: 100%;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
   font-size: 13px;
   background: var(--bg-base);
   color: var(--tx-primary);
+  -webkit-font-smoothing: antialiased;
   transition: background 0.2s, color 0.2s;
 }
 
+/* Every number in the workspace is set in the mono face, so lock its digits to
+   one width — dates and page counts change constantly and columns of figures
+   must not jitter as they do. */
+.mono,
+.date,
+.activity-time,
+.pdf-page-info,
+.pdf-zoom-label,
+.status-text {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bricolage runs wide and loose at display sizes; pull it back in. */
+h1, h2, h3, .toolbar-title, .empty-state h2, .modal-header h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.018em;
+}
+
+/* The eyebrow: a small mono caps label, used for every field legend, pane
+   label and category chip in the product. */
+.eyebrow,
+.pane-label,
+.field-label,
+.form-group label,
+.badge,
+.mobile-drawer-section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+button, [role="button"] { cursor: pointer; }
+
+::selection { background: var(--accent-wash); color: var(--accent-ink); }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ── Toolbar ──────────────────────────────────────────────────────────────── */
+/* A ruled band across the top of the ledger — solid paper and one hairline,
+   not a pane of frosted glass. */
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -21,27 +68,25 @@ html, body, #root {
   min-height: 60px;
   background: var(--navbar-bg);
   border-bottom: 1px solid var(--navbar-border);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
   flex-shrink: 0;
   position: relative;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset;
 }
 
 .dashboard .toolbar { min-height: 56px; }
 
 .toolbar-title {
-  font-size: 13px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
   color: var(--navbar-text);
-  letter-spacing: 0.25px;
+  letter-spacing: -0.018em;
   margin-right: 4px;
   white-space: nowrap;
 }
 
 .dashboard .toolbar-title {
-  font-size: 13px;
-  letter-spacing: 0.35px;
+  font-size: 15px;
+  letter-spacing: -0.018em;
 }
 
 .toolbar-group {
@@ -56,13 +101,8 @@ html, body, #root {
   flex: 0 0 auto;
 }
 
-.toolbar-group--left {
-  gap: 10px;
-}
-
-.toolbar-group--right {
-  margin-left: auto;
-}
+.toolbar-group--left { gap: 10px; }
+.toolbar-group--right { margin-left: auto; }
 
 .toolbar-divider,
 .zone-divider {
@@ -78,86 +118,103 @@ html, body, #root {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background: var(--navbar-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%238c8fa1' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E") no-repeat right 9px center;
-  border: 1px solid var(--navbar-border);
-  border-radius: 6px;
-  padding: 0 28px 0 12px;
+  background: var(--bg-base) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%235f6670' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E") no-repeat right 9px center;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-md);
+  padding: 0 28px 0 10px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--navbar-text);
   outline: none;
   cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.12s, background 0.12s, box-shadow 0.12s, color 0.12s;
+  font-family: var(--font-sans);
+  transition: border-color 0.12s, box-shadow 0.12s, color 0.12s;
   max-width: 190px;
   min-width: 0;
   height: 36px;
 }
-.template-select:hover { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-glow); }
-.template-select:focus { border-color: var(--accent); background: var(--navbar-surface-hover); box-shadow: 0 0 0 2px var(--accent-glow); }
+.template-select:hover { border-color: var(--tx-secondary); }
+.template-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
 .template-select option { background: var(--bg-surface); color: var(--tx-primary); }
 
 /* ── Buttons ──────────────────────────────────────────────────────────────── */
+/* Flat colour throughout: fill, hairline and text do the work. The press is
+   mechanical — the button nudges a pixel down rather than lifting or scaling. */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
   border: 1px solid transparent;
+  font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, box-shadow 0.12s;
   white-space: nowrap;
   line-height: 1;
   height: 36px;
-  box-shadow: none;
+  box-shadow: var(--shadow-sm);
 }
-.btn:hover    { transform: translateY(-1px); }
-.btn:active   { transform: translateY(0); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; filter: none; }
+.btn:active   { transform: translateY(1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to));
+  background: var(--btn-primary-bg);
   color: var(--btn-primary-color);
   border-color: var(--btn-primary-border);
-  box-shadow: 0 0 14px var(--btn-primary-glow);
 }
 
-.btn-primary:hover {
-  box-shadow: 0 0 20px var(--btn-primary-glow);
+.btn-primary:hover:not(:disabled) {
+  background: var(--btn-primary-bg-hover);
+  border-color: var(--btn-primary-bg-hover);
 }
 
 .toolbar .btn-secondary,
 .toolbar .btn-export {
   background: var(--navbar-surface);
-  border-color: var(--navbar-border);
+  border-color: var(--border);
   color: var(--navbar-text);
 }
 
-.toolbar .btn-secondary:hover,
-.toolbar .btn-export:hover {
+.toolbar .btn-secondary:hover:not(:disabled),
+.toolbar .btn-export:hover:not(:disabled) {
   background: var(--navbar-surface-hover);
-  border-color: var(--accent-glow);
+  border-color: var(--tx-secondary);
   color: var(--tx-primary);
 }
 
 .btn-success {
-  background: linear-gradient(135deg, var(--btn-success-from), var(--btn-success-to));
+  background: var(--btn-success-bg);
   color: var(--success-fg);
-  border-color: var(--success-glow);
-  box-shadow: 0 0 14px var(--success-glow);
+  border-color: var(--btn-success-bg);
 }
 
-.btn-success:hover {
-  box-shadow: 0 0 22px var(--success-glow);
+.btn-success:hover:not(:disabled) {
+  background: var(--btn-success-bg-hover);
+  border-color: var(--btn-success-bg-hover);
 }
 
 .toolbar .btn:disabled {
-  opacity: 0.55;
-  filter: none;
+  opacity: 0.5;
   transform: none;
+}
+
+/* Rust is the destructive fill — the same hue the compile log uses when a
+   build fails, so "this will not go well" reads the same everywhere. */
+.btn-danger {
+  background: var(--error);
+  color: #ffffff;
+  border-color: var(--error);
+}
+
+.btn-danger:hover:not(:disabled) {
+  filter: none;
+  opacity: 0.88;
 }
 
 /* ── Theme toggle button ──────────────────────────────────────────────────── */
@@ -168,20 +225,21 @@ html, body, #root {
   width: 36px;
   height: 36px;
   padding: 0;
-  border-radius: 6px;
-  border: 1px solid var(--navbar-border);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
   background: var(--navbar-surface);
   color: var(--navbar-muted);
+  font-family: var(--font-sans);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
   flex-shrink: 0;
 }
 .theme-toggle:hover {
   background: var(--navbar-surface-hover);
   color: var(--accent);
   border-color: var(--accent);
-  transform: translateY(-1px);
 }
+.theme-toggle:active { transform: translateY(1px); }
 
 .theme-toggle--inline {
   width: 36px;
@@ -227,16 +285,17 @@ html, body, #root {
   white-space: nowrap;
 }
 
-.toolbar-status--inline {
-  margin-left: 6px;
-}
+.toolbar-status--inline { margin-left: 6px; }
 
-.toolbar-group--right {
-  margin-left: auto;
+/* Square, like everything else — the status marker is a chip, not a bead. */
+.status-dot  { width: 7px; height: 7px; border-radius: 0; flex-shrink: 0; }
+.status-text {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--navbar-muted);
 }
-
-.status-dot  { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.status-text { font-size: 11px; color: var(--navbar-muted); }
 
 /* ── Back button ──────────────────────────────────────────────────────────── */
 .back-button {
@@ -269,62 +328,43 @@ html, body, #root {
   min-width: 0;
 }
 
+/* ── Compile & save buttons ───────────────────────────────────────────────── */
+/* Both are bordered paper surfaces at rest; the save button is the one place
+   colour is allowed to shift, because there it reports state. */
 .compile-button {
   margin: 0;
-}
-
-:root .compile-button {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
   color: var(--tx-primary);
-  border-color: rgba(255, 255, 255, 0.10);
-  box-shadow: none;
-}
-
-:root .compile-button:hover {
-  background: rgba(255, 255, 255, 0.10);
-  box-shadow: none;
-}
-
-[data-theme="light"] .compile-button {
-  background: #ffffff;
-  color: #1a1a1a;
   border-color: var(--border);
-  box-shadow: none;
 }
 
-[data-theme="light"] .compile-button:hover {
-  background: #f0f0f0;
-  box-shadow: none;
+.compile-button:hover:not(:disabled) {
+  background: var(--bg-overlay);
+  border-color: var(--tx-secondary);
 }
 
-/* ── Save button state indicators ──────────────────────────────────────────── */
 .save-button {
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
   position: relative;
-}
-
-.save-button-text {
-  display: inline-block;
-}
-
-:root .save-button {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
   color: var(--tx-primary);
-  border-color: rgba(255, 255, 255, 0.10);
-  box-shadow: none;
+  border-color: var(--border);
 }
 
-:root .save-button:hover {
-  background: rgba(255, 255, 255, 0.10);
-  box-shadow: none;
+.save-button:hover:not(:disabled) {
+  background: var(--bg-overlay);
+  border-color: var(--tx-secondary);
 }
+
+.save-button-text { display: inline-block; }
 
 .save-button.btn-saving {
   background: var(--warning);
-  color: var(--tx-primary);
+  border-color: var(--warning);
+  color: #ffffff;
   animation: pulse-saving 1.5s ease-in-out infinite;
 }
 
@@ -335,13 +375,14 @@ html, body, #root {
 
 .save-button.btn-saved {
   background: var(--success);
+  border-color: var(--success);
   color: var(--success-fg);
-  box-shadow: 0 0 12px var(--success-glow);
 }
 
 .save-button.btn-error {
   background: var(--error);
-  color: var(--tx-primary);
+  border-color: var(--error);
+  color: #ffffff;
   animation: shake-error 0.5s ease-in-out;
 }
 
@@ -349,4 +390,14 @@ html, body, #root {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-3px); }
   75% { transform: translateX(3px); }
+}
+
+/* ── Motion ───────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

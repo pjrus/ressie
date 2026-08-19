@@ -87,7 +87,7 @@ const ImportResumeModal = ({ onClose, onImportSuccess }) => {
         </div>
 
         <div className="modal-content">
-          <p style={{ marginBottom: '16px', fontSize: '13px', color: 'var(--tx-secondary)' }}>
+          <p style={{ marginBottom: '16px', fontSize: '13px', lineHeight: 1.5, color: 'var(--tx-secondary)' }}>
             Select a JSON file exported from this app to import a resume.
           </p>
 
@@ -136,7 +136,7 @@ const ImportResumeModal = ({ onClose, onImportSuccess }) => {
           )}
 
           {parsedData && !error && !importSuccess && (
-            <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-surface)', borderRadius: '6px', fontSize: '12px', color: 'var(--tx-secondary)' }}>
+            <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-overlay)', border: '1px solid var(--border)', fontSize: '12px', color: 'var(--tx-secondary)' }}>
               <strong>Resume Name:</strong> {parsedData.metadata?.name || 'Unnamed'}
               <br />
               <strong>Template:</strong> {parsedData.metadata?.template || 'Unknown'}

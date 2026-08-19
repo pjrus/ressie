@@ -1,102 +1,142 @@
 /* ── Theme variables ──────────────────────────────────────────────────────── */
-/* Dark theme: Dark Gray */
+/* The Ledger & Drafting Table.
+   Ressie is a workbench you re-enter daily to revise the same few documents, so
+   it reads as ruled paper rather than a dashboard: a faintly warm near-white
+   canvas, pure-white surfaces lifting off it without a shadow doing the work,
+   and hairlines carrying the separation that fills and glows would carry
+   elsewhere. Ultramarine is the only brand signal — every appearance of it is a
+   decision (focus, selection, the active draft), never decoration. Brass, rust
+   and pine are reserved for compile state, so colour reports and does not
+   embellish. Every corner in the system is square. */
+
 :root {
-  --bg-base:      #161616;
-  --bg-surface:   #1e1e1e;
-  --bg-overlay:   #262626;
-  --bg-hover:     #2e2e2e;
-  --border:       #333333;
-  --border-sub:   #2a2a2a;
-  --border-muted: #3a3a3a;
-  --tx-primary:   #ebebeb;
-  --tx-secondary: #a0a0a0;
-  --tx-muted:     #6a6a6a;
-  --tx-faint:     #484848;
-  --tx-dim:       #333333;
-  --tx-ghost:     #242424;
-  --accent:       #e2e4ea;
-  --accent-fg:    #0c0c0c;
-  --accent-glow:  rgba(226, 228, 234, 0.12);
-  --success:      #6fbd6a;
-  --success-fg:   #0c0c0c;
-  --success-bg:   #0e1f0e;
-  --success-glow: rgba(111, 189, 106, 0.18);
-  --warning:      #e0a849;
-  --error:        #f06a82;
-  --error-bg:     #200d11;
-  --scrollbar:    #2e2e2e;
-  --shadow-sm:    0 2px 8px  rgba(0, 0, 0, 0.55);
-  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.60);
-  --shadow-lg:    0 20px 60px rgba(0, 0, 0, 0.70);
-  --btn-primary-from:   #e8e8e8;
-  --btn-primary-to:     #c8c8c8;
-  --btn-primary-color:  #141414;
-  --btn-primary-border: rgba(255, 255, 255, 0.20);
-  --btn-primary-glow:   rgba(255, 255, 255, 0.12);
-  --btn-success-from: #4f9e49;
-  --btn-success-to:   #3d8e38;
-  --add-btn-bg:        #141414;
-  --add-btn-bg-hover:  #1c1c1c;
-  --add-btn-bg-active: #242424;
-  --add-btn-border: var(--border-muted);
-  --add-btn-fg:   var(--tx-primary);
-  --add-btn-hover-fg: var(--accent);
-  --navbar-bg:             rgba(20, 20, 20, 0.85);
-  --navbar-border:         rgba(255, 255, 255, 0.10);
-  --navbar-divider:        rgba(255, 255, 255, 0.13);
-  --navbar-surface:        rgba(255, 255, 255, 0.05);
-  --navbar-surface-hover:  rgba(255, 255, 255, 0.10);
-  --navbar-text:           #ebebeb;
-  --navbar-muted:          #a0a0a0;
+  /* ── Paper ──────────────────────────────────────────────────────────────── */
+  --bg-base:      #fbfbf9;  /* warm paper — the page canvas */
+  --bg-surface:   #ffffff;  /* lifted white — cards, panels, popovers */
+  --bg-overlay:   #f3f3ef;  /* paper shade — recessed and muted fills */
+  --bg-hover:     #ebebe5;
+
+  /* ── Rules ──────────────────────────────────────────────────────────────── */
+  --border:       #e7e7e1;  /* hairline — the default separator */
+  --border-sub:   #eeeee9;  /* a half-step lighter, for internal divisions */
+  --border-muted: #d6d6ce;  /* input line — reserved for form controls */
+
+  /* ── Ink ────────────────────────────────────────────────────────────────── */
+  --tx-primary:   #15171c;
+  --tx-secondary: #5f6670;  /* muted slate — captions, eyebrow labels */
+  --tx-muted:     #7c8492;
+  --tx-faint:     #9aa1ab;  /* placeholders */
+  --tx-dim:       #b6bbc3;
+
+  /* ── Ultramarine: the one brand colour ──────────────────────────────────── */
+  --accent:       #2e35d4;
+  --accent-fg:    #ffffff;
+  --accent-hover: #242ab4;
+  --accent-wash:  #ecedfd;  /* tint ground for selected chips */
+  --accent-ink:   #262ca8;  /* text on that wash */
+  --accent-glow:  rgba(46, 53, 212, 0.35);  /* focus ring only */
+  --accent-hairline: rgba(46, 53, 212, 0.40); /* border tint on hovered cards */
+
+  /* ── Status: these report compile state, nothing else ───────────────────── */
+  --success:      #276b4e;  /* pine — compiled */
+  --success-fg:   #ffffff;
+  --success-bg:   #e8f0ec;
+  --warning:      #a96a0b;  /* brass — working */
+  --error:        #b33a1b;  /* rust — failed */
+  --error-bg:     #f9eae5;
+
+  --scrollbar:    #d6d6ce;
+
+  /* ── Earned shadow. Ambient at rest; escalates only for real elevation. ─── */
+  --shadow-sm:    0 1px 2px 0 rgba(21, 23, 28, 0.05);
+  --shadow-md:    0 4px 12px -2px rgba(21, 23, 28, 0.08);
+  --shadow-lg:    0 16px 40px -12px rgba(21, 23, 28, 0.22);
+
+  /* ── Square by design. Components still ask for a radius by name; the ────
+       answer is zero, so corners stay a one-place, reversible decision. */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+
+  /* ── Type ───────────────────────────────────────────────────────────────── */
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ── Buttons ────────────────────────────────────────────────────────────── */
+  --btn-primary-bg:       var(--accent);
+  --btn-primary-bg-hover: var(--accent-hover);
+  --btn-primary-color:    var(--accent-fg);
+  --btn-primary-border:   var(--accent);
+  --btn-success-bg:       #276b4e;
+  --btn-success-bg-hover: #1f5740;
+
+  --add-btn-bg:        #ffffff;
+  --add-btn-bg-hover:  #f3f3ef;
+  --add-btn-bg-active: #ebebe5;
+  --add-btn-border:    var(--border-muted);
+  --add-btn-fg:        var(--tx-primary);
+  --add-btn-hover-fg:  var(--accent);
+
+  /* ── Ledger header: a ruled band, not a pane of glass ───────────────────── */
+  --navbar-bg:            #ffffff;
+  --navbar-border:        var(--border);
+  --navbar-divider:       var(--border);
+  --navbar-surface:       #ffffff;
+  --navbar-surface-hover: #f3f3ef;
+  --navbar-text:          var(--tx-primary);
+  --navbar-muted:         var(--tx-secondary);
 }
 
-/* Light theme: Catppuccin Latte */
-[data-theme="light"] {
-  --bg-base:      #eff1f5;
-  --bg-surface:   #e6e9ef;
-  --bg-overlay:   #dce0e8;
-  --bg-hover:     #d2d5df;
-  --border:       #ccd0da;
-  --border-sub:   #bcc0cc;
-  --border-muted: #acb0be;
-  --tx-primary:   #4c4f69;
-  --tx-secondary: #6c6f85;
-  --tx-muted:     #8c8fa1;
-  --tx-faint:     #9ca0b0;
-  --tx-dim:       #acb0be;
-  --tx-ghost:     #ccd0da;
-  --accent:       #1a1a1a;
-  --accent-fg:    #ffffff;
-  --accent-glow:  rgba(0, 0, 0, 0.12);
-  --success:      #40a02b;
-  --success-fg:   #eff1f5;
-  --success-bg:   #e6f4e3;
-  --success-glow: rgba(64, 160, 43, 0.18);
-  --warning:      #df8e1d;
-  --error:        #d20f39;
-  --error-bg:     #fce2eb;
-  --scrollbar:    #acb0be;
-  --shadow-sm:    0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md:    0 4px 16px rgba(0, 0, 0, 0.1);
-  --shadow-lg:    0 20px 60px rgba(0, 0, 0, 0.15);
-  --btn-primary-from:   #1a1a1a;
-  --btn-primary-to:     #383838;
-  --btn-primary-color:  #ffffff;
-  --btn-primary-border: rgba(0, 0, 0, 0.25);
-  --btn-primary-glow:   rgba(0, 0, 0, 0.12);
-  --btn-success-from: #4f9e49;
-  --btn-success-to:   #40a02b;
-  --add-btn-bg:   #f3f5f9;
-  --add-btn-bg-hover: #e7ebf3;
-  --add-btn-bg-active: #dde3ee;
-  --add-btn-border: #c9cfdb;
-  --add-btn-fg:   #4c4f69;
-  --add-btn-hover-fg: #1a1a1a;
-  --navbar-bg: rgba(239, 241, 245, 0.90);
-  --navbar-border: rgba(76, 79, 105, 0.08);
-  --navbar-divider: rgba(76, 79, 105, 0.10);
-  --navbar-surface: rgba(255, 255, 255, 0.60);
-  --navbar-surface-hover: rgba(255, 255, 255, 0.84);
-  --navbar-text: #4c4f69;
-  --navbar-muted: #6c6f85;
+/* Dark mode inverts rather than dims: the canvas becomes near-black ink, cards
+   lift a step above it, and ultramarine itself shifts lighter and slightly
+   desaturated to hold contrast on a dark ground rather than reusing the
+   light-mode hex at reduced opacity. Status hues get the same treatment. */
+[data-theme="dark"] {
+  --bg-base:      #0e0f12;
+  --bg-surface:   #17191e;
+  --bg-overlay:   #1d2026;
+  --bg-hover:     #23262c;
+
+  --border:       #262a31;
+  --border-sub:   #1f2229;
+  --border-muted: #2e333b;
+
+  --tx-primary:   #e9eae4;
+  --tx-secondary: #949aa4;
+  --tx-muted:     #7d848e;
+  --tx-faint:     #626973;
+  --tx-dim:       #4a505a;
+
+  --accent:       #9095ff;
+  --accent-fg:    #0b0c10;
+  --accent-hover: #aaaeff;
+  --accent-wash:  #23253b;
+  --accent-ink:   #b7bbff;
+  --accent-glow:  rgba(144, 149, 255, 0.35);
+  --accent-hairline: rgba(144, 149, 255, 0.40);
+
+  --success:      #63b78c;
+  --success-fg:   #0e0f12;
+  --success-bg:   #14251d;
+  --warning:      #d9a441;
+  --error:        #e4744a;
+  --error-bg:     #2a1712;
+
+  --scrollbar:    #2e333b;
+
+  --shadow-sm:    0 1px 2px 0 rgba(0, 0, 0, 0.40);
+  --shadow-md:    0 4px 12px -2px rgba(0, 0, 0, 0.50);
+  --shadow-lg:    0 16px 40px -12px rgba(0, 0, 0, 0.70);
+
+  --btn-success-bg:       #63b78c;
+  --btn-success-bg-hover: #7cc9a1;
+
+  --add-btn-bg:        #17191e;
+  --add-btn-bg-hover:  #1d2026;
+  --add-btn-bg-active: #23262c;
+
+  --navbar-bg:            #121419;
+  --navbar-surface:       #17191e;
+  --navbar-surface-hover: #1d2026;
 }
