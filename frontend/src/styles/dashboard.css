@@ -135,9 +135,12 @@
 }
 
 .sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   height: 36px;
-  padding: 0 12px;
-  background: var(--bg-base);
+  padding: 0 30px 0 12px;
+  background: var(--bg-base) var(--select-chevron) no-repeat right 10px center;
   border: 1px solid var(--border-muted);
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
@@ -147,6 +150,8 @@
   cursor: pointer;
   transition: border-color 0.12s, box-shadow 0.12s;
 }
+
+.sort-select option { background: var(--bg-surface); color: var(--tx-primary); }
 
 .sort-select:hover { border-color: var(--tx-secondary); }
 .sort-select:focus {
