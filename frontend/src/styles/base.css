@@ -36,7 +36,7 @@ h1, h2, h3, .toolbar-title, .empty-state h2, .modal-header h2 {
 .eyebrow,
 .pane-label,
 .field-label,
-.form-group label,
+.form-group > label,
 .badge,
 .mobile-drawer-section-label {
   font-family: var(--font-mono);

@@ -79,7 +79,7 @@
   --add-btn-hover-fg:  var(--accent);
 
   /* ── Ledger header: a ruled band, not a pane of glass ───────────────────── */
-  --navbar-bg:            #ffffff;
+  --navbar-bg:            #f5f5f1;
   --navbar-border:        var(--border);
   --navbar-divider:       var(--border);
   --navbar-surface:       #ffffff;

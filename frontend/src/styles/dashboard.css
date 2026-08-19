@@ -569,7 +569,7 @@
   gap: 7px;
 }
 
-.form-group label {
+.form-group > label {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 500;
@@ -637,8 +637,13 @@
   cursor: pointer;
 }
 
+/* Option rows are prose, not legends — they sit inside .form-group but must
+   not inherit the eyebrow. */
 .template-option span {
+  font-family: var(--font-sans);
   font-size: 13px;
+  text-transform: none;
+  letter-spacing: normal;
   color: var(--tx-primary);
   font-weight: 500;
   flex: 1;

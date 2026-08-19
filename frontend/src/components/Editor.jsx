@@ -513,7 +513,9 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
         {/* PDF preview pane - show on desktop/tablet or when showing PDF on mobile */}
         {!isMobile || showPdfOnMobile ? (
           <div className="pane preview-wrap" style={{ width: isMobile ? '100%' : `${100 - leftWidth}%` }}>
-            <div className="pane-label">PDF Preview</div>
+            <div className="editor-pane-header">
+              <div className="pane-label">PDF Preview</div>
+            </div>
             {pdfUrl ? (
               <PdfViewer ref={pdfViewerRef} file={pdfUrl} />
             ) : (
