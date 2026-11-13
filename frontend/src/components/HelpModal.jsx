@@ -89,7 +89,7 @@ const PROMPTS = [
     description: 'Paste this into any AI chat (Claude, ChatGPT) along with your CV text. The AI will return a JSON file you can import directly.',
     text: `Convert my resume/CV into the JSON format below. Output ONLY the raw JSON — no markdown fences, no explanation.
 
-The "template" field must be one of: "jakes", "awesomecv", or "deedy".
+The "template" field must be one of: "jakes", "awesomecv", "deedy", or "harvard".
 For "id" fields, use short random strings like "a1b2c3".
 For "dateRange", use month+year strings like "Jan 2022" or leave blank. Set "present": true for current roles.
 Only include section types that exist in my CV: education, experience, projects, skills, certifications.

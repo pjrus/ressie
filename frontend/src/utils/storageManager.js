@@ -330,7 +330,7 @@ export function validateResumeJSON(obj, type = 'single') {
       if (!obj.metadata.template) {
         errors.push('metadata.template is required');
       }
-      const validTemplates = ['jakes', 'awesomecv', 'deedy'];
+      const validTemplates = ['jakes', 'awesomecv', 'deedy', 'harvard'];
       if (!validTemplates.includes(obj.metadata.template)) {
         errors.push(`metadata.template must be one of: ${validTemplates.join(', ')}`);
       }

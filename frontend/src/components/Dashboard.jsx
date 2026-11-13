@@ -18,6 +18,7 @@ import { getThumbnail } from '../utils/thumbnailManager.js';
 import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
+import { buildHarvardCV } from '../latex/harvard-builder.js';
 
 const API = '/api';
 
@@ -25,6 +26,7 @@ const TEMPLATE_BUILDERS = {
   jakes: buildLaTeX,
   awesomecv: buildAwesomeCV,
   deedy: buildDeedyResume,
+  harvard: buildHarvardCV,
 };
 
 export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme, toggleTheme }) {

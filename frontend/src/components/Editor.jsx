@@ -5,6 +5,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
+import { buildHarvardCV } from '../latex/harvard-builder.js';
 import { captureAndSaveThumbnail } from '../utils/thumbnailManager.js';
 
 const TEMPLATES = {
@@ -30,6 +31,11 @@ const TEMPLATES = {
       deedyColumnRatio: '0.34,0.66',
       deedySectionSpacing: '8',
     },
+  },
+  harvard: {
+    label: 'Harvard CV',
+    build: buildHarvardCV,
+    defaults: { fontSize: '11', marginTop: '0.6', marginBottom: '0.6', marginLeft: '0.65', marginRight: '0.65' },
   },
 };
 

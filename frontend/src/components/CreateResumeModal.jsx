@@ -4,6 +4,7 @@ const TEMPLATES = [
   { value: 'jakes', label: "Jake's Resume" },
   { value: 'awesomecv', label: 'Awesome-CV' },
   { value: 'deedy', label: 'Deedy Resume' },
+  { value: 'harvard', label: 'Harvard CV' },
 ];
 
 export default function CreateResumeModal({ onClose, onCreate, existingCount }) {
