@@ -19,8 +19,7 @@ import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
 import { buildHarvardCV } from '../latex/harvard-builder.js';
-
-const API = '/api';
+import { compileLatexInBrowser } from '../latex/wasmCompiler.js';
 
 const TEMPLATE_BUILDERS = {
   jakes: buildLaTeX,
@@ -126,18 +125,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
 
     try {
       const source = build(data, settings || {});
-      const res = await fetch(`${API}/compile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source }),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload?.detail || payload?.error || 'Failed to compile PDF');
-      }
-
-      const blob = await res.blob();
+      const { blob } = await compileLatexInBrowser(source);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -146,7 +134,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
       URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Export PDF failed:', err);
-      window.alert(`Export PDF failed: ${err.message || 'Unknown error'}`);
+      window.alert(`Export PDF failed: ${err.detail || err.message || 'Unknown error'}`);
     }
   };
 

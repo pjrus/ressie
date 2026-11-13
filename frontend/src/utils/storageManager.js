@@ -56,6 +56,7 @@ export function saveResumesList(list) {
     localStorage.setItem(STORAGE_KEYS.RESUMES_LIST, JSON.stringify(list));
   } catch (err) {
     console.error('Error saving resumes list:', err);
+    throw err;
   }
 }
 
@@ -125,15 +126,19 @@ export function saveResume(id, data, settings) {
     const payload = { data, settings };
     localStorage.setItem(STORAGE_KEYS.RESUME_DATA(id), JSON.stringify(payload));
 
-    // Update lastEditedAt in metadata
+    // Update lastEditedAt and template in metadata
     const list = loadResumesList();
     const resume = list.find(r => r.id === id);
     if (resume) {
       resume.lastEditedAt = Date.now();
+      if (settings?.template) {
+        resume.template = settings.template;
+      }
       saveResumesList(list);
     }
   } catch (err) {
     console.error(`Error saving resume ${id}:`, err);
+    throw err;
   }
 }
 

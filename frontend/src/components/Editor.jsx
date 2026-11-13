@@ -6,6 +6,7 @@ import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
 import { buildHarvardCV } from '../latex/harvard-builder.js';
+import { compileLatexInBrowser, prewarmLatexCompiler } from '../latex/wasmCompiler.js';
 import { captureAndSaveThumbnail } from '../utils/thumbnailManager.js';
 
 const TEMPLATES = {
@@ -39,7 +40,6 @@ const TEMPLATES = {
   },
 };
 
-const API = '/api';
 const DEBOUNCE_MS = 1500;
 
 export default function Editor({ resumeData, setResumeData, settings, setSettings, onBack, theme, toggleTheme, onSave, isSaving, activeResumeId }) {
@@ -57,27 +57,32 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
 
   const debounceTimer = useRef(null);
   const prevPdfUrl = useRef(null);
+  const compileSeqRef = useRef(0);
   const isDragging = useRef(false);
   const saveStateTimer = useRef(null);
   const pdfViewerRef = useRef(null);
 
+  // Pre-warm the in-browser WASM TeX compiler on editor mount
+  useEffect(() => {
+    prewarmLatexCompiler();
+    return () => {
+      compileSeqRef.current += 1;
+      if (prevPdfUrl.current) {
+        URL.revokeObjectURL(prevPdfUrl.current);
+        prevPdfUrl.current = null;
+      }
+    };
+  }, []);
+
   // ── Compile ────────────────────────────────────────────────────────────────
   const compile = useCallback(async (data, cfg = {}) => {
+    const seq = ++compileSeqRef.current;
     setStatus('compiling');
     setErrorLog('');
     try {
-      const res = await fetch(`${API}/compile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: (TEMPLATES[cfg.template] || TEMPLATES.jakes).build(data, cfg) }),
-      });
-      if (!res.ok) {
-        const { error, detail } = await res.json();
-        setStatus('error');
-        setErrorLog(detail || error);
-        return;
-      }
-      const blob = await res.blob();
+      const source = (TEMPLATES[cfg.template] || TEMPLATES.jakes).build(data, cfg);
+      const { blob } = await compileLatexInBrowser(source);
+      if (seq !== compileSeqRef.current) return;
       const url = URL.createObjectURL(blob);
       if (prevPdfUrl.current) URL.revokeObjectURL(prevPdfUrl.current);
       prevPdfUrl.current = url;
@@ -94,8 +99,9 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
         }, 100);
       }
     } catch (e) {
+      if (seq !== compileSeqRef.current) return;
       setStatus('error');
-      setErrorLog(e.message);
+      setErrorLog(e.detail || e.message);
     }
   }, [activeResumeId]);
 
