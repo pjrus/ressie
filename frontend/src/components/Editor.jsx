@@ -57,6 +57,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
 
   const debounceTimer = useRef(null);
   const prevPdfUrl = useRef(null);
+  const compileSeqRef = useRef(0);
   const isDragging = useRef(false);
   const saveStateTimer = useRef(null);
   const pdfViewerRef = useRef(null);
@@ -64,15 +65,24 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   // Pre-warm the in-browser WASM TeX compiler on editor mount
   useEffect(() => {
     prewarmLatexCompiler();
+    return () => {
+      compileSeqRef.current += 1;
+      if (prevPdfUrl.current) {
+        URL.revokeObjectURL(prevPdfUrl.current);
+        prevPdfUrl.current = null;
+      }
+    };
   }, []);
 
   // ── Compile ────────────────────────────────────────────────────────────────
   const compile = useCallback(async (data, cfg = {}) => {
+    const seq = ++compileSeqRef.current;
     setStatus('compiling');
     setErrorLog('');
     try {
       const source = (TEMPLATES[cfg.template] || TEMPLATES.jakes).build(data, cfg);
       const { blob } = await compileLatexInBrowser(source);
+      if (seq !== compileSeqRef.current) return;
       const url = URL.createObjectURL(blob);
       if (prevPdfUrl.current) URL.revokeObjectURL(prevPdfUrl.current);
       prevPdfUrl.current = url;
@@ -89,6 +99,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
         }, 100);
       }
     } catch (e) {
+      if (seq !== compileSeqRef.current) return;
       setStatus('error');
       setErrorLog(e.detail || e.message);
     }

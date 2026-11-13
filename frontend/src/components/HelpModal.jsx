@@ -26,7 +26,7 @@ const SCHEMA_SNIPPET = `{
             "institution": "",
             "location": "",
             "degree": "",
-            "dateRange": { "start": "Aug 2019", "end": "May 2023", "present": false }
+            "dateRange": { "startMonth": "Aug", "startYear": "2019", "endMonth": "May", "endYear": "2023", "present": false }
           }
         ]
       },
@@ -39,7 +39,7 @@ const SCHEMA_SNIPPET = `{
             "role": "",
             "company": "",
             "location": "",
-            "dateRange": { "start": "Jan 2023", "end": "", "present": true },
+            "dateRange": { "startMonth": "Jan", "startYear": "2023", "endMonth": "", "endYear": "", "present": true },
             "bullets": ["Did X which improved Y by Z%"]
           }
         ]
@@ -53,7 +53,7 @@ const SCHEMA_SNIPPET = `{
             "name": "",
             "tech": "React, Node.js",
             "link": "",
-            "dateRange": { "start": "Mar 2024", "end": "", "present": false },
+            "dateRange": { "startMonth": "Mar", "startYear": "2024", "endMonth": "", "endYear": "", "present": false },
             "bullets": ["Built X using Y"]
           }
         ]
@@ -91,7 +91,7 @@ const PROMPTS = [
 
 The "template" field must be one of: "jakes", "awesomecv", "deedy", or "harvard".
 For "id" fields, use short random strings like "a1b2c3".
-For "dateRange", use month+year strings like "Jan 2022" or leave blank. Set "present": true for current roles.
+For "dateRange", use 3-letter month ("Jan".."Dec") and 4-digit year strings, or leave blank. Set "present": true for current roles.
 Only include section types that exist in my CV: education, experience, projects, skills, certifications.
 
 JSON schema to follow:
@@ -110,7 +110,7 @@ Rules:
 - Output ONLY raw JSON, no markdown or explanation
 - "template": use "jakes" unless I specify otherwise
 - "id" fields: any short unique string (e.g. "e1", "s2", "p3")
-- "dateRange": { "start": "Mon YYYY", "end": "Mon YYYY", "present": true/false }
+- "dateRange": { "startMonth": "Mon", "startYear": "YYYY", "endMonth": "Mon", "endYear": "YYYY", "present": true/false }
 - "bullets": array of achievement strings, each starting with an action verb
 - "skills" entries: { "label": "Category", "value": "comma-separated items" }
 - Only include sections present in my CV

@@ -8,11 +8,5 @@
     "preview": "npm run preview --prefix frontend",
     "install:all": "npm install --prefix frontend --legacy-peer-deps",
     "setup": "npm run install:all"
-  },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "html2canvas": "^1.4.1"
   }
 }
