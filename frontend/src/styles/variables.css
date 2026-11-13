@@ -1,41 +1,41 @@
 /* ── Theme variables ──────────────────────────────────────────────────────── */
 /* The Ledger & Drafting Table.
    Ressie is a workbench you re-enter daily to revise the same few documents, so
-   it reads as ruled paper rather than a dashboard: a faintly warm near-white
-   canvas, pure-white surfaces lifting off it without a shadow doing the work,
-   and hairlines carrying the separation that fills and glows would carry
-   elsewhere. Ultramarine is the only brand signal — every appearance of it is a
-   decision (focus, selection, the active draft), never decoration. Brass, rust
-   and pine are reserved for compile state, so colour reports and does not
-   embellish. Every corner in the system is square. */
+   it reads as ruled paper rather than a dashboard: a pure white canvas in
+   light mode, deep true black in dark mode, and hairlines carrying the
+   separation that fills and glows would carry elsewhere. Dark purple is the
+   sole brand signal — every appearance of it is a decision (focus, selection,
+   the active draft), never decoration. Brass, rust and pine are reserved for
+   compile state, so colour reports and does not embellish. Every corner in
+   the system is square. */
 
 :root {
-  /* ── Paper ──────────────────────────────────────────────────────────────── */
-  --bg-base:      #fbfbf9;  /* warm paper — the page canvas */
-  --bg-surface:   #ffffff;  /* lifted white — cards, panels, popovers */
-  --bg-overlay:   #f3f3ef;  /* paper shade — recessed and muted fills */
-  --bg-hover:     #ebebe5;
+  /* ── Paper (Pure White) ─────────────────────────────────────────────────── */
+  --bg-base:      #ffffff;  /* pure white — the page canvas */
+  --bg-surface:   #ffffff;  /* pure white — cards, panels, popovers */
+  --bg-overlay:   #f7f7f8;  /* neutral light shade — recessed and muted fills */
+  --bg-hover:     #ededef;
 
   /* ── Rules ──────────────────────────────────────────────────────────────── */
-  --border:       #e7e7e1;  /* hairline — the default separator */
-  --border-sub:   #eeeee9;  /* a half-step lighter, for internal divisions */
-  --border-muted: #d6d6ce;  /* input line — reserved for form controls */
+  --border:       #e5e5e7;  /* hairline — the default separator */
+  --border-sub:   #f0f0f2;  /* a half-step lighter, for internal divisions */
+  --border-muted: #d4d4d8;  /* input line — reserved for form controls */
 
   /* ── Ink ────────────────────────────────────────────────────────────────── */
-  --tx-primary:   #15171c;
-  --tx-secondary: #5f6670;  /* muted slate — captions, eyebrow labels */
-  --tx-muted:     #7c8492;
-  --tx-faint:     #9aa1ab;  /* placeholders */
-  --tx-dim:       #b6bbc3;
+  --tx-primary:   #111113;
+  --tx-secondary: #52525b;  /* muted slate — captions, eyebrow labels */
+  --tx-muted:     #71717a;
+  --tx-faint:     #a1a1aa;  /* placeholders */
+  --tx-dim:       #d4d4d8;
 
-  /* ── Ultramarine: the one brand colour ──────────────────────────────────── */
-  --accent:       #2e35d4;
+  /* ── Dark Purple: the one brand colour ──────────────────────────────────── */
+  --accent:       #581c87;
   --accent-fg:    #ffffff;
-  --accent-hover: #242ab4;
-  --accent-wash:  #ecedfd;  /* tint ground for selected chips */
-  --accent-ink:   #262ca8;  /* text on that wash */
-  --accent-glow:  rgba(46, 53, 212, 0.35);  /* focus ring only */
-  --accent-hairline: rgba(46, 53, 212, 0.40); /* border tint on hovered cards */
+  --accent-hover: #45146b;
+  --accent-wash:  #f5f0fa;  /* tint ground for selected chips */
+  --accent-ink:   #45146b;  /* text on that wash */
+  --accent-glow:  rgba(88, 28, 135, 0.25);  /* focus ring only */
+  --accent-hairline: rgba(88, 28, 135, 0.35); /* border tint on hovered cards */
 
   /* ── Status: these report compile state, nothing else ───────────────────── */
   --success:      #276b4e;  /* pine — compiled */
@@ -45,12 +45,12 @@
   --error:        #b33a1b;  /* rust — failed */
   --error-bg:     #f9eae5;
 
-  --scrollbar:    #d6d6ce;
+  --scrollbar:    #d4d4d8;
 
   /* ── Earned shadow. Ambient at rest; escalates only for real elevation. ─── */
-  --shadow-sm:    0 1px 2px 0 rgba(21, 23, 28, 0.05);
-  --shadow-md:    0 4px 12px -2px rgba(21, 23, 28, 0.08);
-  --shadow-lg:    0 16px 40px -12px rgba(21, 23, 28, 0.22);
+  --shadow-sm:    0 1px 2px 0 rgba(17, 17, 19, 0.05);
+  --shadow-md:    0 4px 12px -2px rgba(17, 17, 19, 0.08);
+  --shadow-lg:    0 16px 40px -12px rgba(17, 17, 19, 0.22);
 
   /* ── Square by design. Components still ask for a radius by name; the ────
        answer is zero, so corners stay a one-place, reversible decision. */
@@ -65,7 +65,7 @@
 
   /* Native select arrows can't be styled, so every select draws its own and
      zeroes the platform one. The stroke follows muted slate per theme. */
-  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%235f6670' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%2352525b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
 
   /* ── Buttons ────────────────────────────────────────────────────────────── */
   --btn-primary-bg:       var(--accent);
@@ -76,73 +76,77 @@
   --btn-success-bg-hover: #1f5740;
 
   --add-btn-bg:        #ffffff;
-  --add-btn-bg-hover:  #f3f3ef;
-  --add-btn-bg-active: #ebebe5;
+  --add-btn-bg-hover:  #f5f5f5;
+  --add-btn-bg-active: #ebebec;
   --add-btn-border:    var(--border-muted);
   --add-btn-fg:        var(--tx-primary);
   --add-btn-hover-fg:  var(--accent);
 
   /* ── Ledger header: a ruled band, not a pane of glass ───────────────────── */
-  --navbar-bg:            #f5f5f1;
+  --navbar-bg:            #fafafa;
   --navbar-border:        var(--border);
   --navbar-divider:       var(--border);
   --navbar-surface:       #ffffff;
-  --navbar-surface-hover: #f3f3ef;
+  --navbar-surface-hover: #f2f2f3;
   --navbar-text:          var(--tx-primary);
   --navbar-muted:         var(--tx-secondary);
 }
 
-/* Dark mode inverts rather than dims: the canvas becomes near-black ink, cards
-   lift a step above it, and ultramarine itself shifts lighter and slightly
-   desaturated to hold contrast on a dark ground rather than reusing the
-   light-mode hex at reduced opacity. Status hues get the same treatment. */
+/* Dark mode uses true neutral black surfaces without any purple/blue cast,
+   paired with a deep purple primary button and accessible purple accent for
+   focus rings, active borders, and hover states. */
 [data-theme="dark"] {
-  --bg-base:      #0e0f12;
-  --bg-surface:   #17191e;
-  --bg-overlay:   #1d2026;
-  --bg-hover:     #23262c;
+  --bg-base:      #000000;
+  --bg-surface:   #0a0a0b;
+  --bg-overlay:   #121214;
+  --bg-hover:     #18181b;
 
-  --border:       #262a31;
-  --border-sub:   #1f2229;
-  --border-muted: #2e333b;
+  --border:       #202024;
+  --border-sub:   #161618;
+  --border-muted: #2a2a2e;
 
-  --tx-primary:   #e9eae4;
-  --tx-secondary: #949aa4;
-  --tx-muted:     #7d848e;
-  --tx-faint:     #626973;
-  --tx-dim:       #4a505a;
+  --tx-primary:   #f5f5f5;
+  --tx-secondary: #a1a1aa;
+  --tx-muted:     #71717a;
+  --tx-faint:     #52525b;
+  --tx-dim:       #3f3f46;
 
-  --accent:       #9095ff;
-  --accent-fg:    #0b0c10;
-  --accent-hover: #aaaeff;
-  --accent-wash:  #23253b;
-  --accent-ink:   #b7bbff;
-  --accent-glow:  rgba(144, 149, 255, 0.35);
-  --accent-hairline: rgba(144, 149, 255, 0.40);
+  --accent:       #9333ea;
+  --accent-fg:    #ffffff;
+  --accent-hover: #a855f7;
+  --accent-wash:  #1a0d26;
+  --accent-ink:   #d8b4fe;
+  --accent-glow:  rgba(147, 51, 234, 0.38);
+  --accent-hairline: rgba(147, 51, 234, 0.45);
+
+  --btn-primary-bg:       #6b21a8;
+  --btn-primary-bg-hover: #7e22ce;
+  --btn-primary-color:    #ffffff;
+  --btn-primary-border:   #7e22ce;
 
   --success:      #63b78c;
-  --success-fg:   #0e0f12;
-  --success-bg:   #14251d;
+  --success-fg:   #000000;
+  --success-bg:   #0e1f17;
   --warning:      #d9a441;
   --error:        #e4744a;
-  --error-bg:     #2a1712;
+  --error-bg:     #24110c;
 
-  --scrollbar:    #2e333b;
+  --scrollbar:    #2a2a2e;
 
-  --shadow-sm:    0 1px 2px 0 rgba(0, 0, 0, 0.40);
-  --shadow-md:    0 4px 12px -2px rgba(0, 0, 0, 0.50);
-  --shadow-lg:    0 16px 40px -12px rgba(0, 0, 0, 0.70);
+  --shadow-sm:    0 1px 2px 0 rgba(0, 0, 0, 0.60);
+  --shadow-md:    0 4px 12px -2px rgba(0, 0, 0, 0.75);
+  --shadow-lg:    0 16px 40px -12px rgba(0, 0, 0, 0.85);
 
   --btn-success-bg:       #63b78c;
   --btn-success-bg-hover: #7cc9a1;
 
-  --add-btn-bg:        #17191e;
-  --add-btn-bg-hover:  #1d2026;
-  --add-btn-bg-active: #23262c;
+  --add-btn-bg:        #0a0a0b;
+  --add-btn-bg-hover:  #121214;
+  --add-btn-bg-active: #18181b;
 
-  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23949aa4' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23a1a1aa' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5'/%3E%3C/svg%3E");
 
-  --navbar-bg:            #121419;
-  --navbar-surface:       #17191e;
-  --navbar-surface-hover: #1d2026;
+  --navbar-bg:            #050506;
+  --navbar-surface:       #0c0c0e;
+  --navbar-surface-hover: #161618;
 }
