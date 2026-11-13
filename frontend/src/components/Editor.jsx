@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import FormPane from './FormPane.jsx';
-import PdfViewer from './PdfViewer.jsx';
+import HtmlResumePreview from './HtmlResumePreview.jsx';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
@@ -39,14 +39,7 @@ const TEMPLATES = {
   },
 };
 
-const API = '/api';
-const DEBOUNCE_MS = 1500;
-
 export default function Editor({ resumeData, setResumeData, settings, setSettings, onBack, theme, toggleTheme, onSave, isSaving, activeResumeId }) {
-  const [pdfUrl, setPdfUrl] = useState(null);
-  const [status, setStatus] = useState('idle');
-  const [errorLog, setErrorLog] = useState('');
-  const [autoCompile, setAutoCompile] = useState(true);
   const [leftWidth, setLeftWidth] = useState(52); // percent
   const [saveState, setSaveState] = useState('idle'); // 'idle', 'saving', 'saved', 'error'
   const [saveError, setSaveError] = useState('');
@@ -55,57 +48,20 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 639px)');
 
-  const debounceTimer = useRef(null);
-  const prevPdfUrl = useRef(null);
   const isDragging = useRef(false);
   const saveStateTimer = useRef(null);
   const pdfViewerRef = useRef(null);
 
-  // ── Compile ────────────────────────────────────────────────────────────────
-  const compile = useCallback(async (data, cfg = {}) => {
-    setStatus('compiling');
-    setErrorLog('');
-    try {
-      const res = await fetch(`${API}/compile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: (TEMPLATES[cfg.template] || TEMPLATES.jakes).build(data, cfg) }),
-      });
-      if (!res.ok) {
-        const { error, detail } = await res.json();
-        setStatus('error');
-        setErrorLog(detail || error);
-        return;
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      if (prevPdfUrl.current) URL.revokeObjectURL(prevPdfUrl.current);
-      prevPdfUrl.current = url;
-      setPdfUrl(url);
-      setStatus('ok');
-
-      // Capture thumbnail after successful compilation
-      if (activeResumeId) {
-        // Use a small delay to ensure the PDF is rendered in the viewer
-        setTimeout(() => {
-          captureAndSaveThumbnail(pdfViewerRef, activeResumeId, 0.3).catch(err => {
-            console.error('Failed to capture thumbnail:', err);
-          });
-        }, 100);
-      }
-    } catch (e) {
-      setStatus('error');
-      setErrorLog(e.message);
-    }
-  }, [activeResumeId]);
-
-  // ── Auto-compile ───────────────────────────────────────────────────────────
+  // ── Thumbnail capture (debounced on live HTML preview) ────────────────────
   useEffect(() => {
-    if (!autoCompile) return;
-    clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => compile(resumeData, settings), DEBOUNCE_MS);
-    return () => clearTimeout(debounceTimer.current);
-  }, [resumeData, settings, autoCompile, compile]);
+    if (!activeResumeId) return;
+    const t = setTimeout(() => {
+      captureAndSaveThumbnail(pdfViewerRef, activeResumeId, 0.3).catch((err) => {
+        console.error('Failed to capture thumbnail:', err);
+      });
+    }, 600);
+    return () => clearTimeout(t);
+  }, [resumeData, settings, activeResumeId]);
 
   // ── Download .tex ──────────────────────────────────────────────────────────
   const downloadTex = () => {
@@ -117,12 +73,9 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     URL.revokeObjectURL(url);
   };
 
-  // ── Download PDF ───────────────────────────────────────────────────────────
-  const downloadPdf = async () => {
-    let url = prevPdfUrl.current;
-    if (!url) { await compile(resumeData, settings); url = prevPdfUrl.current; }
-    if (!url) return;
-    Object.assign(document.createElement('a'), { href: url, download: 'resume.pdf' }).click();
+  // ── Export PDF (Browser Print-to-PDF) ──────────────────────────────────────
+  const downloadPdf = () => {
+    window.print();
   };
 
   // ── Resizable divider ──────────────────────────────────────────────────────
@@ -232,24 +185,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
 
           {!isMobile && (
             <>
-              <label className="toggle-label compact auto-toggle">
-                <input
-                  type="checkbox"
-                  checked={autoCompile}
-                  onChange={(e) => setAutoCompile(e.target.checked)}
-                />
-                Auto
-              </label>
-
-              <button
-                className="btn btn-primary compile-button"
-                onClick={() => compile(resumeData, settings)}
-                disabled={status === 'compiling'}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
-                Compile
-              </button>
-
               <button
                 className={`btn save-button ${
                   saveState === 'saving' ? 'btn-saving' :
@@ -294,7 +229,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               <button
                 className="btn btn-export"
                 onClick={downloadPdf}
-                disabled={status === 'compiling'}
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -306,8 +240,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               <button
                 className="btn btn-secondary"
                 onClick={() => setIsFullscreen(true)}
-                disabled={!pdfUrl}
-                title="View PDF fullscreen"
+                title="View preview fullscreen"
               >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
@@ -393,31 +326,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               </button>
             </div>
 
-            <div className="mobile-drawer-section-label">Compile</div>
-
-            <label className="mobile-drawer-item mobile-drawer-toggle">
-              <span className="mobile-drawer-item-label">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-                </svg>
-                Auto-compile
-              </span>
-              <input
-                type="checkbox"
-                checked={autoCompile}
-                onChange={(e) => setAutoCompile(e.target.checked)}
-              />
-            </label>
-
-            <button
-              className="mobile-drawer-item"
-              onClick={() => { compile(resumeData, settings); setDrawerOpen(false); }}
-              disabled={status === 'compiling'}
-            >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-              <span className="mobile-drawer-item-label">Compile</span>
-            </button>
-
             <div className="mobile-drawer-section-label">File</div>
 
             <button
@@ -450,7 +358,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             <button
               className="mobile-drawer-item"
               onClick={() => { downloadPdf(); setDrawerOpen(false); }}
-              disabled={status === 'compiling'}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -479,7 +386,7 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
             </button>
           </div>
           <div className="pdf-fullscreen-body">
-            <PdfViewer file={pdfUrl} />
+            <HtmlResumePreview resumeData={resumeData} settings={settings} />
           </div>
         </div>
       )}
@@ -507,9 +414,6 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
               settings={settings}
               onSettingsChange={setSettings}
             />
-            {status === 'error' && errorLog && (
-              <div className="error-panel">{errorLog}</div>
-            )}
           </div>
         ) : null}
 
@@ -520,19 +424,9 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
         {!isMobile || showPdfOnMobile ? (
           <div className="pane preview-wrap" style={{ width: isMobile ? '100%' : `${100 - leftWidth}%` }}>
             <div className="editor-pane-header">
-              <div className="pane-label">PDF Preview</div>
+              <div className="pane-label">Live Preview</div>
             </div>
-            {pdfUrl ? (
-              <PdfViewer ref={pdfViewerRef} file={pdfUrl} />
-            ) : (
-              <div className="preview-placeholder">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
-                <p>Hit Compile to see preview</p>
-              </div>
-            )}
+            <HtmlResumePreview ref={pdfViewerRef} resumeData={resumeData} settings={settings} />
           </div>
         ) : null}
       </div>

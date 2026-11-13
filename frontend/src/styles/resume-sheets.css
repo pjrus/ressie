@@ -1,0 +1,257 @@
+/* ── HTML Resume Sheet Preview & Print-to-PDF Styles ──────────────────────── */
+
+.html-preview-viewer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-overlay);
+}
+
+.html-preview-pages {
+  flex: 1;
+  overflow: auto;
+  padding: 20px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.html-preview-scale-wrap {
+  transform-origin: top center;
+  transition: transform 0.1s ease-out;
+}
+
+/* Physical 8.5in x 11in US Letter sheet */
+.resume-sheet {
+  width: 8.5in;
+  min-height: 11in;
+  background: #ffffff;
+  color: #111111;
+  box-shadow: var(--shadow-md);
+  box-sizing: border-box;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.resume-sheet a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Shared entry helpers ─────────────────────────────────────────────────── */
+.rs-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.rs-contact {
+  font-size: 0.88em;
+  margin-top: 3px;
+}
+
+.rs-row-split {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.rs-row-split > span:last-child {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rs-entry {
+  margin-bottom: 6px;
+}
+
+.rs-bullets {
+  margin: 2px 0 4px 18px;
+  padding: 0;
+}
+
+.rs-bullets li {
+  margin-bottom: 1.5px;
+}
+
+.rs-skill-line {
+  margin-bottom: 2px;
+}
+
+/* ── Template: Jake's Resume ──────────────────────────────────────────────── */
+.resume-sheet--jakes {
+  font-family: 'Times New Roman', Times, Georgia, serif;
+}
+
+.resume-sheet--jakes .rs-name {
+  font-size: 2.1em;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 0.02em;
+}
+
+.resume-sheet--jakes .rs-section-title {
+  font-size: 1.08em;
+  font-weight: 600;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid #111111;
+  padding-bottom: 1px;
+  margin: 10px 0 5px;
+}
+
+.resume-sheet--jakes .rs-primary { font-weight: 700; }
+.resume-sheet--jakes .rs-secondary { font-style: italic; font-size: 0.94em; }
+
+/* ── Template: Harvard CV ─────────────────────────────────────────────────── */
+.resume-sheet--harvard {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.resume-sheet--harvard .rs-name {
+  font-size: 1.9em;
+  font-weight: 700;
+}
+
+.resume-sheet--harvard .rs-section-title {
+  font-size: 1em;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid #111111;
+  padding-bottom: 2px;
+  margin: 12px 0 6px;
+}
+
+.resume-sheet--harvard .rs-primary { font-weight: 700; }
+.resume-sheet--harvard .rs-secondary { font-style: italic; }
+
+/* ── Template: Awesome-CV ─────────────────────────────────────────────────── */
+.resume-sheet--awesomecv {
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  color: #333333;
+}
+
+.resume-sheet--awesomecv .rs-name {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.01em;
+}
+
+.resume-sheet--awesomecv .rs-contact {
+  color: #555555;
+}
+
+.resume-sheet--awesomecv .rs-section-title {
+  font-size: 1.12em;
+  font-weight: 700;
+  color: #dc3522;
+  border-bottom: 1px solid #d4d4d4;
+  padding-bottom: 2px;
+  margin: 12px 0 6px;
+}
+
+.resume-sheet--awesomecv .rs-primary { font-weight: 700; color: #111111; }
+.resume-sheet--awesomecv .rs-secondary { font-style: italic; color: #555555; font-size: 0.94em; }
+
+/* ── Template: Deedy Resume ───────────────────────────────────────────────── */
+.resume-sheet--deedy {
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  color: #1b1b1b;
+}
+
+.resume-sheet--deedy .rs-name {
+  font-size: 2.1em;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1e4e79;
+}
+
+.resume-sheet--deedy .rs-contact {
+  color: #5d6d7e;
+}
+
+.resume-sheet--deedy .rs-section-title {
+  font-size: 1.05em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1e4e79;
+  border-bottom: 1px solid #1e4e79;
+  padding-bottom: 2px;
+  margin: 11px 0 5px;
+}
+
+.resume-sheet--deedy .rs-primary { font-weight: 700; }
+.resume-sheet--deedy .rs-secondary { color: #5d6d7e; font-size: 0.94em; }
+
+/* ── Print-only container (used for Dashboard PDF export) ─────────────────── */
+.print-only-sheet-host {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: letter;
+    margin: 0;
+  }
+
+  html, body, #root {
+    height: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  /* Hide all app chrome when printing */
+  .toolbar,
+  .layout > .pane:not(.preview-wrap),
+  .divider,
+  .editor-pane-header,
+  .pdf-controls,
+  .error-panel,
+  .mobile-drawer-backdrop,
+  .mobile-drawer,
+  .dashboard,
+  .modal-overlay,
+  .pdf-fullscreen-header {
+    display: none !important;
+  }
+
+  .layout,
+  .preview-wrap,
+  .pdf-fullscreen-overlay,
+  .pdf-fullscreen-body,
+  .html-preview-viewer,
+  .html-preview-pages {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+  }
+
+  .html-preview-scale-wrap {
+    transform: none !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+  }
+
+  .resume-sheet {
+    box-shadow: none !important;
+    width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+  }
+
+  .print-only-sheet-host {
+    display: block !important;
+  }
+}

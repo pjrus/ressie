@@ -19,8 +19,7 @@ import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
 import { buildDeedyResume } from '../latex/deedy-builder.js';
 import { buildHarvardCV } from '../latex/harvard-builder.js';
-
-const API = '/api';
+import HtmlResumePreview from './HtmlResumePreview.jsx';
 
 const TEMPLATE_BUILDERS = {
   jakes: buildLaTeX,
@@ -31,6 +30,7 @@ const TEMPLATE_BUILDERS = {
 
 export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme, toggleTheme }) {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [printTarget, setPrintTarget] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('lastEdited');
   const [filterBy, setFilterBy] = useState('all');
@@ -114,40 +114,17 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
 
   const sanitizeFilename = (name) => (name || 'resume').replace(/[\\/:*?"<>|]/g, '').trim() || 'resume';
 
-  const exportResumePdf = async (resumeId, resumeName) => {
+  const exportResumePdf = (resumeId) => {
     const resume = loadResume(resumeId);
     if (!resume) {
       window.alert('Resume data not found.');
       return;
     }
 
-    const { data, settings } = resume;
-    const build = TEMPLATE_BUILDERS[settings?.template] || buildLaTeX;
-
-    try {
-      const source = build(data, settings || {});
-      const res = await fetch(`${API}/compile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source }),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload?.detail || payload?.error || 'Failed to compile PDF');
-      }
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${sanitizeFilename(resumeName)}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Export PDF failed:', err);
-      window.alert(`Export PDF failed: ${err.message || 'Unknown error'}`);
-    }
+    setPrintTarget({ data: resume.data, settings: resume.settings || {} });
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
   const handleQuickAction = async (resumeId, action) => {
@@ -249,6 +226,7 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
   };
 
   return (
+    <>
     <div className="dashboard">
       {/* Toolbar */}
       <div className="toolbar">
@@ -611,5 +589,11 @@ export default function Dashboard({ resumesList, onSelectResume, onUpdate, theme
         <HelpModal onClose={() => setShowHelpModal(false)} />
       )}
     </div>
+    {printTarget && (
+      <div className="print-only-sheet-host">
+        <HtmlResumePreview resumeData={printTarget.data} settings={printTarget.settings} />
+      </div>
+    )}
+    </>
   );
 }
