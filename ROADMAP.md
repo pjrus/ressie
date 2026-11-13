@@ -10,10 +10,9 @@ This roadmap tracks what is already built and outlines planned milestones ground
 - **Multi-resume dashboard** — create, search, pin, duplicate, rename, archive, tag/filter, and delete résumés stored in `localStorage` (`frontend/src/utils/storageManager.js`, `Dashboard.jsx`).
 - **JSON backup & restore** — export and import résumé JSON files (`ImportResumeModal.jsx`, `storageManager.js`).
 - **Form-based LaTeX editor** — structured editing for Header, Education, Experience, Projects, Technical Skills, and Awards / Certifications with drag-and-drop section reordering via `@dnd-kit` (`FormPane.jsx`).
-- **Three LaTeX templates** — live switching between Jake's Resume (`builder.js`), Awesome-CV (`awesomecv-builder.js`), and Deedy Resume (`deedy-builder.js`).
-- **Local LaTeX compilation & live PDF preview** — debounced auto-compile via Express + Tectonic (`backend/server.js`), zoomable PDF viewer with fullscreen mode (`PdfViewer.jsx`, `Editor.jsx`), and `.tex` / `.pdf` export.
-- **"The Ledger & the Sheet" design system** — Warm Paper / Ultramarine light theme, inverted dark mode, square-cornered hairline UI, responsive mobile sheet/drawer, and keyboard help modal (`DESIGN.md`, `frontend/src/styles/`, `HelpModal.jsx`).
-- **Docker & Render deployment** — single-container production build serving the Vite frontend from Express (`Dockerfile`, `render.yaml`).
+- **Three -> Four LaTeX templates** — live switching between Jake's Resume (`builder.js`), Awesome-CV (`awesomecv-builder.js`), Deedy Resume (`deedy-builder.js`), and Harvard CV (`harvard-builder.js`).
+- **In-browser LaTeX compilation & live PDF preview** — debounced auto-compile via `@siglum/engine` (TeX Live WebAssembly in a Web Worker), zoomable PDF viewer with fullscreen mode (`PdfViewer.jsx`, `Editor.jsx`), and `.tex` / `.pdf` export.
+- **Static GitHub Pages deployment** — pure static Vite build deployed via `.github/workflows/deploy.yml` with zero backend.
 
 ---
 
@@ -23,7 +22,7 @@ This roadmap tracks what is already built and outlines planned milestones ground
    - Wire `frontend/src/utils/versionManager.js` (`saveVersion`, `loadVersions`, `restoreVersion`) into `Editor.jsx` and `App.jsx`.
    - Add a version history drawer/panel to browse auto-saves and manual snapshots, label checkpoints, and restore previous states.
 2. **AltaCV Template Support**
-   - `backend/templates/altacv.cls` is already bundled in the backend; add `frontend/src/latex/altacv-builder.js` and register AltaCV in the template switcher (`CreateResumeModal.jsx`, `Editor.jsx`).
+   - Bundle `altacv.cls` in `frontend/src/latex/`, add `frontend/src/latex/altacv-builder.js`, and register AltaCV in the template switcher (`CreateResumeModal.jsx`, `Editor.jsx`).
 3. **Rich Inline Formatting & Field Controls**
    - Support safe inline formatting (bold, italic, inline links) in bullet points without requiring raw LaTeX.
    - Add bullet-level drag-and-drop reordering and quick duplicate/move actions within Experience and Projects.
@@ -40,7 +39,7 @@ This roadmap tracks what is already built and outlines planned milestones ground
 2. **Raw `.tex` Escape Hatch (Split / Inspect Mode)**
    - Add a read-only or editable `.tex` drawer in the editor so power users can inspect generated LaTeX, see exact error line numbers from `X-Compile-Log` / compile `detail`, and optionally tweak output.
 3. **Improved Compile Diagnostics**
-   - Parse Tectonic / `pdflatex` error logs on the backend into structured line/message diagnostics highlighted in the UI.
+   - Parse TeX Live WASM error logs into structured line/message diagnostics highlighted in the UI.
 4. **Optional `.tex` / PDF Import**
    - Parse common `.tex` templates (starting with Jake's Resume) or structured JSON Resume (`jsonresume.org`) schemas into Ressie's data model.
 5. **Storage Resilience**
@@ -65,10 +64,10 @@ This roadmap tracks what is already built and outlines planned milestones ground
 
 - **Automated Testing**
   - Add unit tests for LaTeX escaping and all template builders (`frontend/src/latex/*.js`) and `storageManager.js` / `versionManager.js` (e.g., via Vitest).
-  - Add backend API integration tests for `POST /api/compile` and `GET /api/health`.
+  - Add browser/Playwright smoke tests for in-browser WASM compilation across all templates.
 - **Documentation Sync**
-  - Update `README.md` to match the current codebase (replace references to `App.css` and Catppuccin Latte/Mocha with `frontend/src/styles/` and `DESIGN.md`, and document JSON import/export and `HelpModal`).
+  - Keep `README.md` and `DESIGN.md` aligned with the current `frontend/src/styles/` tokens and in-browser WASM compiler.
 - **Dependency Hygiene**
-  - Remove unused `multer` from `backend/package.json` (and `html2canvas` from root `package.json` if only needed in `frontend/`) and address open Dependabot PRs.
-- **Backend Compile Concurrency & Caching**
-  - Add basic compile request cancellation / queuing on the frontend (`AbortController`) and optional caching of identical `.tex` payloads to avoid redundant Tectonic runs.
+  - Align `@vitejs/plugin-react` and `vite` versions so `npm ci` runs without `--legacy-peer-deps`, and address open Dependabot PRs.
+- **WASM Compile Caching & Cancellation**
+  - Skip stale intermediate compiles in `wasmCompiler.js` and pre-cache common format/package bundles for faster cold starts.

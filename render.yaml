@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: ressie
-    env: docker
-    plan: starter
-    healthCheckPath: /api/health

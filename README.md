@@ -7,9 +7,9 @@ A local web app for building and editing LaTeX resumes through a structured form
 This is a privacy-oriented, local-first app.
 
 - Resume content is edited locally in your browser UI.
-- Compilation runs on your own local backend (`localhost`).
-- No external cloud service is required for resume generation.
-- No account, sign-in, or third-party tracking is built into the app.
+- LaTeX compilation runs client-side in your browser via WebAssembly (`@siglum/engine`).
+- No backend server or account is required.
+- No sign-in or third-party tracking is built into the app.
 
 ---
 
@@ -35,54 +35,15 @@ This is a privacy-oriented, local-first app.
 
 | Layer | Technology |
 |---|---|
-| Frontend | React 18, Vite 5, `@monaco-editor/react` → swapped for form UI, `@dnd-kit` |
-| Backend | Node.js, Express |
-| LaTeX engine | [Tectonic](https://tectonic-typesetting.github.io) (auto-downloads packages on first compile) |
-| Templates | [Jake's Resume](https://github.com/jakegut/resume), [Awesome-CV](https://github.com/posquit0/Awesome-CV), Deedy Resume (app-adapted) |
+| Frontend | React 18, Vite, `@dnd-kit`, `react-pdf` |
+| LaTeX engine | `@siglum/engine` (TeX Live WebAssembly in a Web Worker) |
+| Templates | [Jake's Resume](https://github.com/jakegut/resume), [Awesome-CV](https://github.com/posquit0/Awesome-CV), Deedy Resume, Harvard CV |
 
 ---
 
 ## Prerequisites
 
 - **Node.js** ≥ 18
-- **Tectonic** — the LaTeX compiler
-
-Install Tectonic on macOS:
-```bash
-brew install tectonic
-```
-
-Install Tectonic on Linux:
-
-Ubuntu / Debian:
-```bash
-sudo apt update
-sudo apt install tectonic
-```
-
-Fedora:
-```bash
-sudo dnf install tectonic
-```
-
-Arch Linux:
-```bash
-sudo pacman -S tectonic
-```
-
-Install Tectonic on Windows:
-
-Using winget:
-```powershell
-winget install TectonicTypesetting.Tectonic
-```
-
-Using Chocolatey:
-```powershell
-choco install tectonic
-```
-
-> On first compile, Tectonic downloads the required LaTeX packages automatically (~30 s). Subsequent compiles are fast.
 
 ---
 
@@ -93,48 +54,14 @@ choco install tectonic
 ```bash
 git clone <your-repo-url>
 cd ressie
-npm run setup      # installs deps in both backend/ and frontend/
+npm run setup      # installs frontend deps
 ```
 
 ### 2. Start the app
 
-Open two terminals:
-
-```bash
-# Terminal 1 — backend (port 3001)
-cd backend
-node server.js
-
-# Terminal 2 — frontend (port 5173)
-cd frontend
-npm run dev
-```
-
-Or from the root using `concurrently`:
-
 ```bash
 npm run dev
 ```
-
-## Docker Deployment
-
-This app can run as a single Docker service: the backend serves the compiled frontend and handles `/api/compile` on the same origin.
-
-### Build locally
-
-```bash
-docker build -t tex-resume-app .
-docker run -p 3001:3001 tex-resume-app
-```
-
-### Render
-
-Use the included `render.yaml` and create a new Web Service from the repo. Render will build the Dockerfile and expose the app on the service URL.
-
-### Notes
-
-- The container installs Tectonic at build time. If you change the version, update the URL in the `Dockerfile`.
-- The app listens on `PORT` when provided by the host platform, otherwise it defaults to `3001`.
 
 ### 3. Open in browser
 
