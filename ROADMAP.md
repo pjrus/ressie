@@ -55,7 +55,11 @@ This roadmap tracks what is already built and outlines planned milestones ground
    - Compare two résumé versions or two tailored variants side by side (e.g., base résumé vs. role-specific variant) with section/bullet diffs.
 3. **Optional Local-First AI Assist (BYO Key / Local LLM)**
    - Opt-in, user-configured local (Ollama) or BYO-key assistance for bullet-point tightening, action-verb suggestions, and keyword alignment against a pasted job description — disabled by default to preserve zero-telemetry privacy.
-4. **Desktop / Offline Packaging**
+4. **Gemini API Integration: Multimodal Import & Smart Tailoring (Opt-In, BYO Key)**
+   - **PDF / Image-to-Ressie Import**: Use Gemini's native multimodal PDF/image understanding with Structured Outputs (JSON Schema) via `@google/genai` in `ImportResumeModal.jsx` to parse any existing résumé PDF or screenshot directly into Ressie's structured schema, with a review step before saving.
+   - **Job-Targeted Tailoring & 1-Page Condenser**: Analyze a pasted job description (and optionally the current résumé data/page count) to return structured per-bullet rewrite suggestions, keyword gap highlights, and surgical trims to fit onto 1 page, applied via accept/reject diffs.
+   - **Zero-Backend Privacy Model**: Disabled by default; runs client-side with a user-supplied Gemini API key (session-only or `localStorage`) so Ressie remains a pure static app.
+5. **Desktop / Offline Packaging**
    - Package Ressie as a standalone desktop app (e.g., Tauri or Electron) bundling Tectonic so non-technical users don't need Node.js or Homebrew.
 
 ---
