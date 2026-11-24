@@ -519,6 +519,34 @@
     cursor: pointer;
     flex-shrink: 0;
   }
+
+  /* Version history drawer: full-width on mobile */
+  .version-drawer {
+    width: 100%;
+    max-width: 100vw;
+    border-left: none;
+  }
+
+  .version-checkpoint-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .version-checkpoint-input {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .version-checkpoint-btn {
+    height: 40px;
+    justify-content: center;
+  }
+
+  .version-action-btn {
+    height: 32px;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
 }
 
 /* ── TABLET (640px - 1024px) ──────────────────────────────────────────────── */

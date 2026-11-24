@@ -93,6 +93,15 @@ export default function App() {
     }
   };
 
+  const handleRestoreVersion = (restoredData, restoredSettings) => {
+    if (!activeResumeId) return;
+    setResumeData(restoredData);
+    setSettings(restoredSettings);
+    saveResume(activeResumeId, restoredData, restoredSettings);
+    const newList = loadResumesList();
+    setResumesList(newList);
+  };
+
   const handleBackToDashboard = () => {
     setView('dashboard');
     setActiveResumeId(null);
@@ -112,6 +121,7 @@ export default function App() {
         theme={theme}
         toggleTheme={toggleTheme}
         onSave={handleSaveResume}
+        onRestoreVersion={handleRestoreVersion}
         isSaving={isSaving}
         activeResumeId={activeResumeId}
       />

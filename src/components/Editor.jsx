@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import FormPane from './FormPane.jsx';
 import PdfViewer from './PdfViewer.jsx';
+import VersionHistoryDrawer from './VersionHistoryDrawer.jsx';
 import { useMediaQuery } from '../hooks/useMediaQuery.js';
 import { buildLaTeX } from '../latex/builder.js';
 import { buildAwesomeCV } from '../latex/awesomecv-builder.js';
@@ -8,6 +9,14 @@ import { buildDeedyResume } from '../latex/deedy-builder.js';
 import { buildHarvardCV } from '../latex/harvard-builder.js';
 import { compileLatexInBrowser, prewarmLatexCompiler } from '../latex/wasmCompiler.js';
 import { captureAndSaveThumbnail } from '../utils/thumbnailManager.js';
+import {
+  saveVersion,
+  loadVersions,
+  restoreVersion,
+  deleteVersion,
+  renameVersion,
+  hasContentChanged,
+} from '../utils/versionManager.js';
 
 const TEMPLATES = {
   jakes: {
@@ -40,9 +49,14 @@ const TEMPLATES = {
   },
 };
 
-const DEBOUNCE_MS = 1500;
+const TEMPLATE_LABELS = Object.fromEntries(
+  Object.entries(TEMPLATES).map(([key, { label }]) => [key, label])
+);
 
-export default function Editor({ resumeData, setResumeData, settings, setSettings, onBack, theme, toggleTheme, onSave, isSaving, activeResumeId }) {
+const DEBOUNCE_MS = 1500;
+const AUTO_SAVE_VERSION_MS = 30000;
+
+export default function Editor({ resumeData, setResumeData, settings, setSettings, onBack, theme, toggleTheme, onSave, onRestoreVersion, isSaving, activeResumeId }) {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [status, setStatus] = useState('idle');
   const [errorLog, setErrorLog] = useState('');
@@ -53,14 +67,41 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showPdfOnMobile, setShowPdfOnMobile] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [versions, setVersions] = useState([]);
+  const [historyFeedback, setHistoryFeedback] = useState('');
   const isMobile = useMediaQuery('(max-width: 639px)');
 
   const debounceTimer = useRef(null);
+  const autoVersionTimer = useRef(null);
+  const hasInitializedAutoVersion = useRef(false);
+  const historyFeedbackTimer = useRef(null);
   const prevPdfUrl = useRef(null);
   const compileSeqRef = useRef(0);
   const isDragging = useRef(false);
   const saveStateTimer = useRef(null);
   const pdfViewerRef = useRef(null);
+
+  const refreshVersions = useCallback(() => {
+    if (!activeResumeId) return;
+    setVersions(loadVersions(activeResumeId));
+  }, [activeResumeId]);
+
+  const showHistoryFeedback = useCallback((message) => {
+    if (historyFeedbackTimer.current) {
+      clearTimeout(historyFeedbackTimer.current);
+    }
+    setHistoryFeedback(message);
+    historyFeedbackTimer.current = setTimeout(() => {
+      setHistoryFeedback('');
+    }, 3500);
+  }, []);
+
+  // Load version history when active resume changes
+  useEffect(() => {
+    hasInitializedAutoVersion.current = false;
+    refreshVersions();
+  }, [activeResumeId, refreshVersions]);
 
   // Pre-warm the in-browser WASM TeX compiler on editor mount
   useEffect(() => {
@@ -112,6 +153,23 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     debounceTimer.current = setTimeout(() => compile(resumeData, settings), DEBOUNCE_MS);
     return () => clearTimeout(debounceTimer.current);
   }, [resumeData, settings, autoCompile, compile]);
+
+  // ── Auto-save version snapshots ────────────────────────────────────────────
+  useEffect(() => {
+    if (!activeResumeId) return;
+    if (!hasInitializedAutoVersion.current) {
+      hasInitializedAutoVersion.current = true;
+      return;
+    }
+    clearTimeout(autoVersionTimer.current);
+    autoVersionTimer.current = setTimeout(() => {
+      if (hasContentChanged(activeResumeId, resumeData, settings)) {
+        saveVersion(activeResumeId, resumeData, settings, '', false);
+        refreshVersions();
+      }
+    }, AUTO_SAVE_VERSION_MS);
+    return () => clearTimeout(autoVersionTimer.current);
+  }, [activeResumeId, resumeData, settings, refreshVersions]);
 
   // ── Download .tex ──────────────────────────────────────────────────────────
   const downloadTex = () => {
@@ -188,6 +246,12 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
       // Call the parent save function
       await onSave();
 
+      // Record a manual checkpoint if content has changed since the latest snapshot
+      if (activeResumeId && hasContentChanged(activeResumeId, resumeData, settings)) {
+        saveVersion(activeResumeId, resumeData, settings, '', true);
+        refreshVersions();
+      }
+
       // Show "Saved" briefly
       setSaveState('saved');
 
@@ -208,18 +272,80 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
     }
   };
 
-  // Cleanup timer on unmount
+  // ── Version history handlers ───────────────────────────────────────────────
+  const handleCreateCheckpoint = async (label = '') => {
+    if (!activeResumeId) return;
+    if (onSave) {
+      await onSave();
+    }
+    const saved = saveVersion(activeResumeId, resumeData, settings, label, true);
+    refreshVersions();
+    if (saved) {
+      showHistoryFeedback(`Saved checkpoint "${saved.label}"`);
+    }
+  };
+
+  const handleRestoreFromHistory = (versionId) => {
+    if (!activeResumeId) return;
+    const savedSafety = hasContentChanged(activeResumeId, resumeData, settings)
+      ? saveVersion(activeResumeId, resumeData, settings, 'Before restore', false)
+      : null;
+
+    const restored = restoreVersion(activeResumeId, versionId);
+    if (!restored) return;
+
+    if (onRestoreVersion) {
+      onRestoreVersion(restored.data, restored.settings);
+    } else {
+      setResumeData(restored.data);
+      setSettings(restored.settings);
+    }
+
+    if (!autoCompile) {
+      compile(restored.data, restored.settings);
+    }
+
+    refreshVersions();
+    showHistoryFeedback(
+      savedSafety ? 'Restored version — previous state saved' : 'Version restored'
+    );
+  };
+
+  const handleRenameVersion = (versionId, newLabel) => {
+    if (!activeResumeId) return;
+    renameVersion(activeResumeId, versionId, newLabel);
+    refreshVersions();
+  };
+
+  const handleDeleteVersion = (versionId) => {
+    if (!activeResumeId) return;
+    deleteVersion(activeResumeId, versionId);
+    refreshVersions();
+  };
+
+  // Cleanup timers on unmount
   useEffect(() => {
     return () => {
       if (saveStateTimer.current) {
         clearTimeout(saveStateTimer.current);
       }
+      if (autoVersionTimer.current) {
+        clearTimeout(autoVersionTimer.current);
+      }
+      if (historyFeedbackTimer.current) {
+        clearTimeout(historyFeedbackTimer.current);
+      }
     };
   }, []);
 
-  // ESC to exit fullscreen
+  // ESC to exit fullscreen or close version history drawer
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') setIsFullscreen(false); };
+    const onKey = (e) => {
+      if (e.key === 'Escape' && !e.defaultPrevented) {
+        setIsFullscreen(false);
+        setHistoryOpen(false);
+      }
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
@@ -278,6 +404,19 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
                   {saveState === 'error' && '✗ Failed'}
                   {saveState === 'idle' && 'Save'}
                 </span>
+              </button>
+
+              <button
+                className={`btn btn-secondary history-button ${historyOpen ? 'is-active' : ''}`}
+                onClick={() => setHistoryOpen((o) => !o)}
+                aria-expanded={historyOpen}
+                title="View version history and checkpoints"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                History
               </button>
             </>
           )}
@@ -443,6 +582,17 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
 
             <button
               className="mobile-drawer-item"
+              onClick={() => { setDrawerOpen(false); setHistoryOpen(true); }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span className="mobile-drawer-item-label">Version History</span>
+            </button>
+
+            <button
+              className="mobile-drawer-item"
               onClick={() => { downloadTex(); setDrawerOpen(false); }}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -467,6 +617,19 @@ export default function Editor({ resumeData, setResumeData, settings, setSetting
           </div>
         </>
       )}
+
+      {/* ── Version History drawer ── */}
+      <VersionHistoryDrawer
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        versions={versions}
+        templateLabels={TEMPLATE_LABELS}
+        onCreateCheckpoint={handleCreateCheckpoint}
+        onRestore={handleRestoreFromHistory}
+        onRename={handleRenameVersion}
+        onDelete={handleDeleteVersion}
+        feedbackMessage={historyFeedback}
+      />
 
       {/* ── Fullscreen PDF overlay ── */}
       {isFullscreen && (
