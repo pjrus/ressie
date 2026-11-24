@@ -13,6 +13,8 @@ const LEGACY_STORAGE_KEYS = {
   RESUME_VERSIONS: (id) => `texResumeApp:resume:${id}:versions`,
 };
 
+const MAX_VERSIONS = 20;
+
 /**
  * Save a version of the resume
  * @param {string} resumeId - Resume ID
@@ -24,25 +26,74 @@ const LEGACY_STORAGE_KEYS = {
 export function saveVersion(resumeId, data, settings, label = '', isManual = false) {
   try {
     const versions = loadVersions(resumeId);
+    const trimmedLabel = typeof label === 'string' ? label.trim() : '';
 
     const version = {
       versionId: uid(),
       timestamp: Date.now(),
       data: JSON.parse(JSON.stringify(data)), // Deep clone
       settings: JSON.parse(JSON.stringify(settings)), // Deep clone
-      label: label || (isManual ? `Manual save ${new Date().toLocaleTimeString()}` : `Auto-save ${new Date().toLocaleTimeString()}`),
+      label: trimmedLabel || (isManual ? `Manual save ${new Date().toLocaleTimeString()}` : `Auto-save ${new Date().toLocaleTimeString()}`),
       isManual,
     };
 
     versions.push(version);
 
     // Keep only the 20 most recent versions
-    pruneVersions(resumeId, versions);
-
-    localStorage.setItem(STORAGE_KEYS.RESUME_VERSIONS(resumeId), JSON.stringify(versions));
+    const pruned = versions.length > MAX_VERSIONS ? versions.slice(-MAX_VERSIONS) : versions;
+    localStorage.setItem(STORAGE_KEYS.RESUME_VERSIONS(resumeId), JSON.stringify(pruned));
     return version;
   } catch (err) {
     console.error(`Error saving version for resume ${resumeId}:`, err);
+    return null;
+  }
+}
+
+/**
+ * Check whether the current resume data/settings differ from the latest saved version
+ * @param {string} resumeId - Resume ID
+ * @param {Object} data - Current resume data
+ * @param {Object} settings - Current resume settings
+ * @returns {boolean} True if there are no versions yet or content has changed
+ */
+export function hasContentChanged(resumeId, data, settings) {
+  try {
+    const versions = loadVersions(resumeId);
+    if (versions.length === 0) return true;
+    const latest = versions[versions.length - 1];
+    const currentSnapshot = JSON.stringify({ data, settings });
+    const latestSnapshot = JSON.stringify({ data: latest.data, settings: latest.settings });
+    return currentSnapshot !== latestSnapshot;
+  } catch (err) {
+    console.error(`Error comparing version content for resume ${resumeId}:`, err);
+    return true;
+  }
+}
+
+/**
+ * Rename (relabel) an existing version
+ * @param {string} resumeId - Resume ID
+ * @param {string} versionId - Version ID to rename
+ * @param {string} newLabel - New label text
+ * @returns {Object|null} Updated version object or null if not found/invalid
+ */
+export function renameVersion(resumeId, versionId, newLabel) {
+  try {
+    const trimmed = typeof newLabel === 'string' ? newLabel.trim() : '';
+    if (!trimmed) return null;
+
+    const versions = loadVersions(resumeId);
+    const version = versions.find(v => v.versionId === versionId);
+    if (!version) {
+      console.warn(`Version ${versionId} not found`);
+      return null;
+    }
+
+    version.label = trimmed;
+    localStorage.setItem(STORAGE_KEYS.RESUME_VERSIONS(resumeId), JSON.stringify(versions));
+    return version;
+  } catch (err) {
+    console.error(`Error renaming version ${versionId}:`, err);
     return null;
   }
 }
